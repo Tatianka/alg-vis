@@ -29,41 +29,43 @@ public class FingerInsert2 extends Algorithm {
 			T.finger = v;
 			T.reposition();
 		} else {
+			FingerNode2 w = T.finger;
 			// idem pomocou prsta
-			v.goAbove(T.finger);
+			v.goAbove(w);
 			setText("bstinsertstart");
 			mysuspend();
 			
 			////////like in FingerFind///////////////
 			//T.finger
-			while (T.finger != T.root) {
-				if (T.finger.belongsHere(K)) {break;}
-				//w = w.parent;
+			while (w != T.root) {
+				if (w.belongsHere(K)) {break;}
+				w = w.parent;
 				T.finger = T.finger.parent;
-				v.goTo(T.finger);
+				v.goTo(w);
 				mysuspend();
 				T.reposition();
 			}
 			//// now i have to go down /////////////
 			while (true) {
-				if (T.finger.isIn(K)) {
+				if (w.isIn(K)) {
 					setText("alreadythere");
 					v.bgColor(Colors.DELETE);
 					v.goDown();
 					return;
 				}
 				
-				if (T.finger.isLeaf()) {
+				if (w.isLeaf()) {
 					break;
 				}
 				
-				T.finger = T.finger.way(K);	
+				w = w.way(K);
+				T.finger = w;
 			}
 			//// I have a leaf and I want to insert an element /////////////////
-			T.finger.addLeaf(K); //just adds x into this leaf
+			w.addLeaf(K); //just adds x into this leaf
 //			setText("fingertree");
-			if (T.finger.numKeys >= 4) {
-				T.finger.bgColor(Colors.NOTFOUND); //if too much keys, that's not good
+			if (w.numKeys >= 4) {
+				w.bgColor(Colors.NOTFOUND); //if too much keys, that's not good
 				setText("fingertree");
 			}
 			T.v = null;
@@ -72,16 +74,35 @@ public class FingerInsert2 extends Algorithm {
 
 			// spliting node, if necessary
 			//FingerNode2 w = T.finger;
-			while (T.finger.getNumKeys() >= 4) {
+			while (w.getNumKeys() >= 4) {
 				setText("bsplit");
-				T.finger = T.finger.split();
-				if (T.finger.isRoot()) {break;}
-				if (T.finger.numKeys >= 4) { T.finger.bgColor(Colors.NOTFOUND);}
-				
+				int o = (w.parent != null) ? w.order() : -1;
+				w = w.split();
+				if (w.c[0].isIn(K)) {
+					T.finger = w.c[0];
+				} else {
+					if (w.c[1].isIn(K)) {
+						T.finger = w.c[1];
+					} else {
+						T.finger = w;
+					}
+				}
+				if (w.parent == null) {
+					break;
+				}
+				w.parent.c[o] = w;
+				mysuspend();
+				w.goBelow(w.parent);
+				mysuspend();
+				w.parent.add(o, w);
+				w = w.parent;
+				if (w.numKeys >= 4) {
+					w.bgColor(Colors.NOTFOUND);
+				}				
 				T.reposition();
 			}
-			if (T.finger.isRoot()) {
-				T.root = T.finger;
+			if (w.isRoot()) {
+				T.root = w;
 			}
 			T.reposition();
 		}

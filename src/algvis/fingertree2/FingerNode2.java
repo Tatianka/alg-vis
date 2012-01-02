@@ -73,7 +73,7 @@ public class FingerNode2 extends Node {
 		return numKeys;
 	}
 		
-	public FingerNode2 split() {
+/*	public FingerNode2 split() {
 		FingerNode2 ch1 = new FingerNode2(D, key[0], x, y), ch2 = new FingerNode2(D, key[3], x, y), p = new FingerNode2(
 				D, key[2], x, y);
 		ch1.addLeaf(key[1]);
@@ -103,7 +103,7 @@ public class FingerNode2 extends Node {
 		ch2.x = x + ch2.width / 2 + D.radius;
 		
 		return p;
-	}
+	}*/
 	
 ///// if x belongs to this undertree //////////
 	public boolean belongsHere(int x) {
@@ -409,7 +409,7 @@ public class FingerNode2 extends Node {
 		return numKeys;
 	}
 
-	/*	public FingerNode2 split() {
+		public FingerNode2 split() {
 	int k = numKeys, ku = numKeys / 2; // , kw = numKeys - ku - 1;
 	FingerNode2 u = new FingerNode2(D, key[0], x, y), v = new FingerNode2(D, key[ku], x, y), w = new FingerNode2(
 			D, key[k - 1], x, y);
@@ -443,7 +443,7 @@ public class FingerNode2 extends Node {
 	u.x = x - u.width / 2 - D.radius;
 	w.x = x + w.width / 2 + D.radius;
 	return v;
-}*/
+}
 	
 	public String toString(int max) {
 		if (numKeys == 0 || max == 0) {

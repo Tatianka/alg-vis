@@ -34,9 +34,15 @@ public class FingerTree2 extends Dictionary {
 			root.drawTree(V);
 		}
 		if (v != null) {
+			if (v == finger) {
+				v.bgColor(Colors.FINGER);
+			} else {
+				v.bgColor(Colors.NORMAL);
+			}
 			v.move();
 			v.draw(V);
 		}
+		//draw finger
 	}
 
 /////////////////////////copied from Finger/////////////
