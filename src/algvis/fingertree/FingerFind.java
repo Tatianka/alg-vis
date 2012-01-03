@@ -1,8 +1,11 @@
 package algvis.fingertree;
 
-import algvis.core.*;
+import algvis.core.Algorithm;
+import algvis.core.Colors;
+
 
 public class FingerFind extends Algorithm {
+
 	FingerTree T;
 	FingerNode v;
 	
@@ -90,4 +93,5 @@ public class FingerFind extends Algorithm {
 			}
 		}		
 	}	
+
 }

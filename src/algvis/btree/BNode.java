@@ -9,15 +9,15 @@ import algvis.core.Node;
 import algvis.core.View;
 
 public class BNode extends Node {
-	int width, leftw, rightw;
-	BNode parent = null;
-	int numKeys = 1, numChildren = 0;
-	int[] key;
-	BNode[] c;
+	protected int width, leftw, rightw;
+	protected BNode parent = null;
+	protected int numKeys = 1, numChildren = 0;
+	protected int[] key;
+	protected BNode[] c;
 	// View V;
 
 	// statistics
-	int nkeys = 1, nnodes = 1, height = 1;
+	protected int nkeys = 1, nnodes = 1, height = 1;
 
 	public BNode(DataStructure D, int key, int x, int y) {
 		this.key = new int[((BTree) D).order + 5];

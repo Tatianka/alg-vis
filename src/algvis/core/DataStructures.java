@@ -9,7 +9,6 @@ import algvis.bst.BSTPanel;
 import algvis.btree.BPanel;
 import algvis.fibonacciheap.FibHeapPanel;
 import algvis.fingertree.FingerTreePanel;
-import algvis.fingertree2.FingerTreePanel2;
 import algvis.heap.HeapPanel;
 import algvis.internationalization.Languages;
 import algvis.lazybinomialheap.LazyBinHeapPanel;
@@ -35,7 +34,7 @@ public class DataStructures {
 			AVLPanel.class, BPanel.class, RBPanel.class, AAPanel.class,
 			TreapPanel.class, SkipListPanel.class, GBPanel.class,
 			SplayPanel.class, HeapPanel.class, BinHeapPanel.class,
-			LazyBinHeapPanel.class, FibHeapPanel.class, FingerTreePanel.class, FingerTreePanel2.class };
+			LazyBinHeapPanel.class, FibHeapPanel.class, FingerTreePanel.class };
 	static final int N = PANEL.length;
 
 	private static boolean check_range(int i) {
