@@ -32,6 +32,7 @@ public class FingerTree2 extends Dictionary {
 		if (root != null) {
 			root.moveTree();
 			root.drawTree(V);
+			// draw neighbours - change Draw from Node or add another function
 		}
 		if (v != null) {
 			if (v == finger) {

@@ -39,6 +39,8 @@ public class FingerNode2 extends Node {
 		this(v.D, v.key[0], v.x, v.y);
 	//	super(v);
 	//	setNeighbour();
+		leftNeigbour = v.leftNeigbour;
+		rightNeighbour = v.rightNeighbour;
 	}
 	
 	public FingerNode2(FingerNode2 u, FingerNode2 v, FingerNode2 w) {
@@ -67,6 +69,9 @@ public class FingerNode2 extends Node {
 		}
 		width = _width();
 	//	setNeighbour();
+		
+		leftNeigbour = u.leftNeigbour;
+		rightNeighbour = w.rightNeighbour;
 	}
 	
 	public int getNumKeys() {
@@ -232,6 +237,14 @@ public class FingerNode2 extends Node {
 			v.drawLine(x, y, c[i].x, c[i].y - D.radius);
 			c[i].drawTree(v);
 		}
+		
+		if (leftNeigbour != null) {
+			v.drawLine(x, y-2, leftNeigbour.x + leftNeigbour.width/2, leftNeigbour.y-2);
+		}
+		if (rightNeighbour != null) {
+			v.drawLine(x, y+2, rightNeighbour.x - rightNeighbour.width/2, rightNeighbour.y+2);
+		}
+		
 		draw(v);
 	}
 	
@@ -409,7 +422,7 @@ public class FingerNode2 extends Node {
 		return numKeys;
 	}
 
-		public FingerNode2 split() {
+public FingerNode2 split() {
 	int k = numKeys, ku = numKeys / 2; // , kw = numKeys - ku - 1;
 	FingerNode2 u = new FingerNode2(D, key[0], x, y), v = new FingerNode2(D, key[ku], x, y), w = new FingerNode2(
 			D, key[k - 1], x, y);
@@ -442,6 +455,18 @@ public class FingerNode2 extends Node {
 	w.width = w._width();
 	u.x = x - u.width / 2 - D.radius;
 	w.x = x + w.width / 2 + D.radius;
+	
+	u.leftNeigbour = leftNeigbour;
+	u.rightNeighbour = w;
+	w.leftNeigbour = u;
+	w.rightNeighbour = rightNeighbour;
+	
+	if (leftNeigbour != null) {
+		leftNeigbour.rightNeighbour = u;
+	}
+	if (rightNeighbour != null) {
+		rightNeighbour.leftNeigbour = w;
+	}
 	return v;
 }
 	

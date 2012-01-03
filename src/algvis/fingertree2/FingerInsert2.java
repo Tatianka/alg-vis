@@ -15,6 +15,7 @@ public class FingerInsert2 extends Algorithm {
 		v = T.v = new FingerNode2(T, K = x); 
 		v.bgColor(Colors.INSERT);
 		setHeader("insertion");
+		
 	}	
 	
 	@Override
@@ -29,6 +30,9 @@ public class FingerInsert2 extends Algorithm {
 			T.finger = v;
 			T.reposition();
 		} else {
+			//f = new FingerNode2(T,0);
+			//f.goAbove(T.finger);
+
 			FingerNode2 w = T.finger;
 			// idem pomocou prsta
 			v.goAbove(w);
@@ -39,6 +43,26 @@ public class FingerInsert2 extends Algorithm {
 			//T.finger
 			while (w != T.root) {
 				if (w.belongsHere(K)) {break;}
+				if (w.leftNeigbour != null) {
+					if (w.leftNeigbour.belongsHere(K)) {
+						w = w.leftNeigbour;
+						T.finger = w;
+						v.goTo(w);
+						mysuspend();
+					//	f.goAbove(w);
+						break;
+					}
+				}
+				if (w.rightNeighbour != null) {
+					if (w.rightNeighbour.belongsHere(K)) {
+						w = w.rightNeighbour;
+						T.finger = w;
+						v.goTo(w);
+						mysuspend();
+					//	f.goAbove(w);
+						break;
+					}
+				}
 				w = w.parent;
 				T.finger = T.finger.parent;
 				v.goTo(w);
@@ -60,6 +84,8 @@ public class FingerInsert2 extends Algorithm {
 				
 				w = w.way(K);
 				T.finger = w;
+				v.goTo(w);
+				mysuspend();
 			}
 			//// I have a leaf and I want to insert an element /////////////////
 			w.addLeaf(K); //just adds x into this leaf
@@ -73,7 +99,6 @@ public class FingerInsert2 extends Algorithm {
 			mysuspend();
 
 			// spliting node, if necessary
-			//FingerNode2 w = T.finger;
 			while (w.getNumKeys() >= 4) {
 				setText("bsplit");
 				int o = (w.parent != null) ? w.order() : -1;
@@ -95,11 +120,15 @@ public class FingerInsert2 extends Algorithm {
 				w.goBelow(w.parent);
 				mysuspend();
 				w.parent.add(o, w);
+				if (T.finger == w) {
+					T.finger = w.parent;
+				}
 				w = w.parent;
 				if (w.numKeys >= 4) {
 					w.bgColor(Colors.NOTFOUND);
 				}				
 				T.reposition();
+				mysuspend();
 			}
 			if (w.isRoot()) {
 				T.root = w;
