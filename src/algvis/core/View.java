@@ -3,6 +3,7 @@ package algvis.core;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.RoundRectangle2D;
+import java.awt.Image;
 
 public class View {
 	VisPanel P;
@@ -301,5 +302,9 @@ public class View {
 		}
 		// g.drawLine(x, y, x2, y2);
 		arrowHead(x, y, x2, y2);
+	}
+	
+	public void drawImage(Image img, int x, int y, int w, int h) {
+		g.drawImage(img, x, y, w, h, null);
 	}
 }

@@ -11,9 +11,11 @@ public class FingerTree extends Dictionary {
 	final int order = 4;
 	FingerNode root = null, v = null, finger = null;
 	int xspan = 5, yspan = 15;
+	Finger prst;
 	
 	public FingerTree(VisPanel M) {
 		super(M);
+		prst = new Finger();
 	}
 
 	public void insert(int x) {
@@ -43,7 +45,8 @@ public class FingerTree extends Dictionary {
 			v.move();
 			v.draw(V);
 		}
-		//draw finger
+		prst.setFinger(finger);
+		prst.draw(V);
 	}
 	
 	public void reposition() {
