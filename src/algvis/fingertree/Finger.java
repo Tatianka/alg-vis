@@ -61,7 +61,7 @@ public class Finger {
 		if (f == null) {
 			v.drawImage(img, 50, 50, 20, 20);
 		} else {
-		v.drawImage(img, f.x + 5, f.y + 5, 2*f.D.radius, 2*f.D.radius);
+			v.drawImage(img, f.x+5, f.y+5, 20, 20);
 		}
 	}
 

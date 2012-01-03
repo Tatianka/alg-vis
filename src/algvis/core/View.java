@@ -305,6 +305,6 @@ public class View {
 	}
 	
 	public void drawImage(Image img, int x, int y, int w, int h) {
-		g.drawImage(img, x, y, w, h, null);
+		g.drawImage(img, v2rX(x), v2rY(y), w, h, null);
 	}
 }

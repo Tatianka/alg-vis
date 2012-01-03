@@ -99,17 +99,22 @@ public class FingerInsert extends Algorithm {
 			mysuspend();
 
 			// spliting node, if necessary
+			boolean moveFinger = true;
 			while (w.getNumKeys() >= 4) {
 				setText("bsplit");
 				int o = (w.parent != null) ? w.order() : -1;
 				w = w.split();
-				if (w.c[0].isIn(K)) {
-					T.finger = w.c[0];
-				} else {
-					if (w.c[1].isIn(K)) {
-						T.finger = w.c[1];
+				if (moveFinger) {
+					if (w.c[0].isIn(K)) {
+						T.finger = w.c[0];
+						moveFinger = false;
 					} else {
-						T.finger = w;
+						if (w.c[1].isIn(K)) {
+							T.finger = w.c[1];
+							moveFinger = false;
+						} else {
+							T.finger = w;
+						}
 					}
 				}
 				if (w.parent == null) {
