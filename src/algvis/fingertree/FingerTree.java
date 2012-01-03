@@ -45,28 +45,6 @@ public class FingerTree extends Dictionary {
 		}
 		//draw finger
 	}
-
-/////////////////////////copied from Finger/////////////
-	public void setFinger(FingerNode N) {
-		if (finger != null) {
-			finger.bgColor(Colors.FINGER);
-		}
-		finger = N;
-//		finger.bgColor(Colors.FINGER);
-	}
-	
-	public void fingerMoveTo (FingerNode N) {
-		finger = N;
-	}
-	
-	public void fingerMoveUp()	{
-		finger = finger.parent;		// if finger != root
-	}
-	
-	public void fingerMoveDown(int num) {
-		finger = finger.way(num); //prerobit na left, center, right ??
-	}
-///////////////////////// \copied from Finger/////////////
 	
 	public void reposition() {
 		if (root != null) {

@@ -78,7 +78,7 @@ public class FingerFind extends Algorithm {
 					setText("found");
 					v.goDown();
 					v.bgColor(Colors.FOUND);
-					T.fingerMoveTo(w);
+					T.finger = w;
 					break;
 				}
 				if (w.isLeaf()) {
