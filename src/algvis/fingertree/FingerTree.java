@@ -27,7 +27,7 @@ public class FingerTree extends Dictionary {
 	}
 
 	public void delete(int x) {
-	//	start(new FingerDelete(this, x));
+		start(new FingerDelete(this, x));
 	}
 	
 	public void draw(View V) {
