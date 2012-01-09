@@ -8,6 +8,7 @@ public class FingerFind extends Algorithm {
 
 	FingerTree T;
 	FingerNode v;
+	int K;
 	
 	// z BFind
 	public FingerFind(FingerTree T, int x) {
@@ -16,6 +17,7 @@ public class FingerFind extends Algorithm {
 		v = T.v = new FingerNode(T, x);
 		v.bgColor(Colors.FIND);
 		setHeader("search");
+		K = x;
 	}
 	
 	/* teoria:
@@ -31,67 +33,80 @@ public class FingerFind extends Algorithm {
 			mysuspend();
 			v.goDown();
 			v.bgColor(Colors.NOTFOUND);
-			setText("notfound");	
+			setText("notfound");
 		} else {
 			FingerNode w = T.finger;
-			v.goTo(w);
-			setText("fingerfindstart");
+			// idem pomocou prsta
+			v.goAbove(w);
+			setText("fstart");
 			mysuspend();
 			
-			if (w.isIn(v.key[0])) {
-				setText("found");
-				v.goDown();
-				v.bgColor(Colors.FOUND);
-				return;
-			}
-			
-			//zistujem podstrom
-		/*	if ( v.key[0] > w.key[w.numKeys-1]) {
-				while (w != T.root) {
-					if (w.rightNeighbour.belongsHere(v.key[0])) {
-						w = w.rightNeighbour;
-						break;
-					}
-					w = w.parent;
-					if (w.isIn((v.key[0]))) {break;}
-				}
-			} else {
-				while (w != T.root) {
-					if (w.leftNeigbour.belongsHere(v.key[0])) {
-						w = w.leftNeigbour;
-						break;
-					}
-					w = w.parent;
-					if (w.isIn(v.key[0])) {break;}
-				}
-			}*/
+			////////like in FingerFind///////////////
+			//T.finger
 			while (w != T.root) {
-				w = w.parent;
-				v.goTo(w);
-				if (w.belongsHere(v.key[0])) {break;}
-				mysuspend();
-			}
-			
-			//teraz musim zist dole
-			while (true) {
-				if (w.isIn(v.key[0])) {
+				if (w.isIn(K)) {
 					setText("found");
 					v.goDown();
 					v.bgColor(Colors.FOUND);
-					T.finger = w;
+					mysuspend();
+					return;				
+				}
+				if (w.belongsHere(K)) {
+					setText("fbelongs");
 					break;
 				}
+				if (w.leftNeigbour != null) {
+					if (w.leftNeigbour.belongsHere(K)) {
+						setText("flneighbour");
+						w = w.leftNeigbour;
+						T.finger = w;
+						v.goTo(w);
+						mysuspend();
+					//	f.goAbove(w);
+						break;
+					}
+				}
+				if (w.rightNeighbour != null) {
+					if (w.rightNeighbour.belongsHere(K)) {
+						setText("frneighbour");
+						w = w.rightNeighbour;
+						T.finger = w;
+						v.goTo(w);
+						mysuspend();
+					//	f.goAbove(w);
+						break;
+					}
+				}
+				setText("fup");
+				w = w.parent;
+				T.finger = T.finger.parent;
+				v.goTo(w);
+				mysuspend();
+				T.reposition();
+			}
+			//// now i have to go down /////////////
+			while (true) {
+				if (w.isIn(K)) {
+					setText("found");
+					v.goDown();
+					v.bgColor(Colors.FOUND);
+					mysuspend();
+					return;
+				}
+				
 				if (w.isLeaf()) {
 					setText("notfound");
-					v.bgColor(Colors.NOTFOUND);
 					v.goDown();
-					break;
+					return;
 				}
-				w = (FingerNode) w.way(v.key[0]);
+				
+				w = w.way(K);
+				T.finger = w;
 				v.goTo(w);
 				mysuspend();
 			}
-		}		
-	}	
+		}
+		v.goDown();
+	}
 
 }
