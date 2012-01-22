@@ -350,4 +350,8 @@ public class View implements MouseListener, MouseMotionListener,
 	public void setDS(ClickListener D) {
 		this.D = D;
 	}
+	
+	 public void drawImage(Image img, int x, int y, int w, int h) {
+		 g.drawImage(img, x, y, w, h, null);
+	 }
 }

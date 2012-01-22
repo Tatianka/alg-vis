@@ -10,7 +10,7 @@ public class FingerInsert extends Algorithm {
 	int K;
 
 	public FingerInsert(FingerTree T, int x) {
-		super(T.M);
+		super(T);
 		this.T = T;
 		v = T.v = new FingerNode(T, K = x); 
 		v.bgColor(Colors.INSERT);
@@ -23,7 +23,7 @@ public class FingerInsert extends Algorithm {
 		if (T.root == null) {   
 			T.root = v;
 			v.goAboveRoot();
-			setText("newroot");
+			addStep("newroot");
 			mysuspend();
 			v.bgColor(Colors.NORMAL);
 			T.v = null;
@@ -36,7 +36,7 @@ public class FingerInsert extends Algorithm {
 			FingerNode w = T.finger;
 			// idem pomocou prsta
 			v.goAbove(w);
-			setText("bstinsertstart");
+			addStep("bstinsertstart");
 			mysuspend();
 			
 			////////like in FingerFind///////////////
@@ -72,7 +72,7 @@ public class FingerInsert extends Algorithm {
 			//// now i have to go down /////////////
 			while (true) {
 				if (w.isIn(K)) {
-					setText("alreadythere");
+					addStep("alreadythere");
 					v.bgColor(Colors.DELETE);
 					v.goDown();
 					return;
@@ -89,10 +89,10 @@ public class FingerInsert extends Algorithm {
 			}
 			//// I have a leaf and I want to insert an element /////////////////
 			w.addLeaf(K); //just adds x into this leaf
-//			setText("fingertree");
+//			addStep("fingertree");
 			if (w.numKeys >= 4) {
 				w.bgColor(Colors.NOTFOUND); //if too much keys, that's not good
-				setText("fingertree");
+				addStep("fingertree");
 			}
 			T.v = null;
 			T.reposition();
@@ -101,7 +101,7 @@ public class FingerInsert extends Algorithm {
 			// spliting node, if necessary
 			boolean moveFinger = true;
 			while (w.getNumKeys() >= 4) {
-				setText("bsplit");
+				addStep("bsplit");
 				int o = (w.parent != null) ? w.order() : -1;
 				w = w.split();
 				if (moveFinger) {

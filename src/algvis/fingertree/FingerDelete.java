@@ -11,7 +11,7 @@ public class FingerDelete extends Algorithm {
 	int K;
 
 	public FingerDelete(FingerTree T, int x) {
-		super(T.M);
+		super(T);
 		this.T = T;
 		K = x;
 		v = T.v = new FingerNode(T, x);
@@ -22,16 +22,16 @@ public class FingerDelete extends Algorithm {
 	public void run() {
 		if (T.root == null) {
 			v.goToRoot();
-			setText("empty");
+			addStep("empty");
 			mysuspend();
 			v.goDown();
 			v.bgColor(Colors.NOTFOUND);
-			setText("notfound");
+			addStep("notfound");
 		} else {
 			FingerNode w = T.finger;
 			// idem pomocou prsta
 			v.goAbove(w);
-			setText("bstinsertstart");
+			addStep("bstinsertstart");
 			mysuspend();
 			
 			////////like in FingerFind///////////////
@@ -71,7 +71,7 @@ public class FingerDelete extends Algorithm {
 				}
 				
 				if (w.isLeaf()) {
-					setText("notfound");
+					addStep("notfound");
 					v.goDown();
 					return;
 				}
@@ -88,7 +88,7 @@ public class FingerDelete extends Algorithm {
 			mysuspend();
 			w.bgColor(Colors.NORMAL);
 			if (w.isLeaf()) {
-				setText("bdelete1");
+				addStep("bdelete1");
 				if (w.isRoot() && w.numKeys == 1) {
 					T.v = w;
 					T.root = null;
@@ -101,7 +101,7 @@ public class FingerDelete extends Algorithm {
 					mysuspend();
 				}
 			} else {
-				setText("bdelete2");
+				addStep("bdelete2");
 				FingerNode s = w.way(K + 1);
 				v = T.v = new FingerNode(T, -Node.INF, w.x, w.y);
 				v.goAbove(s);
@@ -147,9 +147,9 @@ public class FingerDelete extends Algorithm {
 					// a p.key[k] pridat do d
 					// tiez treba prehodit pointer z s ku d
 					if (lefts) {
-						setText("bleft");
+						addStep("bleft");
 					} else {
-						setText("bright");
+						addStep("bright");
 					}
 					T.v = lefts ? s.delMax() : s.delMin();
 					T.v.goTo(p);
@@ -178,7 +178,7 @@ public class FingerDelete extends Algorithm {
 				} else {
 					// treba spojit vrchol d + p.key[k] + s
 					// zmenit p.c[k] na novy vrchol a posunut to
-					setText("bmerge");
+					addStep("bmerge");
 					if (p.isRoot() && p.numKeys == 1) {
 						T.v = new FingerNode(T.root);
 						T.root.key[0] = Node.NOKEY;

@@ -12,7 +12,7 @@ public class FingerFind extends Algorithm {
 	
 	// z BFind
 	public FingerFind(FingerTree T, int x) {
-		super(T.M);
+		super(T);
 		this.T = T;
 		v = T.v = new FingerNode(T, x);
 		v.bgColor(Colors.FIND);
@@ -29,35 +29,35 @@ public class FingerFind extends Algorithm {
 	public void run() {
 		if (T.root == null) {
 			v.goToRoot();
-			setText("empty");
+			addStep("empty");
 			mysuspend();
 			v.goDown();
 			v.bgColor(Colors.NOTFOUND);
-			setText("notfound");
+			addStep("notfound");
 		} else {
 			FingerNode w = T.finger;
 			// idem pomocou prsta
 			v.goAbove(w);
-			setText("fstart");
+			addStep("fstart");
 			mysuspend();
 			
 			////////like in FingerFind///////////////
 			//T.finger
 			while (w != T.root) {
 				if (w.isIn(K)) {
-					setText("found");
+					addStep("found");
 					v.goDown();
 					v.bgColor(Colors.FOUND);
 					mysuspend();
 					return;				
 				}
 				if (w.belongsHere(K)) {
-					setText("fbelongs");
+					addStep("fbelongs");
 					break;
 				}
 				if (w.leftNeigbour != null) {
 					if (w.leftNeigbour.belongsHere(K)) {
-						setText("flneighbour");
+						addStep("flneighbour");
 						w = w.leftNeigbour;
 						T.finger = w;
 						v.goTo(w);
@@ -68,7 +68,7 @@ public class FingerFind extends Algorithm {
 				}
 				if (w.rightNeighbour != null) {
 					if (w.rightNeighbour.belongsHere(K)) {
-						setText("frneighbour");
+						addStep("frneighbour");
 						w = w.rightNeighbour;
 						T.finger = w;
 						v.goTo(w);
@@ -77,7 +77,7 @@ public class FingerFind extends Algorithm {
 						break;
 					}
 				}
-				setText("fup");
+				addStep("fup");
 				w = w.parent;
 				T.finger = T.finger.parent;
 				v.goTo(w);
@@ -87,7 +87,7 @@ public class FingerFind extends Algorithm {
 			//// now i have to go down /////////////
 			while (true) {
 				if (w.isIn(K)) {
-					setText("found");
+					addStep("found");
 					v.goDown();
 					v.bgColor(Colors.FOUND);
 					mysuspend();
@@ -95,7 +95,7 @@ public class FingerFind extends Algorithm {
 				}
 				
 				if (w.isLeaf()) {
-					setText("notfound");
+					addStep("notfound");
 					v.goDown();
 					return;
 				}

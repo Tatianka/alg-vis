@@ -1,6 +1,5 @@
 package algvis.fingertree;
 
-import algvis.core.Colors;
 import algvis.core.Dictionary;
 import algvis.core.View;
 import algvis.core.VisPanel;
@@ -13,11 +12,15 @@ public class FingerTree extends Dictionary {
 	int xspan = 5, yspan = 15;
 	Finger prst;
 	
-	public FingerTree(VisPanel M) {
-		super(M);
+	public FingerTree(VisPanel M, String dsName) {
+		super(M, dsName);
 		prst = new Finger();
 	}
-
+	
+	public FingerTree(VisPanel M) {
+		super(M, dsName);
+	}
+	
 	public void insert(int x) {
 		start(new FingerInsert(this, x));
 	}
@@ -37,11 +40,6 @@ public class FingerTree extends Dictionary {
 			// draw neighbours - change Draw from Node or add another function
 		}
 		if (v != null) {
-			if (v == finger) {
-				v.bgColor(Colors.FINGER);
-			} else {
-				v.bgColor(Colors.NORMAL);
-			}
 			v.move();
 			v.draw(V);
 		}
@@ -52,7 +50,7 @@ public class FingerTree extends Dictionary {
 	public void reposition() {
 		if (root != null) {
 			root._reposition();
-			M.S.V.setBounds(x1, y1, x2, y2);
+			M.screen.V.setBounds(x1, y1, x2, y2);
 		}
 	}
 	
@@ -65,18 +63,23 @@ public class FingerTree extends Dictionary {
 	@Override
 	public String stats() {
 		if (root == null) {
-			return "#" + M.L.getString("nodes") + ": 0;   #"
-					+ M.L.getString("keys") + ": 0 = 0% "
-					+ M.L.getString("full") + ";   " + M.L.getString("height")
+			return "#" + M.S.L.getString("nodes") + ": 0;   #"
+					+ M.S.L.getString("keys") + ": 0 = 0% "
+					+ M.S.L.getString("full") + ";   " + M.S.L.getString("height")
 					+ ": 0";
 		} else {
 			root.calcTree();
-			return "#" + M.L.getString("nodes") + ": " + root.nnodes + ";   "
-					+ "#" + M.L.getString("keys") + ": " + root.nkeys + " = "
+			return "#" + M.S.L.getString("nodes") + ": " + root.nnodes + ";   "
+					+ "#" + M.S.L.getString("keys") + ": " + root.nkeys + " = "
 					+ (100 * root.nkeys) / (root.nnodes * (order - 1)) + "% "
-					+ M.L.getString("full") + ";   " + M.L.getString("height")
+					+ M.S.L.getString("full") + ";   " + M.S.L.getString("height")
 					+ ": " + root.height;
 		}
+	}
+
+	@Override
+	public String getName() {
+		return "fingertree";
 	}
 
 }
