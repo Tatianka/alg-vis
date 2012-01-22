@@ -10,12 +10,7 @@ public class FingerTree extends Dictionary {
 	final int order = 4;
 	FingerNode root = null, v = null, finger = null;
 	int xspan = 5, yspan = 15;
-	Finger prst;
-	
-	public FingerTree(VisPanel M, String dsName) {
-		super(M, dsName);
-		prst = new Finger();
-	}
+	Finger prst = new Finger();
 	
 	public FingerTree(VisPanel M) {
 		super(M, dsName);
@@ -37,7 +32,6 @@ public class FingerTree extends Dictionary {
 		if (root != null) {
 			root.moveTree();
 			root.drawTree(V);
-			// draw neighbours - change Draw from Node or add another function
 		}
 		if (v != null) {
 			v.move();

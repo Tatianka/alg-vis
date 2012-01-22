@@ -15,7 +15,6 @@ public class FingerInsert extends Algorithm {
 		v = T.v = new FingerNode(T, K = x); 
 		v.bgColor(Colors.INSERT);
 		setHeader("insertion");
-		
 	}	
 	
 	@Override
@@ -26,13 +25,11 @@ public class FingerInsert extends Algorithm {
 			addStep("newroot");
 			mysuspend();
 			v.bgColor(Colors.NORMAL);
-			T.v = null;
+		//	T.v = null;
+		//	T.prst.moveTo(v);
 			T.finger = v;
-			T.reposition();
+		//	T.reposition();
 		} else {
-			//f = new FingerNode(T,0);
-			//f.goAbove(T.finger);
-
 			FingerNode w = T.finger;
 			// idem pomocou prsta
 			v.goAbove(w);
