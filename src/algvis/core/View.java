@@ -1,245 +1,292 @@
 package algvis.core;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.Stroke;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.NoninvertibleTransformException;
+import java.awt.geom.Point2D;
 import java.awt.geom.RoundRectangle2D;
 import java.awt.Image;
 
-public class View {
-	VisPanel P;
+import javax.swing.JPanel;
+
+public class View implements MouseListener, MouseMotionListener,
+		MouseWheelListener {
 	Graphics2D g;
-	final static double SCALE_FACTOR = 1.2, MIN_ZOOM = 0.16, MAX_ZOOM = 5.5;
-	int W, H; // display width&height
-	int minx, miny, maxx, maxy;
-	double viewX, viewY, viewW, viewH, f; // view coordinates; factor
+	final static double SCALE_FACTOR = 1.1, MIN_ZOOM = 0.16, MAX_ZOOM = 5.5;
+	public int W, H; // display width&height
+	public int minx, miny, maxx, maxy;
+	int mouseX, mouseY; // mouse position
+	public Alignment align = Alignment.CENTER;
 
-	public View(VisPanel P) {
-		this.P = P;
+	double x, y, f;
+	AffineTransform at, oldTransform;
+	ClickListener D;
+
+	public View(JPanel P) {
+		P.addMouseListener(this);
+		P.addMouseMotionListener(this);
+		P.addMouseWheelListener(this);
+		at = new AffineTransform();
+		setBounds(0, 0, 0, 0);
 	}
 
-	public void setGraphics(Graphics2D g) {
+	public void setGraphics(Graphics2D g, int W, int H) {
 		this.g = g;
+		this.W = W;
+		this.H = H;
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+				RenderingHints.VALUE_ANTIALIAS_ON);
+		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+				RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+		resetView();
 	}
 
-	public void setWH(int w, int h) {
-		W = w;
-		H = h;
-		viewW = w / 2.0;
-		viewH = h / 2.0;
-		viewX = 0;
-		viewY = viewH - 50;
-		P.hSlider.setValue((int) viewX);
-		P.vSlider.setMinimum((int) viewY);
-		P.vSlider.setMaximum((int) viewY);
-		P.vSlider.setValue((int) viewY);
-		f = 1;
-		// System.out.println(w+"  "+h);
-	}
-
-	public void setX(int x) {
-		viewX = x;
-	}
-
-	public void setY(int y) {
-		viewY = y;
+	public void resetView() {
+		at.setToIdentity();
+		double f = 1, f2 = 1;
+		if ((maxx - minx) > W || (maxy - miny) > H) {
+			f2 = Math.min(W / (double) (maxx - minx), H
+					/ (double) (maxy - miny));
+			f = Math.max(f2, MIN_ZOOM);
+		}
+		if (align == Alignment.CENTER) {
+			if (f2 < f) {
+				at.translate(W / 2, 0);
+				at.scale(f, f);
+				at.translate(-(maxx + minx) / 2, -miny);
+			} else if (-f * minx >= W / 1.99999) {
+				at.scale(f, f);
+				at.translate(-minx, -miny);
+			} else if (f * maxx >= W / 1.99999) {
+				at.translate(W, 0);
+				at.scale(f, f);
+				at.translate(-maxx, -miny);
+			} else {
+				at.translate(W / 2, 0);
+				at.scale(f, f);
+				at.translate(0, -miny);
+			}
+		} else if (align == Alignment.LEFT) {
+			at.scale(f, f);
+			at.translate(-minx, -miny);
+		}
 	}
 
 	public void setBounds(int minx, int miny, int maxx, int maxy) {
-		this.minx = minx;
-		this.miny = miny;
-		this.maxx = maxx;
-		this.maxy = maxy;
-		P.hSlider.setMinimum(minx);
-		P.hSlider.setMaximum(maxx);
-		P.vSlider.setMinimum(miny);
-		P.vSlider.setMaximum(maxy);
+		this.minx = minx - 50;
+		this.miny = miny - 50;
+		this.maxx = maxx + 50;
+		this.maxy = maxy + 50;
 	}
 
-	static int map(double x, double a, double b, double c, double d) {
-		if (Math.abs(a - b) < 1e-11) {
-			System.out.println("map dostal a==b !");
-			return 0;
-		} else {
-			return (int) Math.round(c + (x - a) / (b - a) * (d - c));
+	public void zoom(int x, int y, double f) {
+		if (at.getScaleX() * f <= MAX_ZOOM) {
+			AffineTransform t = new AffineTransform();
+			t.translate(x, y);
+			t.scale(f, f);
+			t.translate(-x, -y);
+			at.preConcatenate(t);
 		}
-	}
-
-	// zmeni "virtualne" suradnice na "realne" (pixel na obrazovke)
-	public int v2rX(double x) {
-		return map(x, viewX - viewW, viewX + viewW, 0, W);
-	}
-
-	public int v2rY(double y) {
-		return map(y, viewY - viewH, viewY + viewH, 0, H);
-	}
-
-	public int v2rF(int fs) {
-		fs = (int) Math.round(f * fs);
-		if (fs < Fonts.MIN) {
-			return 0;
-		}
-		if (fs > Fonts.MAX) {
-			fs = Fonts.MAX;
-		}
-		return fs;
-	}
-
-	// naopak
-	public int r2vX(double x) {
-		return map(x, 0, W, viewX - viewW, viewX + viewW);
-	}
-
-	public int r2vY(double y) {
-		return map(y, 0, H, viewY - viewH, viewY + viewH);
-	}
-
-	public void moveLeft() {
-		if (viewX - 1.1 * viewW >= minx) {
-			viewX -= 0.1 * viewW;
-		}
-	}
-
-	public void moveRight() {
-		if (viewX + 1.1 * viewW <= maxx) {
-			viewX += 0.1 * viewW;
-		}
-	}
-
-	public void moveUp() {
-		viewY -= 0.1 * viewH;
-	}
-
-	public void moveDown() {
-		viewY += 0.1 * viewH;
 	}
 
 	public void zoomIn() {
-		if (f * SCALE_FACTOR <= MAX_ZOOM) {
-			f = f * SCALE_FACTOR;
-			viewW = viewW / SCALE_FACTOR;
-			viewH = viewH / SCALE_FACTOR;
-			// System.out.println(f);
-		}
+		zoom(W / 2, H / 2, SCALE_FACTOR);
+	}
+
+	public void zoomIn(int x, int y) {
+		zoom(x, y, SCALE_FACTOR);
+	}
+
+	public void zoomOut(int x, int y) {
+		zoom(x, y, 1 / SCALE_FACTOR);
 	}
 
 	public void zoomOut() {
-		if (f / SCALE_FACTOR >= MIN_ZOOM) {
-			f = f / SCALE_FACTOR;
-			viewW = viewW * SCALE_FACTOR;
-			viewH = viewH * SCALE_FACTOR;
-			// System.out.println(f);
+		zoom(W / 2, H / 2, 1 / SCALE_FACTOR);
+	}
+
+	public Point2D v2r(double x, double y) {
+		Point2D p = new Point2D.Double(x, y);
+		at.transform(p, p);
+		return p;
+	}
+
+	public Point2D r2v(double x, double y) {
+		Point2D p = new Point2D.Double(x, y);
+		try {
+			at.inverseTransform(p, p);
+		} catch (NoninvertibleTransformException exc) {
+			exc.printStackTrace();
+		}
+		return p;
+	}
+
+	public void mousePressed(MouseEvent e) {
+		mouseX = e.getX();
+		mouseY = e.getY();
+	}
+
+	public void mouseDragged(MouseEvent e) {
+		int x = e.getX(), y = e.getY();
+		at.preConcatenate(AffineTransform.getTranslateInstance(x - mouseX, y
+				- mouseY));
+		mouseX = x;
+		mouseY = y;
+	}
+
+	public void mouseReleased(MouseEvent e) {
+	}
+
+	public void mouseMoved(MouseEvent e) {
+	}
+
+	public void mouseEntered(MouseEvent e) {
+	}
+
+	public void mouseExited(MouseEvent e) {
+	}
+
+	public void mouseClicked(MouseEvent e) {
+		Point2D p = r2v(e.getX(), e.getY());
+		if (D != null) {
+			D.mouseClicked((int) p.getX(), (int) p.getY());
+		}
+	}
+
+	public void mouseWheelMoved(MouseWheelEvent e) {
+		int notches = e.getWheelRotation();
+		if (notches > 0) {
+			zoomOut(e.getX(), e.getY());
+		} else {
+			zoomIn(e.getX(), e.getY());
 		}
 	}
 
 	public boolean inside(int x, int y) {
-		return (viewX - viewW <= x) && (x <= viewX + viewW)
-				&& (viewY - viewH <= y) && (y <= viewY + viewH);
+		Point2D p = v2r(x, y);
+		return (0 <= p.getX()) && (p.getX() <= W) && (0 <= p.getY())
+				&& (p.getY() <= H);
 	}
 
 	public void setColor(Color c) {
 		g.setColor(c);
 	}
 
+	public void startDrawing() {
+		oldTransform = g.getTransform();
+		g.transform(at);
+	}
+
+	public void endDrawing() {
+		g.setTransform(oldTransform);
+	}
+
 	public void fillSqr(int x, int y, int a) {
-		a = (int) Math.round(f * a);
-		g.fillRect(v2rX(x) - a, v2rY(y) - a, 2 * a, 2 * a);
+		g.fillRect(x - a, y - a, 2 * a, 2 * a);
 	}
 
 	public void drawSqr(int x, int y, int a) {
-		a = (int) Math.round(f * a);
-		g.drawRect(v2rX(x) - a, v2rY(y) - a, 2 * a, 2 * a);
+		g.drawRect(x - a, y - a, 2 * a, 2 * a);
 	}
 
 	public void fillOval(int x, int y, int a, int b) {
-		g.fillOval(v2rX(x), v2rY(y), (int) Math.round(f * a), (int) Math
-				.round(f * b));
+		g.fillOval(x, y, a, b);
 	}
 
 	public void drawOval(int x, int y, int a, int b) {
-		g.drawOval(v2rX(x), v2rY(y), (int) Math.round(f * a), (int) Math
-				.round(f * b));
+		g.drawOval(x, y, a, b);
 	}
 
 	public void fillCircle(int x, int y, int r) {
-		r = (int) Math.round(f * r);
-		g.fillOval(v2rX(x) - r, v2rY(y) - r, 2 * r, 2 * r);
+		g.fillOval(x - r, y - r, 2 * r, 2 * r);
 	}
 
 	public void drawCircle(int x, int y, int r) {
-		r = (int) Math.round(f * r);
-		g.drawOval(v2rX(x) - r, v2rY(y) - r, 2 * r, 2 * r);
+		g.drawOval(x - r, y - r, 2 * r, 2 * r);
 	}
 
 	public void drawLine(int x1, int y1, int x2, int y2) {
-		g.drawLine(v2rX(x1), v2rY(y1), v2rX(x2), v2rY(y2));
+		g.drawLine(x1, y1, x2, y2);
+	}
+	
+	public void drawWideLine(int x1, int y1, int x2, int y2) {
+		final Stroke old = g.getStroke(), wide = new BasicStroke(27.0f,
+				BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
+		final Color c = g.getColor();
+		g.setColor(new Color(230,230,230));
+		g.setStroke(wide);
+		g.drawLine(x1, y1, x2, y2);
+		g.setStroke(old);
+		g.setColor(c);
+	}
+
+	public void drawDashedLine(int x1, int y1, int x2, int y2) {
+		final float dash1[] = { 2.0f, 5.0f };
+		final Stroke old = g.getStroke(), dashed = new BasicStroke(1.0f,
+				BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, dash1,
+				0.0f);
+		g.setStroke(dashed);
+		g.drawLine(x1, y1, x2, y2);
+		g.setStroke(old);
 	}
 
 	// square; x, y is the center
 	public void drawSquare(int x, int y, int a) {
-		g.drawRect(v2rX(x - a), v2rY(y - a), (int) Math.round(f * 2 * a),
-				(int) Math.round(f * 2 * a));
+		g.drawRect(x - a, y - a, 2 * a, 2 * a);
 	}
 
 	public int stringWidth(String str, int fs) {
-		fs = v2rF(fs);
-		if (fs == 0) {
-			return 0;
-		}
 		return Fonts.fm[fs].stringWidth(str);
 	}
 
 	public void drawString(String str, int x, int y, int fs) {
-		fs = v2rF(fs);
-		if (fs == 0) {
-			return;
-		}
-		x = v2rX(x) - Fonts.fm[fs].stringWidth(str) / 2;
-		y = v2rY(y) - Fonts.fm[fs].getHeight() / 2 + Fonts.fm[fs].getAscent();
+		x -= Fonts.fm[fs].stringWidth(str) / 2;
+		y -= Fonts.fm[fs].getHeight() / 2 - Fonts.fm[fs].getAscent();
 		g.setFont(Fonts.f[fs]);
 		g.drawString(str, x, y);
 	}
 
 	public void drawStringLeft(String str, int x, int y, int fs) {
-		fs = v2rF(fs);
-		if (fs == 0) {
-			return;
-		}
-		x = v2rX(x) - Fonts.fm[fs].stringWidth(str);
-		y = v2rY(y) - Fonts.fm[fs].getHeight() / 2 + Fonts.fm[fs].getAscent();
+		x -= Fonts.fm[fs].stringWidth(str);
+		y -= Fonts.fm[fs].getHeight() / 2 - Fonts.fm[fs].getAscent();
 		g.setFont(Fonts.f[fs]);
 		g.drawString(str, x, y);
 	}
 
 	public void drawStringTop(String str, int x, int y, int fs) {
-		fs = v2rF(fs);
-		if (fs == 0) {
-			return;
-		}
-		x = v2rX(x) - Fonts.fm[fs].stringWidth(str) / 2;
-		y = v2rY(y) - Fonts.fm[fs].getHeight();
+		x -= Fonts.fm[fs].stringWidth(str) / 2;
+		y -= Fonts.fm[fs].getHeight();
 		g.setFont(Fonts.f[fs]);
 		g.drawString(str, x, y);
 	}
 
 	public void fillArc(int x, int y, int w, int h, int a1, int a2) {
-		g.fillArc(v2rX(x), v2rY(y), (int) Math.round(f * w), (int) Math.round(f
-				* h), a1, a2);
+		g.fillArc(x, y, w, h, a1, a2);
 	}
 
 	public void drawRoundRectangle(int x, int y, double w, double h,
 			double arcw, double arch) {
-		g.draw(new RoundRectangle2D.Double(v2rX(x) - f * w, v2rY(y) - f * h, 2
-				* f * w, 2 * f * h, f * arcw, f * arch));
+		g.draw(new RoundRectangle2D.Double(x - w, y - h, 2 * w, 2 * h, arcw,
+				arch));
 	}
 
 	public void fillRoundRectangle(int x, int y, double w, double h,
 			double arcw, double arch) {
-		g.fill(new RoundRectangle2D.Double(v2rX(x) - f * w,
-				v2rY(y) - f * h, 2 * f * w, 2 * f * h, f * arcw, f * arch));
+		g.fill(new RoundRectangle2D.Double(x - w, y - h, 2 * w, 2 * h, arcw,
+				arch));
 	}
 
 	private void arrowHead(int x, int y, int xx, int yy) {
-		double alpha = f * 6.0, beta = 0.93;
+		double alpha = 6.0, beta = 0.93;
 		int[] xPoints = new int[3], yPoints = new int[3];
 		double vecX, vecY, normX, normY, d, th, ta, baseX, baseY;
 
@@ -273,21 +320,18 @@ public class View {
 	}
 
 	public void drawArrow(int x1, int y1, int x2, int y2) {
-		x1 = v2rX(x1);
-		y1 = v2rY(y1);
-		x2 = v2rX(x2);
-		y2 = v2rY(y2);
 		g.drawLine(x1, y1, x2, y2);
 		arrowHead(x1, y1, x2, y2);
 	}
 
+	public void drawDoubleArrow(int x1, int y1, int x2, int y2) {
+		g.drawLine(x1, y1, x2, y2);
+		arrowHead(x1, y1, x2, y2);
+		arrowHead(x2, y2, x1, y1);
+	}
+
 	public void drawArcArrow(int x, int y, int w, int h, int a1, int a2) {
-		x = v2rX(x);
-		y = v2rY(y);
-		w = (int) Math.round(f * w);
-		h = (int) Math.round(f * h);
 		g.drawArc(x, y, w, h, a1, a2 - a1);
-		// g.drawRect(x, y, w, h);
 		double a = a2 * Math.PI / 180;
 		int x2 = x + (int) Math.round(w / 2.0 * (1 + Math.cos(a))), y2 = y
 				+ (int) Math.round(h / 2.0 * (1 - Math.sin(a)));
@@ -300,11 +344,10 @@ public class View {
 			x = x2 - dx;
 			y = y2 - dy;
 		}
-		// g.drawLine(x, y, x2, y2);
 		arrowHead(x, y, x2, y2);
 	}
-	
-	public void drawImage(Image img, int x, int y, int w, int h) {
-		g.drawImage(img, v2rX(x), v2rY(y), w, h, null);
+
+	public void setDS(ClickListener D) {
+		this.D = D;
 	}
 }

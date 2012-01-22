@@ -15,43 +15,43 @@ public class GBInsert extends GBAlg {
 		if (T.root == null) {
 			T.root = v;
 			v.goToRoot();
-			setText("newroot");
+			addStep("newroot");
 			mysuspend();
 			v.bgColor(Colors.NORMAL);
 		} else {
 			BSTNode w = T.root;
 			v.goAboveRoot();
-			setText("bstinsertstart");
+			addStep("bstinsertstart");
 			mysuspend();
 
 			while (true) {
 				if (w.key == K) {
 					if (((GBNode) w).deleted) {
-						setText("gbinsertunmark");
+						addStep("gbinsertunmark");
 						((GBNode) w).deleted = false;
 						w.bgColor(Colors.NORMAL);
 						--T.del;
 						T.v = null;
 					} else {
-						setText("alreadythere");
+						addStep("alreadythere");
 						v.goDown();
 						v.bgColor(Colors.NOTFOUND);
 					}
 					return;
 				} else if (w.key < K) {
-					setText("bstinsertright", K, w.key);
+					addStep("bstinsertright", K, w.key);
 					if (w.right != null) {
 						w = w.right;
 					} else {
-						w.linkright(v);
+						w.linkRight(v);
 						break;
 					}
 				} else {
-					setText("bstinsertleft", K, w.key);
+					addStep("bstinsertleft", K, w.key);
 					if (w.left != null) {
 						w = w.left;
 					} else {
-						w.linkleft(v);
+						w.linkLeft(v);
 						break;
 					}
 				}
@@ -75,11 +75,11 @@ public class GBInsert extends GBAlg {
 			if (b != null) {
 				BSTNode r = b;
 				int s = 0;
-				setText("gbtoohigh");
+				addStep("gbtoohigh");
 				r.mark();
 				mysuspend();
 				// to vine
-				setText("gbrebuild1");
+				addStep("gbrebuild1");
 				while (r != null) {
 					if (r.left == null) {
 						r.unmark();
@@ -95,7 +95,7 @@ public class GBInsert extends GBAlg {
 									r.parent = null;
 								}
 							} else {
-								r.parent.linkright(r = r.right);
+								r.parent.linkRight(r = r.right);
 							}
 							T.v.goDown();
 						} else {
@@ -119,7 +119,7 @@ public class GBInsert extends GBAlg {
 				}
 
 				// to tree
-				setText("gbrebuild2");
+				addStep("gbrebuild2");
 				int c = 1;
 				for (int i = 0, l = (int) Math.floor(T.lg(s + 1)); i < l; ++i) {
 					c *= 2;
@@ -134,7 +134,7 @@ public class GBInsert extends GBAlg {
 			}
 		}
 		T.reposition();
-		setText("done");
+		addStep("done");
 		T.v = null;
 	}
 }

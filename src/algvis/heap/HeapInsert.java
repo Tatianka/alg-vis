@@ -12,7 +12,7 @@ public class HeapInsert extends HeapAlg {
 	@Override
 	public void run() {
 		if (H.n == 1000) {
-			setText("heapfull");
+			addStep("heapfull");
 			H.v = null;
 			return;
 		}
@@ -36,19 +36,16 @@ public class HeapInsert extends HeapAlg {
 				k >>= 1;
 			}
 			if ((k & n) == 0) {
-				w.linkleft(v);
+				w.linkLeft(v);
 			} else {
-				w.linkright(v);
+				w.linkRight(v);
 			}
 			H.reposition();
 			mysuspend();
 		}
 		H.v = null;
 
-		setText("heapbubbleup");
 		// mysuspend();
 		bubbleup(v);
-
-		setText("done");
 	}
 }

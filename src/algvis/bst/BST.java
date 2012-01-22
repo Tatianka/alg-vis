@@ -1,16 +1,47 @@
 package algvis.bst;
 
+import algvis.core.Commentary.State;
 import algvis.core.Dictionary;
+import algvis.core.LayoutListener;
 import algvis.core.StringUtils;
 import algvis.core.View;
 import algvis.core.VisPanel;
+import algvis.scenario.commands.SetCommentaryStateCommand;
+import algvis.scenario.commands.bstnode.SetBSTNodeVCommand;
+import algvis.scenario.commands.bstnode.SetBSTRootCommand;
+import algvis.scenario.commands.node.Wait4NodeCommand;
 
-public class BST extends Dictionary {
+public class BST extends Dictionary implements LayoutListener {
 	public static String dsName = "bst";
 	public BSTNode root = null, v = null;
+	boolean order = false;
 
+	public String getName() {
+		return "bst";
+	}
+	
 	public BST(VisPanel M) {
-		super(M);
+		super(M, dsName);
+		scenario.enable(true);
+	}
+
+	public BSTNode setNodeV(BSTNode v) {
+		if (this.v != v) {
+			scenario.add(new SetBSTNodeVCommand(this, v, this.v));
+			this.v = v;
+		}
+		if (v != null) {
+			scenario.add(new Wait4NodeCommand(v));
+		}
+		return v;
+	}
+	
+	public BSTNode setRoot(BSTNode root) {
+		if (this.root != root) {
+			scenario.add(new SetBSTRootCommand(this, root, this.root));
+			this.root = root;
+		}
+		return root;
 	}
 
 	@Override
@@ -30,29 +61,36 @@ public class BST extends Dictionary {
 
 	@Override
 	public void clear() {
-		root = null;
-		setStats();
+		if (root != null || v != null) {
+			scenario.addingNextStep();
+			setRoot(null);
+			setNodeV(null);
+			State commState = M.C.getState();
+			M.C.clear();
+			scenario.add(new SetCommentaryStateCommand(M.C, commState));
+			setStats();
+		}
 	}
 
 	@Override
 	public String stats() {
 		if (root == null) {
-			return M.L.getString("size") + ": 0;   " + M.L.getString("height")
-					+ ": 0 =  1.00\u00b7" + M.L.getString("opt") + ";   "
-					+ M.L.getString("avedepth") + ": 0";
+			return M.S.L.getString("size") + ": 0;   " + M.S.L.getString("height")
+					+ ": 0 =  1.00\u00b7" + M.S.L.getString("opt") + ";   "
+					+ M.S.L.getString("avedepth") + ": 0";
 		} else {
 			root.calcTree();
-			return M.L.getString("size")
+			return M.S.L.getString("size")
 					+ ": "
 					+ root.size
 					+ ";   "
-					+ M.L.getString("height")
+					+ M.S.L.getString("height")
 					+ ": "
 					+ root.height
 					+ " = "
 					+ StringUtils.format(root.height / (Math.floor(lg(root.size)) + 1), 2,
-							5) + "\u00b7" + M.L.getString("opt") + ";   "
-					+ M.L.getString("avedepth") + ": "
+							5) + "\u00b7" + M.S.L.getString("opt") + ";   "
+					+ M.S.L.getString("avedepth") + ": "
 					+ StringUtils.format(root.sumh / (double) root.size, 2, -5);
 		}
 	}
@@ -63,6 +101,7 @@ public class BST extends Dictionary {
 	@Override
 	public void draw(View V) {
 		if (root != null) {
+			BSTNode.i = 0;
 			root.moveTree();
 			root.drawTree(V);
 		}
@@ -74,42 +113,40 @@ public class BST extends Dictionary {
 
 	protected void leftrot(BSTNode v) {
 		BSTNode u = v.parent;
+		if (v.left == null) {
+			u.unlinkRight();
+		} else {
+			u.linkRight(v.left);
+		}
 		if (u.isRoot()) {
-			root = v;
-			v.parent = null;
+			setRoot(v);
 		} else {
 			if (u.isLeft()) {
-				u.parent.linkleft(v);
+				u.parent.linkLeft(v);
 			} else {
-				u.parent.linkright(v);
+				u.parent.linkRight(v);
 			}
 		}
-		if (v.left == null) {
-			u.right = null;
-		} else {
-			u.linkright(v.left);
-		}
-		v.linkleft(u);
+		v.linkLeft(u);
 	}
 
 	protected void rightrot(BSTNode v) {
 		BSTNode u = v.parent;
+		if (v.right == null) {
+			u.unlinkLeft();
+		} else {
+			u.linkLeft(v.right);
+		}
 		if (u.isRoot()) {
-			root = v;
-			v.parent = null;
+			setRoot(v);
 		} else {
 			if (u.isLeft()) {
-				u.parent.linkleft(v);
+				u.parent.linkLeft(v);
 			} else {
-				u.parent.linkright(v);
+				u.parent.linkRight(v);
 			}
 		}
-		if (v.right == null) {
-			u.left = null;
-		} else {
-			u.linkleft(v.right);
-		}
-		v.linkright(u);
+		v.linkRight(u);
 	}
 
 	/**
@@ -140,8 +177,11 @@ public class BST extends Dictionary {
 		if (root != null) {
 			x1 = x2 = y1 = y2 = 0;
 			root.reposition();
-			M.S.V.setBounds(x1, y1, x2, y2);
-			//System.out.println(x1+" "+y1+" "+x2+" "+y2);
+			M.screen.V.setBounds(x1, y1, x2, y2);
 		}
+	}
+	
+	public void changeLayout() {
+		reposition();
 	}
 }

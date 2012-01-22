@@ -13,9 +13,10 @@ public class SplayInsert extends SplayAlg {
 	@Override
 	public void run() {
 		if (T.root == null) {
+			setHeader("insertion");
 			T.root = v;
 			v.goToRoot();
-			setText("newroot");
+			addStep("newroot");
 			mysuspend();
 		} else {
 			v.goAboveRoot();
@@ -25,28 +26,28 @@ public class SplayInsert extends SplayAlg {
 			setHeader("insertion");
 			w.bgColor(Colors.NORMAL);
 			if (w.key == K) {
-				setText("alreadythere");
+				addStep("alreadythere");
 				v.goDown();
 				v.bgColor(Colors.NOTFOUND);
 				return;
 			} else if (w.key < K) {
-				setText("splayinsertleft");
+				addStep("splayinsertleft");
 				mysuspend();
-				v.linkleft(w);
-				v.linkright(w.right);
+				v.linkLeft(w);
+				v.linkRight(w.right);
 				w.right = null;
 			} else {
-				setText("splayinsertright");
+				addStep("splayinsertright");
 				mysuspend();
-				v.linkright(w);
-				v.linkleft(w.left);
+				v.linkRight(w);
+				v.linkLeft(w.left);
 				w.left = null;
 			}
 			T.root = v;
 			T.reposition();
 			mysuspend();
 		}
-		setText("done");
+		addStep("done");
 		v.bgColor(Colors.NORMAL);
 		T.vv = null;
 	}

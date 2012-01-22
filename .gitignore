@@ -3,3 +3,9 @@
 .class
 *~
 bin/
+<<<<<<< HEAD
+=======
+*.pdf
+*.png
+*.pyc
+>>>>>>> refs/remotes/kuko/master

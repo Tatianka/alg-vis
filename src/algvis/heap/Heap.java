@@ -1,18 +1,24 @@
 package algvis.heap;
 
 import algvis.bst.BSTNode;
+import algvis.core.ClickListener;
 import algvis.core.Node;
 import algvis.core.PriorityQueue;
 import algvis.core.View;
 import algvis.core.VisPanel;
 
-public class Heap extends PriorityQueue {
+public class Heap extends PriorityQueue implements ClickListener {
 	public static String dsName = "heap";
 	int n = 0;
 	BSTNode root = null, v = null, v2 = null;
 
+	public String getName() {
+		return "heap";
+	}
+	
 	public Heap(VisPanel M) {
-		super(M);
+		super(M, dsName);
+		M.screen.V.setDS(this);
 	}
 
 	@Override
@@ -34,7 +40,7 @@ public class Heap extends PriorityQueue {
 	
 	@Override
 	public void clear() {
-		root = null;
+		root = v = v2 = null;
 		n = 0;
 		setStats();
 	}
@@ -42,13 +48,13 @@ public class Heap extends PriorityQueue {
 	@Override
 	public String stats() {
 		if (n == 0) {
-			return M.L.getString("size") + ": 0 (" + M.L.getString("emptyheap")
+			return M.S.L.getString("size") + ": 0 (" + M.S.L.getString("emptyheap")
 					+ ")";
 		} else if (n == 1000) {
-			return M.L.getString("size") + ": 1000 ("
-					+ M.L.getString("fullheap") + ")";
+			return M.S.L.getString("size") + ": 1000 ("
+					+ M.S.L.getString("fullheap") + ")";
 		} else {
-			return M.L.getString("size") + ": " + n;
+			return M.S.L.getString("size") + ": " + n;
 		}
 	}
 
@@ -71,7 +77,7 @@ public class Heap extends PriorityQueue {
 	public void reposition() {
 		if (root != null) {
 			root.reposition();
-			M.S.V.setBounds(x1, y1, x2, y2);
+			M.screen.V.setBounds(x1, y1, x2, y2);
 		}
 	}
 	

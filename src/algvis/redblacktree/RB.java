@@ -10,13 +10,19 @@ import algvis.core.VisPanel;
 public class RB extends BST {
 	public static String dsName = "redblack";
 	RBNode NULL = new RBNode(this, Node.NULL);
-	boolean mode24 = false;
+	public boolean mode24 = false;
 
+	public String getName() {
+		return "redblack";
+	}
+	
 	public RB(VisPanel M) {
 		super(M);
+		scenario.enable(false);
 		root = NULL.parent = NULL;
 		NULL.red = false;
 		NULL.size = NULL.height = NULL.sumh = 0;
+		NULL.state = Node.INVISIBLE;
 	}
 
 	@Override
@@ -43,22 +49,22 @@ public class RB extends BST {
 	@Override
 	public String stats() {
 		if (root == NULL) {
-			return M.L.getString("size") + ": 0;   " + M.L.getString("height")
-					+ ": 0 =  1.00\u00b7" + M.L.getString("opt") + ";   "
-					+ M.L.getString("avedepth") + ": 0";
+			return M.S.L.getString("size") + ": 0;   " + M.S.L.getString("height")
+					+ ": 0 =  1.00\u00b7" + M.S.L.getString("opt") + ";   "
+					+ M.S.L.getString("avedepth") + ": 0";
 		} else {
 			root.calcTree();
-			return M.L.getString("size")
+			return M.S.L.getString("size")
 					+ ": "
 					+ root.size
 					+ ";   "
-					+ M.L.getString("height")
+					+ M.S.L.getString("height")
 					+ ": "
 					+ root.height
 					+ " = "
 					+ StringUtils.format(root.height / (Math.floor(lg(root.size)) + 1), 2,
-							5) + "\u00b7" + M.L.getString("opt") + ";   "
-					+ M.L.getString("avedepth") + ": "
+							5) + "\u00b7" + M.S.L.getString("opt") + ";   "
+					+ M.S.L.getString("avedepth") + ": "
 					+ StringUtils.format(root.sumh / (double) root.size, 2, -5);
 		}
 	}
@@ -67,7 +73,7 @@ public class RB extends BST {
 	public void draw(View V) {
 		if (root != NULL) {
 			root.moveTree();
-			root.drawTree(V);
+			((RBNode)root).drawTree2(V);
 		}
 		if (v != null) {
 			v.move();
@@ -83,13 +89,13 @@ public class RB extends BST {
 			v.parent = NULL;
 		} else {
 			if (u.isLeft()) {
-				u.parent.linkleft(v);
+				u.parent.linkLeft(v);
 			} else {
-				u.parent.linkright(v);
+				u.parent.linkRight(v);
 			}
 		}
-		u.linkright(v.left);
-		v.linkleft(u);
+		u.linkRight(v.left);
+		v.linkLeft(u);
 	}
 
 	@Override
@@ -100,13 +106,13 @@ public class RB extends BST {
 			v.parent = NULL;
 		} else {
 			if (u.isLeft()) {
-				u.parent.linkleft(v);
+				u.parent.linkLeft(v);
 			} else {
-				u.parent.linkright(v);
+				u.parent.linkRight(v);
 			}
 		}
-		u.linkleft(v.right);
-		v.linkright(u);
+		u.linkLeft(v.right);
+		v.linkRight(u);
 	}
 
 	@Override
