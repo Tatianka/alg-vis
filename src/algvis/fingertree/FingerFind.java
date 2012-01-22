@@ -35,58 +35,32 @@ public class FingerFind extends Algorithm {
 			v.bgColor(Colors.NOTFOUND);
 			addStep("notfound");
 		} else {
-			FingerNode w = T.finger;
 			// idem pomocou prsta
-			v.goAbove(w);
+			v.goAboveRoot();
 			addStep("fstart");
 			mysuspend();
 			
 			////////like in FingerFind///////////////
-			//T.finger
-			while (w != T.root) {
-				if (w.isIn(K)) {
+			while (T.prst.getNode() != T.root) {
+				if (T.prst.getNode().isIn(K)) {
 					addStep("found");
 					v.goDown();
 					v.bgColor(Colors.FOUND);
 					mysuspend();
 					return;				
 				}
-				if (w.belongsHere(K)) {
+				if (T.prst.getNode().belongsHere(K)) {
 					addStep("fbelongs");
 					break;
 				}
-				if (w.leftNeigbour != null) {
-					if (w.leftNeigbour.belongsHere(K)) {
-						addStep("flneighbour");
-						w = w.leftNeigbour;
-						T.finger = w;
-						v.goTo(w);
-						mysuspend();
-					//	f.goAbove(w);
-						break;
-					}
-				}
-				if (w.rightNeighbour != null) {
-					if (w.rightNeighbour.belongsHere(K)) {
-						addStep("frneighbour");
-						w = w.rightNeighbour;
-						T.finger = w;
-						v.goTo(w);
-						mysuspend();
-					//	f.goAbove(w);
-						break;
-					}
-				}
+				if (T.prst.moveToNeighbour(K)) {mysuspend(); break;}
 				addStep("fup");
-				w = w.parent;
-				T.finger = T.finger.parent;
-				v.goTo(w);
+				T.prst.moveUp();
 				mysuspend();
-				T.reposition();
 			}
 			//// now i have to go down /////////////
 			while (true) {
-				if (w.isIn(K)) {
+				if (T.prst.getNode().isIn(K)) {
 					addStep("found");
 					v.goDown();
 					v.bgColor(Colors.FOUND);
@@ -94,15 +68,13 @@ public class FingerFind extends Algorithm {
 					return;
 				}
 				
-				if (w.isLeaf()) {
+				if (T.prst.getNode().isLeaf()) {
 					addStep("notfound");
 					v.goDown();
 					return;
 				}
 				
-				w = w.way(K);
-				T.finger = w;
-				v.goTo(w);
+				T.prst.moveDown(K);
 				mysuspend();
 			}
 		}

@@ -8,7 +8,7 @@ public class FingerTree extends Dictionary {
 	
 	public static String dsName = "fingertree";
 	final int order = 4;
-	FingerNode root = null, v = null, finger = null;
+	FingerNode root = null, v = null;
 	int xspan = 5, yspan = 15;
 	Finger prst = new Finger(this);
 	
@@ -37,7 +37,7 @@ public class FingerTree extends Dictionary {
 			v.move();
 			v.draw(V);
 		}
-	//	prst.setFinger(finger);
+		prst.move();
 		prst.draw(V);
 	}
 	

@@ -28,62 +28,39 @@ public class FingerDelete extends Algorithm {
 			v.bgColor(Colors.NOTFOUND);
 			addStep("notfound");
 		} else {
-			FingerNode w = T.finger;
+//			FingerNode w = T.finger;
 			// idem pomocou prsta
-			v.goAbove(w);
+			v.goAboveRoot();
 			addStep("bstinsertstart");
 			mysuspend();
 			
 			////////like in FingerFind///////////////
 			//T.finger
-			while (w != T.root) {
-				if (w.belongsHere(K)) {break;}
-				if (w.leftNeigbour != null) {
-					if (w.leftNeigbour.belongsHere(K)) {
-						w = w.leftNeigbour;
-						T.finger = w;
-						v.goTo(w);
-						mysuspend();
-					//	f.goAbove(w);
-						break;
-					}
-				}
-				if (w.rightNeighbour != null) {
-					if (w.rightNeighbour.belongsHere(K)) {
-						w = w.rightNeighbour;
-						T.finger = w;
-						v.goTo(w);
-						mysuspend();
-					//	f.goAbove(w);
-						break;
-					}
-				}
-				w = w.parent;
-				T.finger = T.finger.parent;
-				v.goTo(w);
+			while (T.prst.getNode() != T.root) {
+				if (T.prst.getNode().belongsHere(K)) {break;}
+				if (T.prst.moveToNeighbour(K)) {mysuspend(); break;}
+				T.prst.moveUp();
 				mysuspend();
-				T.reposition();
 			}
 			//// now i have to go down /////////////
 			while (true) {
-				if (w.isIn(K)) {
+				if (T.prst.getNode().isIn(K)) {
 					break;
 				}
 				
-				if (w.isLeaf()) {
+				if (T.prst.getNode().isLeaf()) {
 					addStep("notfound");
 					v.goDown();
 					return;
 				}
 				
-				w = w.way(K);
-				T.finger = w;
-				v.goTo(w);
+				T.prst.moveDown(K);
 				mysuspend();
 			}
 			
 			// now I have an element and I want to delete it
 			// deleting:
+			FingerNode w = T.prst.getNode();
 			w.bgColor(Colors.FOUND);
 			mysuspend();
 			w.bgColor(Colors.NORMAL);
@@ -92,7 +69,7 @@ public class FingerDelete extends Algorithm {
 				if (w.isRoot() && w.numKeys == 1) {
 					T.v = w;
 					T.root = null;
-					T.finger = T.v;
+					T.prst.moveTo(T.v);
 					T.v.goDown();
 				} else {
 					T.v = w.del(K);
@@ -189,7 +166,7 @@ public class FingerDelete extends Algorithm {
 						} else {
 							T.root = new FingerNode(w, T.v, s);
 						}
-						T.finger = T.root; // ??????????????????????
+						T.prst.moveTo(T.root);
 						break;
 					} else {
 						T.v = p.del(p.key[k]);
@@ -212,7 +189,7 @@ public class FingerDelete extends Algorithm {
 							p.c[k].rightNeighbour.leftNeigbour = p.c[k];
 						}
 						w = p;
-						T.finger = w;
+						T.prst.moveTo(w);
 					}
 				}
 			}

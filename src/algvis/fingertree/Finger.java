@@ -10,13 +10,13 @@ public class Finger extends FingerNode {
 	
 	public FingerNode f, tmp, kresli;
 	public static BufferedImage img;
-	FingerTree T;
+//	FingerTree T;
 	
 	public Finger(FingerTree T) {
-		super(T,0,50,50);
+		super(T,47,50,50);
 		img = load("../images/pfleft.png");
 		f = null;
-		this.T = T;
+	//	this.T = T;
 		tmp = new FingerNode(T,0);
 	}
 	
@@ -58,7 +58,7 @@ public class Finger extends FingerNode {
 	}
 	
 	public void moveUp()	{
-	//	goTo(f.parent);
+		goTo(f.parent);
 		f = f.parent;		// if finger != root
 	}
 	

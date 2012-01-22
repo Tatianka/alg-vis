@@ -25,14 +25,9 @@ public class FingerInsert extends Algorithm {
 			addStep("newroot");
 			mysuspend();
 			v.bgColor(Colors.NORMAL);
-		//	T.v = null;
 			T.prst.setFinger(T.root);
-		//	T.finger = v;
-		//	T.reposition();
 		} else {
-		//	FingerNode w = T.finger;
 			// idem pomocou prsta
-		//	v.goAbove(w);
 			v.goAbove(T.root);
 			addStep("bstinsertstart");
 			mysuspend();
@@ -41,34 +36,9 @@ public class FingerInsert extends Algorithm {
 			//T.finger
 			while (T.prst.getNode() != T.root) {
 				if (T.prst.getNode().belongsHere(K)) {break;}
-			/*	if (T.prst.getNode().leftNeigbour != null) {
-					if (T.prst.getNode().leftNeigbour.belongsHere(K)) {
-						//w = w.leftNeigbour;
-						T.prst.moveUp();
-					//	T.finger = w;
-					//	v.goTo(w);
-						mysuspend();
-					//	f.goAbove(w);
-						break;
-					}
-				}
-				if (T.prst.getNode().rightNeighbour != null) {
-					if (T.prst.getNode().rightNeighbour.belongsHere(K)) {
-						w = w.rightNeighbour;
-						T.finger = w;
-						v.goTo(w);
-						mysuspend();
-					//	f.goAbove(w);
-						break;
-					}
-				}*/
-				if (T.prst.moveToNeighbour(K)) {break;}
-			//	w = w.parent;
+				if (T.prst.moveToNeighbour(K)) {mysuspend(); break;}
 				T.prst.moveUp();
-			//	T.finger = T.finger.parent;
-			//	v.goTo(w);
 				mysuspend();
-			//	T.reposition();
 			}
 			//// now i have to go down /////////////
 			while (true) {
@@ -83,16 +53,12 @@ public class FingerInsert extends Algorithm {
 					break;
 				}
 				
-				//w = w.way(K);
 				T.prst.move(K);
-				//T.finger = w;
-			//	v.goTo(w);
 				mysuspend();
 			}
 			//// I have a leaf and I want to insert an element /////////////////
 			FingerNode w = T.prst.getNode();
 			w.addLeaf(K); //just adds x into this leaf
-//			addStep("fingertree");
 			if (w.numKeys >= 4) {
 				w.bgColor(Colors.NOTFOUND); //if too much keys, that's not good
 				addStep("fingertree");
@@ -113,11 +79,9 @@ public class FingerInsert extends Algorithm {
 						moveFinger = false;
 					} else {
 						if (w.c[1].isIn(K)) {
-							//T.finger = w.c[1];
 							T.prst.moveTo(w.c[1]);
 							moveFinger = false;
 						} else {
-							//T.finger = w;
 							T.prst.moveTo(w);
 						}
 					}
@@ -131,7 +95,6 @@ public class FingerInsert extends Algorithm {
 				mysuspend();
 				w.parent.add(o, w);
 				if (T.prst.getNode() == w) {
-					//T.finger = w.parent;
 					T.prst.moveUp();
 				}
 				w = w.parent;

@@ -236,11 +236,11 @@ public class FingerNode extends Node {
 		}
 		
 		if (leftNeigbour != null) {
-			v.drawLine(x, y-2, leftNeigbour.x + leftNeigbour.width/2, leftNeigbour.y-2);
+			v.drawDashedLine(x, y, leftNeigbour.x + leftNeigbour.width/2, leftNeigbour.y);
 		}
-		if (rightNeighbour != null) {
+/*		if (rightNeighbour != null) {
 			v.drawLine(x, y+2, rightNeighbour.x - rightNeighbour.width/2, rightNeighbour.y+2);
-		}
+		}*/
 		
 		draw(v);
 	}
