@@ -194,9 +194,9 @@ public class FingerDelete extends Algorithm {
 				}
 			}
 			T.v = null;
-			T.reposition();
 ////////////////////////////////////////////////
 		}
+		T.reposition();
 	}
 	
 }

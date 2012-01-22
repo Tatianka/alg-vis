@@ -107,8 +107,8 @@ public class FingerInsert extends Algorithm {
 			if (w.isRoot()) {
 				T.root = w;
 			}
-			T.reposition();
 		}
+		T.reposition();
 	}
 
 
