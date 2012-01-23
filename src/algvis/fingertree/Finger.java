@@ -41,7 +41,7 @@ public class Finger extends FingerNode {
 	
 	@Override
 	public void goTo(FingerNode N) {
-		goTo(N.tox, N.toy);
+		goTo(N.x, N.y);
 	}
 	
 	public void moveTo(FingerNode N) {
