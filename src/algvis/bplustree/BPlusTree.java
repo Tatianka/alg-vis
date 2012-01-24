@@ -30,7 +30,7 @@ public class BPlusTree extends BTree {
 
 	@Override
 	public void delete(int x) {
-		start(new BDelete(this, x));
+		start(new BPlusDelete(this, x));
 	}
 	
 /*	@Override
