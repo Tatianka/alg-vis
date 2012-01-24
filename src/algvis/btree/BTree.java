@@ -6,9 +6,9 @@ import algvis.core.VisPanel;
 
 public class BTree extends Dictionary {
 	public static String dsName = "btree";
-	int order = 5;
-	BNode root = null, v = null;
-	int xspan = 5, yspan = 15;
+	public int order = 5;
+	public BNode root = null, v = null;
+	public int xspan = 5, yspan = 15;
 
 	public String getName() {
 		return "btree";

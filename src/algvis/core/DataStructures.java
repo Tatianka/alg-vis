@@ -6,6 +6,7 @@ import java.lang.reflect.Constructor;
 import algvis.aatree.AAPanel;
 import algvis.avltree.AVLPanel;
 import algvis.binomialheap.BinHeapPanel;
+import algvis.bplustree.BPlusPanel;
 import algvis.bst.BSTPanel;
 import algvis.btree.BPanel;
 import algvis.btree.a234Panel;
@@ -36,7 +37,7 @@ public class DataStructures {
 			RBPanel.class, AAPanel.class, TreapPanel.class,
 			SkipListPanel.class, GBPanel.class, SplayPanel.class,
 			HeapPanel.class, BinHeapPanel.class, LazyBinHeapPanel.class,
-			FibHeapPanel.class, UnionFindPanel.class };
+			FibHeapPanel.class, UnionFindPanel.class, BPlusPanel.class };
 	static final int N = PANEL.length;
 
 	private static boolean check_range(int i) {
