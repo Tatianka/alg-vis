@@ -25,7 +25,7 @@ public class BPlusTree extends BTree {
 
 	@Override
 	public void find(int x) {
-		start(new BFind(this, x));
+		start(new BPlusFind(this, x));
 	}
 
 	@Override
