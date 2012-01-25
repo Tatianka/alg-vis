@@ -157,26 +157,45 @@ public class BPlusDelete extends Algorithm {
 					T.v = lefts ? s.delMax() : s.delMin();
 					T.v.goTo(p);
 					mysuspend();
-					int pkey = p.key[k];
-					p.key[k] = T.v.key[0];
-					T.v = new BNode(T, pkey, p.x, p.y);
-					T.v.goTo(d);
-					mysuspend();
-					if (lefts) {
-						d.insMin(pkey);
-						if (!d.isLeaf()) {
-							d.insMinCh(s.delMaxCh());
-							d.c[0].parent = d;
+					if (d.isLeaf()) {
+						int pkey;
+						if (lefts) {
+							pkey = T.v.key[0];
+						} else {
+							pkey = s.key[0];
 						}
-						/////////// odtialto chcem zobrat minimum a prepisat hodnotu vo vrchole
+						p.key[k] = pkey;
+						T.v = new BPlusNode(T, T.v.key[0], p.x, p.y);
+						T.v.goTo(d);
+						mysuspend();
+						
+						if (lefts) {
+							d.insMin(T.v.key[0]);
+						} else {
+							d.insMax(T.v.key[0]);
+						}
+						d.bgColor(Colors.NORMAL);
 					} else {
-						d.insMax(pkey);
-						if (!d.isLeaf()) {
-							d.insMaxCh(s.delMinCh());
-							d.c[d.numChildren - 1].parent = d;
+						int pkey = p.key[k];
+						p.key[k] = T.v.key[0];
+						T.v = new BPlusNode(T, pkey, p.x, p.y);
+						T.v.goTo(d);
+						mysuspend();
+						if (lefts) {
+							d.insMin(pkey);
+//							if (!d.isLeaf()) {
+								d.insMinCh(s.delMaxCh());
+								d.c[0].parent = d;
+	//						}
+						} else {
+							d.insMax(pkey);
+		//					if (!d.isLeaf()) {
+								d.insMaxCh(s.delMinCh());
+								d.c[d.numChildren - 1].parent = d;
+			//				}
 						}
+						d.bgColor(Colors.NORMAL);
 					}
-					d.bgColor(Colors.NORMAL);
 					T.v = null;
 					break;
 				} else {
@@ -195,20 +214,37 @@ public class BPlusDelete extends Algorithm {
 						}
 						break;
 					} else {
-						T.v = p.del(p.key[k]);
-						T.v.goTo((d.tox + s.tox) / 2, d.y);
-						mysuspend();
-						if (lefts) {
-							p.c[k] = new BNode(s, T.v, d);
+						if (d.isLeaf()) {
+							T.v = p.del(p.key[k]);
+							T.v.goTo((d.tox + s.tox) / 2, d.y);
+							mysuspend();
+							if (lefts) {
+								p.c[k] = new BNode(s, d);
+							} else {
+								p.c[k] = new BNode(d, s);
+							}
+							p.c[k].parent = p;
+							--p.numChildren;
+							for (int i = k + 1; i < p.numChildren; ++i) {
+								p.c[i] = p.c[i + 1];
+							}
+							d = p;							
 						} else {
-							p.c[k] = new BNode(d, T.v, s);
+							T.v = p.del(p.key[k]);
+							T.v.goTo((d.tox + s.tox) / 2, d.y);
+							mysuspend();
+							if (lefts) {
+								p.c[k] = new BNode(s, T.v, d);
+							} else {
+								p.c[k] = new BNode(d, T.v, s);
+							}
+							p.c[k].parent = p;
+							--p.numChildren;
+							for (int i = k + 1; i < p.numChildren; ++i) {
+								p.c[i] = p.c[i + 1];
+							}
+							d = p;
 						}
-						p.c[k].parent = p;
-						--p.numChildren;
-						for (int i = k + 1; i < p.numChildren; ++i) {
-							p.c[i] = p.c[i + 1];
-						}
-						d = p;
 					}
 				}
 			}
@@ -217,6 +253,10 @@ public class BPlusDelete extends Algorithm {
 			/// now I will fix the case when the key is also in the index node
 			// b je moj vrchol
 			d = b;
+			if (! d.isIn(K)) {
+				isInLeaf = true; //tzn, ze uz je to cislo prepisane
+				d.bgColor(Colors.NORMAL);
+			}
 			if (! isInLeaf) {
 				/*if (d.isLeaf()) {
 					addStep("bdelete1");

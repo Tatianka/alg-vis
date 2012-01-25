@@ -23,11 +23,13 @@ public class BPlusInsert extends Algorithm {
 	@Override
 	public void run() {
 		if (T.root == null) {
-			T.root = new BPlusNode(v);
+			T.root = new BPlusNode(v.D, K, v.x, v.y);
 			v.goAboveRoot();
 			addStep("newroot");
 			mysuspend();
 			v.bgColor(Colors.NORMAL);
+			T.reposition();
+			T.v = null;
 		} else {
 			BPlusNode w = (BPlusNode) T.root;
 			v.goAbove(w);

@@ -67,6 +67,31 @@ public class BNode extends Node {
 		}
 		width = _width();
 	}
+	
+	public BNode(BNode u, BNode v) { //needed in B+tree
+		this(u.D, Node.NOKEY, u.x, u.y);
+		int n1 = u.numKeys, n2 = v.numKeys;
+		numKeys = n1 + n2;
+		for (int i = 0; i < n1; ++i) {
+			key[i] = u.key[i];
+		}
+		for (int i = 0; i < n2; ++i) {
+			key[n1 + i] = v.key[i];
+		}
+		n1 = u.numChildren;
+		n2 = v.numChildren;
+		numChildren = n1 + n2;
+		for (int i = 0; i < n1; ++i) {
+			c[i] = u.c[i];
+		}
+		for (int i = 0; i < n2; ++i) {
+			c[n1 + i] = v.c[i];
+		}
+		for (int i = 0; i < numChildren; ++i) {
+			c[i].parent = this;
+		}
+		width = _width();		
+	}
 
 	public boolean isRoot() {
 		return parent == null;
