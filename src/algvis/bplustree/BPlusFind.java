@@ -1,7 +1,6 @@
 package algvis.bplustree;
 
 import algvis.btree.BNode;
-import algvis.btree.BTree;
 import algvis.core.Algorithm;
 import algvis.core.NodeColor;
 

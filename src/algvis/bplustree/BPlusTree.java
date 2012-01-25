@@ -1,7 +1,5 @@
 package algvis.bplustree;
 
-import algvis.btree.BDelete;
-import algvis.btree.BFind;
 import algvis.btree.BTree;
 import algvis.core.VisPanel;
 

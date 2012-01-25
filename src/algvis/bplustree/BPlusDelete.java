@@ -2,8 +2,8 @@ package algvis.bplustree;
 
 import algvis.btree.BNode;
 import algvis.core.Algorithm;
-import algvis.core.Colors;
 import algvis.core.Node;
+import algvis.core.NodeColor;
 
 public class BPlusDelete extends Algorithm {
 	BPlusTree T;
@@ -15,7 +15,7 @@ public class BPlusDelete extends Algorithm {
 		this.T = T;
 		K = x;
 		v = T.v = new BNode(T, x);
-		v.bgColor(Colors.DELETE);
+		v.setColor(NodeColor.DELETE);
 		setHeader("deletion");
 	}
 
@@ -26,7 +26,7 @@ public class BPlusDelete extends Algorithm {
 			addStep("empty");
 			mysuspend();
 			v.goDown();
-			v.bgColor(Colors.NOTFOUND);
+			v.setColor(NodeColor.NOTFOUND);
 			addStep("notfound");
 		} else {
 			BPlusNode d = (BPlusNode) T.root;
@@ -61,8 +61,8 @@ public class BPlusDelete extends Algorithm {
 			}
 			
 	//now the key is found in some node..if it's index node, i have to find the key in a leaf
-			d.bgColor(Colors.FOUND);
-			boolean isParent = false, isInLeaf;
+			d.setColor(NodeColor.FOUND);
+			boolean isInLeaf;
 			BPlusNode b = d;
 			if (d.isLeaf()) {
 				isInLeaf = true;
@@ -82,16 +82,11 @@ public class BPlusDelete extends Algorithm {
 					v.goAbove(d);
 					mysuspend();
 				}
-				if (o == 1) {
-					isParent = true;
-				} else {
-					isParent = false;
-				}
 			}
 
-			d.bgColor(Colors.FOUND);
+			d.setColor(NodeColor.FOUND);
 			mysuspend();
-			d.bgColor(Colors.NORMAL);
+			d.setColor(NodeColor.NORMAL);
 	//		if (d.isLeaf()) {
 				addStep("bdelete1");
 				if (d.isRoot() && d.numKeys == 1) {
@@ -121,11 +116,11 @@ public class BPlusDelete extends Algorithm {
 				d.replace(K, v.key[0]);
 				T.v = null;
 				mysuspend();
-				d.bgColor(Colors.NORMAL);
+				d.setColor(NodeColor.NORMAL);
 				d = s;
 			}*/
 			while (!d.isRoot() && d.numKeys < (T.order - 1) / 2) {
-				d.bgColor(Colors.NOTFOUND);
+				d.setColor(NodeColor.NOTFOUND);
 				BPlusNode s, s1 = null, s2 = null, p = (BPlusNode) d.parent;
 				boolean lefts = true;
 				int k = d.order(), n1 = 0, n2 = 0;
@@ -174,7 +169,7 @@ public class BPlusDelete extends Algorithm {
 						} else {
 							d.insMax(T.v.key[0]);
 						}
-						d.bgColor(Colors.NORMAL);
+						d.setColor(NodeColor.NORMAL);
 					} else {
 						int pkey = p.key[k];
 						p.key[k] = T.v.key[0];
@@ -194,7 +189,7 @@ public class BPlusDelete extends Algorithm {
 								d.c[d.numChildren - 1].parent = d;
 			//				}
 						}
-						d.bgColor(Colors.NORMAL);
+						d.setColor(NodeColor.NORMAL);
 					}
 					T.v = null;
 					break;
@@ -216,12 +211,12 @@ public class BPlusDelete extends Algorithm {
 					} else {
 						if (d.isLeaf()) {
 							T.v = p.del(p.key[k]);
-							T.v.goTo((d.tox + s.tox) / 2, d.y);
+							T.v.goDown();
 							mysuspend();
 							if (lefts) {
-								p.c[k] = new BNode(s, d);
+								p.c[k] = new BPlusNode(s, d);
 							} else {
-								p.c[k] = new BNode(d, s);
+								p.c[k] = new BPlusNode(d, s);
 							}
 							p.c[k].parent = p;
 							--p.numChildren;
@@ -255,7 +250,7 @@ public class BPlusDelete extends Algorithm {
 			d = b;
 			if (! d.isIn(K)) {
 				isInLeaf = true; //tzn, ze uz je to cislo prepisane
-				d.bgColor(Colors.NORMAL);
+				d.setColor(NodeColor.NORMAL);
 			}
 			if (! isInLeaf) {
 				/*if (d.isLeaf()) {
@@ -283,18 +278,18 @@ public class BPlusDelete extends Algorithm {
 						mysuspend();
 					}
 				//	v = T.v = s.delMin();
-					v = T.v = new BNode(s.D,s.key[0], s.x - (s.numKeys - 1) * s.D.radius, s.y);
+					v = T.v = new BPlusNode(s.D,s.key[0], s.x - (s.numKeys - 1) * s.D.radius, s.y);
 					v.goTo(d);
 					mysuspend();
 					d.replace(K, v.key[0]);
 					T.v = null;
 					mysuspend();
-					d.bgColor(Colors.NORMAL);
+					d.setColor(NodeColor.NORMAL);
 					d = s;
 			//	}
 
 				while (!d.isRoot() && d.numKeys < (T.order - 1) / 2) {
-					d.bgColor(Colors.NOTFOUND);
+					d.setColor(NodeColor.NOTFOUND);
 					BPlusNode /*s,*/ s1 = null, s2 = null, p = (BPlusNode) d.parent;
 					boolean lefts = true;
 					int k = d.order(), n1 = 0, n2 = 0;
@@ -328,7 +323,7 @@ public class BPlusDelete extends Algorithm {
 						mysuspend();
 						int pkey = p.key[k];
 						p.key[k] = T.v.key[0];
-						T.v = new BNode(T, pkey, p.x, p.y);
+						T.v = new BPlusNode(T, pkey, p.x, p.y);
 						T.v.goTo(d);
 						mysuspend();
 						if (lefts) {
@@ -344,7 +339,7 @@ public class BPlusDelete extends Algorithm {
 								d.c[d.numChildren - 1].parent = d;
 							}
 						}
-						d.bgColor(Colors.NORMAL);
+						d.setColor(NodeColor.NORMAL);
 						T.v = null;
 						break;
 					} else {
@@ -367,9 +362,9 @@ public class BPlusDelete extends Algorithm {
 							T.v.goTo((d.tox + s.tox) / 2, d.y);
 							mysuspend();
 							if (lefts) {
-								p.c[k] = new BNode(s, T.v, d);
+								p.c[k] = new BPlusNode(s, (BPlusNode) T.v, d);
 							} else {
-								p.c[k] = new BNode(d, T.v, s);
+								p.c[k] = new BPlusNode(d, (BPlusNode) T.v, s);
 							}
 							p.c[k].parent = p;
 							--p.numChildren;

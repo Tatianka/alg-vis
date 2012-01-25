@@ -30,6 +30,10 @@ public class BPlusNode extends BNode {
 		super(u,v,w);
 	}
 	
+	public BPlusNode(BNode u, BNode v) {
+		super(u,v);
+	}
+	
 ///////////////////////////////////////////////////////////////////////////////////
 	public BPlusNode copyUp() {
 		int k = numKeys, ku = numKeys / 2; // , kw = numKeys - ku - 1;

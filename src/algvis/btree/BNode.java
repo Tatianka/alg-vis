@@ -69,7 +69,7 @@ public class BNode extends Node {
 	}
 	
 	public BNode(BNode u, BNode v) { //needed in B+tree
-		this(u.D, Node.NOKEY, u.x, u.y);
+		this(u.D, Node.NOKEY, (u.x + v.x) / 2, (u.y + v.y) / 2);
 		int n1 = u.numKeys, n2 = v.numKeys;
 		numKeys = n1 + n2;
 		for (int i = 0; i < n1; ++i) {
