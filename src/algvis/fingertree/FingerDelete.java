@@ -1,7 +1,7 @@
 package algvis.fingertree;
 
 import algvis.core.Algorithm;
-import algvis.core.Colors;
+import algvis.core.NodeColor;
 import algvis.core.Node;
 
 public class FingerDelete extends Algorithm {
@@ -15,7 +15,7 @@ public class FingerDelete extends Algorithm {
 		this.T = T;
 		K = x;
 		v = T.v = new FingerNode(T, x);
-		v.bgColor(Colors.DELETE);
+		v.setColor(NodeColor.DELETE);
 		setHeader("deletion");
 	}
 	
@@ -25,7 +25,7 @@ public class FingerDelete extends Algorithm {
 			addStep("empty");
 			mysuspend();
 			v.goDown();
-			v.bgColor(Colors.NOTFOUND);
+			v.setColor(NodeColor.NOTFOUND);
 			addStep("notfound");
 		} else {
 //			FingerNode w = T.finger;
@@ -61,9 +61,9 @@ public class FingerDelete extends Algorithm {
 			// now I have an element and I want to delete it
 			// deleting:
 			FingerNode w = T.prst.getNode();
-			w.bgColor(Colors.FOUND);
+			w.setColor(NodeColor.FOUND);
 			mysuspend();
-			w.bgColor(Colors.NORMAL);
+			w.setColor(NodeColor.NORMAL);
 			if (w.isLeaf()) {
 				addStep("bdelete1");
 				if (w.isRoot() && w.numKeys == 1) {
@@ -94,12 +94,12 @@ public class FingerDelete extends Algorithm {
 				w.replace(K, v.key[0]);
 				T.v = null;
 				mysuspend();
-				w.bgColor(Colors.NORMAL);
+				w.setColor(NodeColor.NORMAL);
 				w = s;
 			}
 
 			while (!w.isRoot() && w.numKeys < 1) {
-				w.bgColor(Colors.NOTFOUND);
+				w.setColor(NodeColor.NOTFOUND);
 				FingerNode s, s1 = null, s2 = null, p = w.parent;
 				boolean lefts = true;
 				int k = w.order(), n1 = 0, n2 = 0;
@@ -149,7 +149,7 @@ public class FingerDelete extends Algorithm {
 							w.c[w.numChildren - 1].parent = w;
 						}
 					}
-					w.bgColor(Colors.NORMAL);
+					w.setColor(NodeColor.NORMAL);
 					T.v = null;
 					break;
 				} else {

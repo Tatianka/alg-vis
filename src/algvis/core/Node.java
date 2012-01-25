@@ -21,18 +21,18 @@ public class Node {
 	public DataStructure D;
 	public int key;
 	/**
-	 * x, y - node position
-	 * tox, toy - the position, where the node is heading
+	 * x, y - node position tox, toy - the position, where the node is heading
 	 * steps - the number of steps to reach the destination
 	 */
 	public int x, y, tox, toy, steps;
 	/** the state of a node - either ALIVE, DOWN, LEFT, or RIGHT. */
 	public int state = ALIVE;
-	public Color fgcolor, bgcolor;
+	private NodeColor color = NodeColor.NORMAL;
 	public boolean marked = false;
 	public Node dir = null;
-	public int arrow = Node.NOARROW; // NOARROW or angle (0=E, 45=SE, 90=S, 135=SW,
-								// 180=W)
+	public int arrow = Node.NOARROW; // NOARROW or angle (0=E, 45=SE, 90=S,
+										// 135=SW,
+	// 180=W)
 	boolean arc = false;
 
 	/**
@@ -62,7 +62,6 @@ public class Node {
 		this.x = tox = x;
 		this.y = toy = y;
 		steps = 0;
-		setColor(Color.black, Colors.NORMAL);
 	}
 
 	public Node(DataStructure D, int key) {
@@ -83,13 +82,13 @@ public class Node {
 			Point2D p = D.M.screen.V.r2v(0, 0);
 			toy = y = (int) p.getY() - 5 * D.radius;
 		} else {
-			/* TODO
-			 * because of rotations and skiplist constructor inserts (at that
-			 * time "AffineTransform at" not exists)
+			/*
+			 * TODO because of rotations and skiplist constructor inserts (at
+			 * that time "AffineTransform at" not exists)
 			 */
 			tox = x = 0;
-			toy = y = - 5 * D.radius;
-			//System.out.println(getClass().getName() + " " + key);
+			toy = y = -5 * D.radius;
+			// System.out.println(getClass().getName() + " " + key);
 		}
 	}
 
@@ -100,27 +99,40 @@ public class Node {
 		}
 	}
 
-	public void setColor(Color fg, Color bg) {
-		fgColor(fg);
-		bgColor(bg);
+	public NodeColor getColor() {
+		return color;
+	}
+	
+	public void setColor(NodeColor color) {
+		fgColor(color.fgColor);
+		bgColor(color.bgColor);
+		this.color = color;
 	}
 
 	public void fgColor(Color fg) {
-		if (fg != fgcolor) {
+		if (fg != color.fgColor) {
 			if (D != null) {
 				D.scenario.add(new SetFgColorCommand(this, fg));
 			}
-			fgcolor = fg;
+			color = new NodeColor(fg, color.bgColor);
 		}
 	}
 
 	public void bgColor(Color bg) {
-		if (bg != bgcolor) {
+		if (bg != color.bgColor) {
 			if (D != null) {
 				D.scenario.add(new SetBgColorCommand(this, bg));
 			}
-			bgcolor = bg;
+			color = new NodeColor(color.fgColor, bg);
 		}
+	}
+	
+	public Color getFgColor() {
+		return color.fgColor;
+	}
+	
+	public Color getBgColor() {
+		return color.bgColor;
 	}
 
 	/**
@@ -228,7 +240,7 @@ public class Node {
 	 *            view
 	 */
 	protected void drawBg(View v) {
-		v.setColor(bgcolor);
+		v.setColor(getBgColor());
 		v.fillCircle(x, y, D.radius);
 		v.setColor(Color.BLACK); // fgcolor);
 		v.drawCircle(x, y, D.radius);
@@ -252,7 +264,7 @@ public class Node {
 	}
 
 	public void drawKey(View v) {
-		v.setColor(fgcolor);
+		v.setColor(getFgColor());
 		if (key != NOKEY) {
 			v.drawString(toString(), x, y, 9);
 		}
@@ -398,7 +410,7 @@ public class Node {
 	public void goRight() {
 		setState(RIGHT);
 	}
-	
+
 	/**
 	 * Make one step towards the destination (tox, toy). In the special states
 	 * DOWN, LEFT, or RIGHT, go downwards off the screen.

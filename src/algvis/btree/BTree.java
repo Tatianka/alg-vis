@@ -6,14 +6,15 @@ import algvis.core.VisPanel;
 
 public class BTree extends Dictionary {
 	public static String dsName = "btree";
-	protected int order = 5;
-	protected BNode root = null, v = null;
-	protected int xspan = 5, yspan = 15;
+	public int order = 5;
+	public BNode root = null, v = null;
+	public int xspan = 5, yspan = 15;
 
+	@Override
 	public String getName() {
 		return "btree";
 	}
-	
+
 	public BTree(VisPanel M) {
 		super(M, dsName);
 	}
@@ -44,15 +45,15 @@ public class BTree extends Dictionary {
 		if (root == null) {
 			return "#" + M.S.L.getString("nodes") + ": 0;   #"
 					+ M.S.L.getString("keys") + ": 0 = 0% "
-					+ M.S.L.getString("full") + ";   " + M.S.L.getString("height")
-					+ ": 0";
+					+ M.S.L.getString("full") + ";   "
+					+ M.S.L.getString("height") + ": 0";
 		} else {
 			root.calcTree();
 			return "#" + M.S.L.getString("nodes") + ": " + root.nnodes + ";   "
 					+ "#" + M.S.L.getString("keys") + ": " + root.nkeys + " = "
 					+ (100 * root.nkeys) / (root.nnodes * (order - 1)) + "% "
-					+ M.S.L.getString("full") + ";   " + M.S.L.getString("height")
-					+ ": " + root.height;
+					+ M.S.L.getString("full") + ";   "
+					+ M.S.L.getString("height") + ": " + root.height;
 		}
 	}
 

@@ -2,22 +2,22 @@ package algvis.btree;
 
 import java.awt.Color;
 
-import algvis.core.Colors;
+import algvis.core.NodeColor;
 import algvis.core.DataStructure;
 import algvis.core.Fonts;
 import algvis.core.Node;
 import algvis.core.View;
 
 public class BNode extends Node {
-	protected int width, leftw, rightw;
-	protected BNode parent = null;
-	protected int numKeys = 1, numChildren = 0;
-	protected int[] key;
-	protected BNode[] c;
+	public int width, leftw, rightw;
+	public BNode parent = null;
+	public int numKeys = 1, numChildren = 0;
+	public int[] key;
+	public BNode[] c;
 	// View V;
 
 	// statistics
-	protected int nkeys = 1, nnodes = 1, height = 1;
+	public int nkeys = 1, nnodes = 1, height = 1;
 
 	public BNode(DataStructure D, int key, int x, int y) {
 		this.key = new int[((BTree) D).order + 5];
@@ -29,7 +29,7 @@ public class BNode extends Node {
 		this.x = tox = x;
 		this.y = toy = y;
 		steps = 0;
-		setColor(Color.black, Colors.NORMAL);
+		setColor(NodeColor.NORMAL);
 		width = _width();
 	}
 
@@ -66,6 +66,31 @@ public class BNode extends Node {
 			c[i].parent = this;
 		}
 		width = _width();
+	}
+	
+	public BNode(BNode u, BNode v) { //needed in B+tree
+		this(u.D, Node.NOKEY, (u.x + v.x) / 2, (u.y + v.y) / 2);
+		int n1 = u.numKeys, n2 = v.numKeys;
+		numKeys = n1 + n2;
+		for (int i = 0; i < n1; ++i) {
+			key[i] = u.key[i];
+		}
+		for (int i = 0; i < n2; ++i) {
+			key[n1 + i] = v.key[i];
+		}
+		n1 = u.numChildren;
+		n2 = v.numChildren;
+		numChildren = n1 + n2;
+		for (int i = 0; i < n1; ++i) {
+			c[i] = u.c[i];
+		}
+		for (int i = 0; i < n2; ++i) {
+			c[n1 + i] = v.c[i];
+		}
+		for (int i = 0; i < numChildren; ++i) {
+			c[i].parent = this;
+		}
+		width = _width();		
 	}
 
 	public boolean isRoot() {
@@ -300,7 +325,7 @@ public class BNode extends Node {
 		return toString(numKeys);
 	}
 
-	int _width() {
+	public int _width() {
 		if (key[0] != Node.NOKEY && numKeys > 0) {
 			return Math.max(Fonts.fm[9].stringWidth(toString()) + 4,
 					2 * D.radius);
@@ -326,15 +351,16 @@ public class BNode extends Node {
 			t = "  " + key[i];
 		}
 		return tox - D.M.screen.V.stringWidth(toString(), 9) / 2
-				+ D.M.screen.V.stringWidth(s, 9) + D.M.screen.V.stringWidth(t, 9) / 2;
+				+ D.M.screen.V.stringWidth(s, 9)
+				+ D.M.screen.V.stringWidth(t, 9) / 2;
 	}
 
 	@Override
 	public void drawBg(View V) {
-		V.setColor(bgcolor);
+		V.setColor(getBgColor());
 		V.fillRoundRectangle(x, y, width / 2, D.radius, 2 * D.radius,
 				2 * D.radius);
-		V.setColor(fgcolor);
+		V.setColor(getFgColor());
 		V.drawRoundRectangle(x, y, width / 2, D.radius, 2 * D.radius,
 				2 * D.radius);
 		// g.drawLine (x-leftw, y+2, x+rightw, y-2);

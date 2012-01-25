@@ -1,7 +1,7 @@
 package algvis.fingertree;
 
 import algvis.core.Algorithm;
-import algvis.core.Colors;
+import algvis.core.NodeColor;
 
 public class FingerInsert extends Algorithm {
 
@@ -13,7 +13,7 @@ public class FingerInsert extends Algorithm {
 		super(T);
 		this.T = T;
 		v = T.v = new FingerNode(T, K = x); 
-		v.bgColor(Colors.INSERT);
+		v.setColor(NodeColor.INSERT);
 		setHeader("insertion");
 	}	
 	
@@ -24,7 +24,7 @@ public class FingerInsert extends Algorithm {
 			v.goAboveRoot();
 			addStep("newroot");
 			mysuspend();
-			v.bgColor(Colors.NORMAL);
+			v.setColor(NodeColor.NORMAL);
 			T.prst.setFinger(T.root);
 		} else {
 			// idem pomocou prsta
@@ -44,7 +44,7 @@ public class FingerInsert extends Algorithm {
 			while (true) {
 				if (T.prst.getNode().isIn(K)) {
 					addStep("alreadythere");
-					v.bgColor(Colors.DELETE);
+					v.setColor(NodeColor.DELETE);
 					v.goDown();
 					return;
 				}
@@ -60,7 +60,7 @@ public class FingerInsert extends Algorithm {
 			FingerNode w = T.prst.getNode();
 			w.addLeaf(K); //just adds x into this leaf
 			if (w.numKeys >= 4) {
-				w.bgColor(Colors.NOTFOUND); //if too much keys, that's not good
+				w.setColor(NodeColor.NOTFOUND); //if too much keys, that's not good
 				addStep("fingertree");
 			}
 			T.v = null;
@@ -99,7 +99,7 @@ public class FingerInsert extends Algorithm {
 				}
 				w = w.parent;
 				if (w.numKeys >= 4) {
-					w.bgColor(Colors.NOTFOUND);
+					w.setColor(NodeColor.NOTFOUND);
 				}				
 				T.reposition();
 				mysuspend();

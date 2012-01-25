@@ -24,7 +24,7 @@ public class FingerNode extends Node {
 		this.x = tox = x;
 		this.y = toy = y;
 		steps = 0;
-		setColor(Color.black, Colors.NORMAL);
+		setColor(NodeColor.NORMAL);
 		width = _width();
 		//super(D,key,x,y);
 	}
@@ -208,10 +208,10 @@ public class FingerNode extends Node {
 
 	@Override
 	public void drawBg(View V) {
-		V.setColor(bgcolor);
+		V.setColor(getBgColor());
 		V.fillRoundRectangle(x, y, width / 2, D.radius, 2 * D.radius,
 				2 * D.radius);
-		V.setColor(fgcolor);
+		V.setColor(getFgColor());
 		V.drawRoundRectangle(x, y, width / 2, D.radius, 2 * D.radius,
 				2 * D.radius);
 		// g.drawLine (x-leftw, y+2, x+rightw, y-2);

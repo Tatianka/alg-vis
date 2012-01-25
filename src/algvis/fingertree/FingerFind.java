@@ -1,7 +1,7 @@
 package algvis.fingertree;
 
 import algvis.core.Algorithm;
-import algvis.core.Colors;
+import algvis.core.NodeColor;
 
 
 public class FingerFind extends Algorithm {
@@ -15,7 +15,7 @@ public class FingerFind extends Algorithm {
 		super(T);
 		this.T = T;
 		v = T.v = new FingerNode(T, x);
-		v.bgColor(Colors.FIND);
+		v.setColor(NodeColor.FIND);
 		setHeader("search");
 		K = x;
 	}
@@ -32,7 +32,7 @@ public class FingerFind extends Algorithm {
 			addStep("empty");
 			mysuspend();
 			v.goDown();
-			v.bgColor(Colors.NOTFOUND);
+			v.setColor(NodeColor.NOTFOUND);
 			addStep("notfound");
 		} else {
 			// idem pomocou prsta
@@ -45,7 +45,7 @@ public class FingerFind extends Algorithm {
 				if (T.prst.getNode().isIn(K)) {
 					addStep("found");
 					v.goDown();
-					v.bgColor(Colors.FOUND);
+					v.setColor(NodeColor.FOUND);
 					mysuspend();
 					return;				
 				}
@@ -63,7 +63,7 @@ public class FingerFind extends Algorithm {
 				if (T.prst.getNode().isIn(K)) {
 					addStep("found");
 					v.goDown();
-					v.bgColor(Colors.FOUND);
+					v.setColor(NodeColor.FOUND);
 					mysuspend();
 					return;
 				}

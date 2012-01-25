@@ -5,6 +5,7 @@ import java.lang.reflect.Constructor;
 import algvis.aatree.AAPanel;
 import algvis.avltree.AVLPanel;
 import algvis.binomialheap.BinHeapPanel;
+import algvis.bplustree.BPlusPanel;
 import algvis.bst.BSTPanel;
 import algvis.btree.BPanel;
 import algvis.btree.a234Panel;
@@ -33,7 +34,7 @@ import algvis.unionfind.UnionFindPanel;
 public class DataStructures {
 	@SuppressWarnings("rawtypes")
 	static final Class[] PANEL = { BSTPanel.class, RotPanel.class,
-			AVLPanel.class, a23Panel.class, a234Panel.class, BPanel.class,
+			AVLPanel.class, a23Panel.class, a234Panel.class, BPanel.class, BPlusPanel.class, 
 			RBPanel.class, AAPanel.class, TreapPanel.class,
 			SkipListPanel.class, GBPanel.class, SplayPanel.class,
 			HeapPanel.class, BinHeapPanel.class, LazyBinHeapPanel.class,
