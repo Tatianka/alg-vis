@@ -14,7 +14,7 @@ public class BPlusInsert extends Algorithm {
 	public BPlusInsert(BPlusTree T, int x) {
 		super(T);
 		this.T = T;
-		v = new BNode(T, K = x);
+		v = new BPlusNode(T, K = x);
 		T.v = v;
 		v.setColor(NodeColor.INSERT);
 		setHeader("insertion");
@@ -23,13 +23,14 @@ public class BPlusInsert extends Algorithm {
 	@Override
 	public void run() {
 		if (T.root == null) {
-			T.root = new BPlusNode(v.D, K, v.x, v.y);
+		//	T.root = new BPlusNode(v.D, K, v.x, v.y);
+			T.root = v;
 			v.goAboveRoot();
 			addStep("newroot");
 			mysuspend();
 			v.setColor(NodeColor.NORMAL);
 			T.reposition();
-			T.v = null;
+		//	T.v = null;
 		} else {
 			BPlusNode w = (BPlusNode) T.root;
 			v.goAbove(w);
