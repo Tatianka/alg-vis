@@ -1,43 +1,36 @@
 package algvis.fingertree;
 
+import algvis.bplustree.BPlusNode;
 import algvis.core.*;
 
 import java.awt.Color;
 
-public class FingerNode extends Node {
+public class FingerNode extends BPlusNode {
 	
-	int width, leftw, rightw;
-	FingerNode parent = null, leftNeigbour = null, rightNeighbour = null; 
+/*	int width, leftw, rightw;
+	FingerNode parent = null, leftNeighbour = null, rightNeighbour = null; 
 	int numKeys = 1, numChildren = 0;
 	int[] key;
 	FingerNode[] c;
 
-	int nkeys = 1, nnodes = 1, height = 1;
+	int nkeys = 1, nnodes = 1, height = 1;*/
+	
+	FingerNode parent = null, leftNeighbour = null, rightNeighbour = null;
+	FingerNode[] c;	
 	
 	public FingerNode(DataStructure D, int key, int x, int y) {
-		this.key = new int[9];
-		c = new FingerNode[9];
-		this.key[0] = key;
-		numKeys = 1;
-		this.D = D;
-		// this.V = D.M.S.V;
-		this.x = tox = x;
-		this.y = toy = y;
-		steps = 0;
-		setColor(NodeColor.NORMAL);
-		width = _width();
-		//super(D,key,x,y);
+		super(D,key,x,y);
+		c = new FingerNode[((FingerTree) D).order + 5];
 	}
 	
 	public FingerNode(DataStructure D, int key) {
-		this(D, key, 0, 0);
-//		setState(Node.UP);
-		getReady();
+		super(D, key);
+		c = new FingerNode[((FingerTree) D).order + 5];
 	}
 	
 	public FingerNode(FingerNode v) {
 		this(v.D, v.key[0], v.x, v.y);
-		leftNeigbour = v.leftNeigbour;
+		leftNeighbour = v.leftNeighbour;
 		rightNeighbour = v.rightNeighbour;
 	}
 	
@@ -67,45 +60,43 @@ public class FingerNode extends Node {
 		}
 		width = _width();
 		
-		leftNeigbour = u.leftNeigbour;
+		leftNeighbour = u.leftNeighbour;
 		rightNeighbour = w.rightNeighbour;
 	}
+	
+	public FingerNode(FingerNode u, FingerNode v) { //needed in B+tree
+		this(u.D, Node.NOKEY, (u.x + v.x) / 2, (u.y + v.y) / 2);
+		int n1 = u.numKeys, n2 = v.numKeys;
+		numKeys = n1 + n2;
+		for (int i = 0; i < n1; ++i) {
+			key[i] = u.key[i];
+		}
+		for (int i = 0; i < n2; ++i) {
+			key[n1 + i] = v.key[i];
+		}
+		n1 = u.numChildren;
+		n2 = v.numChildren;
+		numChildren = n1 + n2;
+		for (int i = 0; i < n1; ++i) {
+			c[i] = u.c[i];
+		}
+		for (int i = 0; i < n2; ++i) {
+			c[n1 + i] = v.c[i];
+		}
+		for (int i = 0; i < numChildren; ++i) {
+			c[i].parent = this;
+		}
+		
+		leftNeighbour = u.leftNeighbour;
+		rightNeighbour = v.rightNeighbour;
+
+		width = _width();		
+	}
+
 	
 	public int getNumKeys() {
 		return numKeys;
 	}
-		
-/*	public FingerNode split() {
-		FingerNode ch1 = new FingerNode(D, key[0], x, y), ch2 = new FingerNode(D, key[3], x, y), p = new FingerNode(
-				D, key[2], x, y);
-		ch1.addLeaf(key[1]);
-		if (isLeaf()) {
-			ch1.numChildren = ch2.numChildren = 0;
-		} else {
-			ch1.c[0] = c[0];
-			ch1.c[0].parent = ch1;
-			ch1.c[1] = c[1];
-			ch1.c[1].parent = ch1;
-			ch1.c[2] = c[2];
-			ch1.c[2].parent = ch1;
-			ch2.c[0] = c[3];
-			ch1.c[0].parent = ch2;
-			ch2.c[1] = c[4];
-			ch1.c[1].parent = ch2;
-		}
-		ch1.parent = ch2.parent = p;
-		p.numChildren = 2;
-		p.parent = parent;
-		p.c[0] = ch1;
-		p.c[1] = ch2;
-	// what is it??	-from FingerNode.split
-		ch1.width = ch1._width();
-		ch2.width = ch2._width();
-		ch1.x = x - ch1.width / 2 - D.radius;
-		ch2.x = x + ch2.width / 2 + D.radius;
-		
-		return p;
-	}*/
 	
 ///// if x belongs to this undertree //////////
 	public boolean belongsHere(int x) {
@@ -116,14 +107,15 @@ public class FingerNode extends Node {
 	}
 	public void setNeighbour() {
 		if (parent.isLeaf()) {return;}
-		if (parent.leftNeigbour.c[0] != null) {
-			leftNeigbour = parent.leftNeigbour.c[0];
+		if (parent.leftNeighbour.c[0] != null) {
+			leftNeighbour = (FingerNode) parent.leftNeighbour.c[0];
 		}
-		if (parent.rightNeighbour.c[parent.leftNeigbour.numKeys-1] != null) {
-			rightNeighbour = parent.rightNeighbour.c[parent.leftNeigbour.numKeys-1];
+		if (parent.rightNeighbour.c[parent.leftNeighbour.numKeys-1] != null) {
+			rightNeighbour = (FingerNode) parent.rightNeighbour.c[parent.leftNeighbour.numKeys-1];
 		}
 	}
 //////////////////////////////////////////////////////////////////	
+
 	public void add(int k, FingerNode v) {
 		for (int i = numKeys; i > k; --i) {
 			key[i] = key[i - 1];
@@ -138,7 +130,7 @@ public class FingerNode extends Node {
 		c[k + 1].parent = this;
 		width = _width();
 	}
-
+/*
 	public void addLeaf(int x) {
 		key[numKeys++] = x;
 		for (int i = numKeys - 1; i > 0; --i) {
@@ -149,8 +141,9 @@ public class FingerNode extends Node {
 			}
 		}
 		width = _width();
-	}
+	}*/
 
+	@Override
 	public void calcTree() {
 		nkeys = numKeys;
 		nnodes = 1;
@@ -161,7 +154,7 @@ public class FingerNode extends Node {
 		}
 		height = 1 + (isLeaf() ? 0 : c[0].height);
 	}
-
+/*
 	public FingerNode del(int k) {
 		int i = -1;
 		while (key[++i] != k) {
@@ -182,7 +175,7 @@ public class FingerNode extends Node {
 		}
 		width = _width();
 		return new FingerNode(D, r, x - (numKeys - 1) * D.radius, y);
-	}
+	}*/
 
 	public FingerNode delMinCh() {
 		FingerNode r = c[0];
@@ -193,19 +186,19 @@ public class FingerNode extends Node {
 		width = _width();
 		return r;
 	}
-
+ /*
 	public FingerNode delMax() {
 		FingerNode r = new FingerNode(D, key[--numKeys], x + (numKeys - 1) * D.radius, y);
 		width = _width();
 		return r;
 	}
-
+*/
 	public FingerNode delMaxCh() {
 		FingerNode r = c[--numChildren];
 		width = _width();
 		return r;
 	}
-
+/*
 	@Override
 	public void drawBg(View V) {
 		V.setColor(getBgColor());
@@ -222,8 +215,9 @@ public class FingerNode extends Node {
 		if (key[0] != Node.NOKEY && numKeys > 0) {
 			V.drawString(toString(), x, y, 9);
 		}
-	}
+	}*/
 
+	@Override
 	public void drawTree(View v) {
 		for (int i = 0; i < numChildren; ++i) {
 			v.setColor(Color.black);
@@ -235,8 +229,8 @@ public class FingerNode extends Node {
 			c[i].drawTree(v);
 		}
 		
-		if (leftNeigbour != null) {
-			v.drawDashedLine(x, y, leftNeigbour.x + leftNeigbour.width/2, leftNeigbour.y);
+		if (leftNeighbour != null) {
+			v.drawDashedLine(x, y, leftNeighbour.x + leftNeighbour.width/2, leftNeighbour.y);
 		}
 /*		if (rightNeighbour != null) {
 			v.drawLine(x, y+2, rightNeighbour.x - rightNeighbour.width/2, rightNeighbour.y+2);
@@ -245,14 +239,14 @@ public class FingerNode extends Node {
 		draw(v);
 	}
 	
-	public void insMin(int k) {
+/*	public void insMin(int k) {
 		for (int i = numKeys++; i > 0; --i) {
 			key[i] = key[i - 1];
 		}
 		key[0] = k;
 		width = _width();
 	}
-
+*/
 	public void insMinCh(FingerNode v) {
 		for (int i = numChildren++; i > 0; --i) {
 			c[i] = c[i - 1];
@@ -260,17 +254,17 @@ public class FingerNode extends Node {
 		c[0] = v;
 		width = _width();
 	}
-
+/*
 	public void insMax(int k) {
 		key[numKeys++] = k;
 		width = _width();
 	}
-
+*/
 	public void insMaxCh(FingerNode v) {
 		c[numChildren++] = v;
 		width = _width();
 	}
-	
+	/*
 	public boolean isIn(int x) {
 		for (int i = 0; i < numKeys; ++i) {
 			if (key[i] == x) {
@@ -287,7 +281,7 @@ public class FingerNode extends Node {
 	public boolean isRoot() {
 		return parent == null;
 	}
-
+*/
 	public void moveTree() {
 		for (int i = 0; i < numChildren; ++i) {
 			c[i].moveTree();
@@ -303,7 +297,7 @@ public class FingerNode extends Node {
 		}
 		return -5; // TODO: vypindat exception
 	}
-
+/*
 	public int pos(int i) {
 		if (i < 0) {
 			return tox - D.M.screen.V.stringWidth(toString(), 9) / 2 - D.radius;
@@ -323,7 +317,7 @@ public class FingerNode extends Node {
 		return tox - D.M.screen.V.stringWidth(toString(), 9) / 2
 				+ D.M.screen.V.stringWidth(s, 9) + D.M.screen.V.stringWidth(t, 9) / 2;
 	}
-	
+	*/
 	public void rebox() {
 		if (numChildren == 0) {
 			leftw = rightw = width / 2 + ((FingerTree) D).xspan; // numKeys *
@@ -351,7 +345,7 @@ public class FingerNode extends Node {
 		}
 		rebox();
 	}
-	
+	/*
 	public void replace(int x, int y) {
 		int i = -1;
 		while (key[++i] != x) {
@@ -359,7 +353,7 @@ public class FingerNode extends Node {
 		key[i] = y;
 		width = _width();
 	}
-	
+	*/
 	private void repos() {
 		if (isRoot()) {
 			goToRoot();
@@ -406,7 +400,7 @@ public class FingerNode extends Node {
 		reboxTree();
 		repos();
 	}
-	
+	/*
 	public int search(int x) {
 		if (x < key[0]) {
 			return 0;
@@ -417,57 +411,62 @@ public class FingerNode extends Node {
 			}
 		}
 		return numKeys;
-	}
+	}*/
 
-public FingerNode split() {
-	int k = numKeys, ku = numKeys / 2; // , kw = numKeys - ku - 1;
-	FingerNode u = new FingerNode(D, key[0], x, y), v = new FingerNode(D, key[ku], x, y), w = new FingerNode(
-			D, key[k - 1], x, y);
-	for (int i = 1; i < ku; ++i) {
-		u.addLeaf(key[i]);
-	}
-	for (int i = ku + 1; i < k - 1; ++i) {
-		w.addLeaf(key[i]);
-	}
-	if (isLeaf()) {
-		u.numChildren = w.numChildren = 0;
-	} else {
-		u.numChildren = (numChildren + 1) / 2;
-		w.numChildren = numChildren / 2;
-		for (int i = 0; i < u.numChildren; ++i) {
-			u.c[i] = c[i];
-			u.c[i].parent = u;
+	@Override
+	public FingerNode split() {
+		int k = numKeys, ku = numKeys / 2; // , kw = numKeys - ku - 1;
+		FingerNode u = new FingerNode(D, key[0], x, y), v = new FingerNode(D, key[ku], x, y), 
+			w = new FingerNode(D, key[k - 1], x, y);
+		for (int i = 1; i < ku; ++i) {
+			u.addLeaf(key[i]);
 		}
-		for (int i = 0; i < w.numChildren; ++i) {
-			w.c[i] = c[u.numChildren + i];
-			w.c[i].parent = w;
+		if (! isLeaf()) {
+			ku++; // pushUp, else copyUp
 		}
+		for (int i = ku; i < k - 1; ++i) { //!!!!
+			w.addLeaf(key[i]);
+		}
+		if (isLeaf()) {
+			u.numChildren = w.numChildren = 0;
+		} else {
+			u.numChildren = (numChildren + 1) / 2;
+			w.numChildren = numChildren / 2;
+			for (int i = 0; i < u.numChildren; ++i) {
+				u.c[i] = c[i];
+				u.c[i].parent = u;
+			}
+			for (int i = 0; i < w.numChildren; ++i) {
+				w.c[i] = c[u.numChildren + i];
+				w.c[i].parent = w;
+			}
+		}
+		u.parent = w.parent = v;
+		v.numChildren = 2;
+		v.parent = parent;
+		v.c[0] = u;
+		v.c[1] = w;
+		u.width = u._width();
+		w.width = w._width();
+		u.x = x - u.width / 2 - D.radius;
+		w.x = x + w.width / 2 + D.radius;
+
+		
+		u.leftNeighbour = leftNeighbour;
+		u.rightNeighbour = w;
+		w.leftNeighbour = u;
+		w.rightNeighbour = rightNeighbour;
+		
+		if (leftNeighbour != null) {
+			leftNeighbour.rightNeighbour = u;
+		}
+		if (rightNeighbour != null) {
+			rightNeighbour.leftNeighbour = w;
+		}
+		return v;
 	}
-	u.parent = w.parent = v;
-	v.numChildren = 2;
-	v.parent = parent;
-	v.c[0] = u;
-	v.c[1] = w;
-	u.width = u._width();
-	w.width = w._width();
-	u.x = x - u.width / 2 - D.radius;
-	w.x = x + w.width / 2 + D.radius;
 	
-	u.leftNeigbour = leftNeigbour;
-	u.rightNeighbour = w;
-	w.leftNeigbour = u;
-	w.rightNeighbour = rightNeighbour;
-	
-	if (leftNeigbour != null) {
-		leftNeigbour.rightNeighbour = u;
-	}
-	if (rightNeighbour != null) {
-		rightNeighbour.leftNeigbour = w;
-	}
-	return v;
-}
-	
-	public String toString(int max) {
+/*	public String toString(int max) {
 		if (numKeys == 0 || max == 0) {
 			return "";
 		}
@@ -498,7 +497,7 @@ public FingerNode split() {
 			return 2 * D.radius;
 		}
 	}
-	
+	*/
 	public FingerNode way(int x) {
 		if (x < key[0]) {
 			return c[0];
@@ -510,7 +509,7 @@ public FingerNode split() {
 		}
 		return c[numKeys];
 	}
-
+/*
 	public int _goToX(FingerNode v) {
 		int x = key[0], p = v.numKeys;
 		for (int i = 0; i < p; ++i) {
@@ -532,5 +531,5 @@ public FingerNode split() {
 	public void goBelow(FingerNode v) {
 		goTo(_goToX(v), v.toy + 2 * D.radius - 2);
 	}
-
+*/
 }

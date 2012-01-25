@@ -39,8 +39,10 @@ public class Finger extends FingerNode {
 		f = N;
 	}
 	
-	@Override
 	public void goTo(FingerNode N) {
+		if (N == null) {
+			goTo(50,50);
+		}
 		goTo(N.x, N.y);
 	}
 	
@@ -55,16 +57,16 @@ public class Finger extends FingerNode {
 	}
 	
 	public void moveDown(int num) {
-		FingerNode N = f.way(num);
+		FingerNode N = (FingerNode) f.way(num);
 		goTo(N);
 		f = N;
 	}
 	
 	public boolean moveToNeighbour(int num) {
-		if (f.leftNeigbour != null)
-			if (f.leftNeigbour.belongsHere(num)) {
-				goTo(f.leftNeigbour);
-				f = f.leftNeigbour;
+		if (f.leftNeighbour != null)
+			if (f.leftNeighbour.belongsHere(num)) {
+				goTo(f.leftNeighbour);
+				f = f.leftNeighbour;
 				return true;
 			}
 		if (f.rightNeighbour != null)

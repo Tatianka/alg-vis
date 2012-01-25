@@ -1,5 +1,6 @@
 package algvis.fingertree;
 
+import algvis.btree.BNode;
 import algvis.core.Algorithm;
 import algvis.core.NodeColor;
 
@@ -7,14 +8,14 @@ import algvis.core.NodeColor;
 public class FingerFind extends Algorithm {
 
 	FingerTree T;
-	FingerNode v;
+	BNode v;
 	int K;
 	
 	// z BFind
 	public FingerFind(FingerTree T, int x) {
 		super(T);
 		this.T = T;
-		v = T.v = new FingerNode(T, x);
+		v = T.v = new BNode(T, x);
 		v.setColor(NodeColor.FIND);
 		setHeader("search");
 		K = x;

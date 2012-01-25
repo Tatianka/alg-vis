@@ -1,12 +1,13 @@
 package algvis.fingertree;
 
+import algvis.btree.BNode;
 import algvis.core.Algorithm;
 import algvis.core.NodeColor;
 
 public class FingerInsert extends Algorithm {
 
 	FingerTree T;
-	FingerNode v;
+	BNode v;
 	int K;
 
 	public FingerInsert(FingerTree T, int x) {
@@ -20,12 +21,12 @@ public class FingerInsert extends Algorithm {
 	@Override
 	public void run() {
 		if (T.root == null) {   
-			T.root = v;
+			T.root = (FingerNode) v;
 			v.goAboveRoot();
 			addStep("newroot");
 			mysuspend();
 			v.setColor(NodeColor.NORMAL);
-			T.prst.setFinger(T.root);
+			T.prst.setFinger( T.root);
 		} else {
 			// idem pomocou prsta
 			v.goAbove(T.root);

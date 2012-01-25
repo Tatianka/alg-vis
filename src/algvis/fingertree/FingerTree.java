@@ -1,19 +1,20 @@
 package algvis.fingertree;
 
-import algvis.core.Dictionary;
+import algvis.bplustree.BPlusTree;
 import algvis.core.View;
 import algvis.core.VisPanel;
 
-public class FingerTree extends Dictionary {
+public class FingerTree extends BPlusTree {
 	
 	public static String dsName = "fingertree";
 	final int order = 4;
-	FingerNode root = null, v = null;
-	int xspan = 5, yspan = 15;
+/*	FingerNode root = null, v = null;
+	int xspan = 5, yspan = 15;*/
+	FingerNode root = null;
 	Finger prst = new Finger(this);
 	
 	public FingerTree(VisPanel M) {
-		super(M, dsName);
+		super(M);
 	}
 	
 	public void insert(int x) {
@@ -28,6 +29,7 @@ public class FingerTree extends Dictionary {
 		start(new FingerDelete(this, x));
 	}
 	
+	@Override
 	public void draw(View V) {
 		if (root != null) {
 			root.moveTree();
@@ -54,7 +56,7 @@ public class FingerTree extends Dictionary {
 		prst.setFinger(null);
 		setStats();
 	}
-
+/*
 	@Override
 	public String stats() {
 		if (root == null) {
@@ -71,7 +73,7 @@ public class FingerTree extends Dictionary {
 					+ ": " + root.height;
 		}
 	}
-
+*/
 	@Override
 	public String getName() {
 		return "fingertree";
