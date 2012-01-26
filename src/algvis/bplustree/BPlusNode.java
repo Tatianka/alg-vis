@@ -26,11 +26,11 @@ public class BPlusNode extends BNode {
 		c = new BPlusNode[((BPlusTree) D).order + 5];
 	}
 	
-	public BPlusNode(BPlusNode u, BPlusNode v, BPlusNode w) {
+	public BPlusNode(BPlusNode u, BNode v, BPlusNode w) {
 		super(u,v,w);
 	}
 	
-	public BPlusNode(BNode u, BNode v) {
+	public BPlusNode(BPlusNode u, BPlusNode v) {
 		super(u,v);
 	}
 	
