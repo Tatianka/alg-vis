@@ -229,9 +229,9 @@ public class BPlusDelete extends Algorithm {
 							T.v.goTo((d.tox + s.tox) / 2, d.y);
 							mysuspend();
 							if (lefts) {
-								p.c[k] = new BNode(s, T.v, d);
+								p.c[k] = new BPlusNode(s, T.v, d);
 							} else {
-								p.c[k] = new BNode(d, T.v, s);
+								p.c[k] = new BPlusNode(d, T.v, s);
 							}
 							p.c[k].parent = p;
 							--p.numChildren;
