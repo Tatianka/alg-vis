@@ -42,6 +42,7 @@ public class Finger extends FingerNode {
 	public void goTo(FingerNode N) {
 		if (N == null) {
 			goTo(50,50);
+			return;
 		}
 		goTo(N.x, N.y);
 	}

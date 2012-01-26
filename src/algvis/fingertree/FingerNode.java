@@ -277,11 +277,11 @@ public class FingerNode extends BPlusNode {
 	public boolean isLeaf() {
 		return numChildren == 0;
 	}
-
+*/
 	public boolean isRoot() {
 		return parent == null;
 	}
-*/
+
 	public void moveTree() {
 		for (int i = 0; i < numChildren; ++i) {
 			c[i].moveTree();
