@@ -100,11 +100,13 @@ public class FingerNode extends BPlusNode {
 	
 ///// if x belongs to this undertree //////////
 	public boolean belongsHere(int x) {
-		if ((x >= key[0]) && (x <= key[numKeys-1])) {
+		if (((x >= key[0]) || (leftNeighbour == null)) && 
+				(((rightNeighbour != null) && (x < rightNeighbour.key[0])) || (rightNeighbour == null))) {
 			return true;
 		}
 		return false;
 	}
+	
 	public void setNeighbour() {
 		if (parent.isLeaf()) {return;}
 		if (parent.leftNeighbour.c[0] != null) {

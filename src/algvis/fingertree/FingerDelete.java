@@ -61,28 +61,39 @@ public class FingerDelete extends Algorithm {
 			
 			// now I have an element and I want to delete it
 			// deleting:
-			FingerNode d = T.prst.getNode();
-			d.setColor(NodeColor.FOUND);
+//			FingerNode d = T.prst.getNode();
+			T.prst.getNode().setColor(NodeColor.FOUND);
 			boolean isInLeaf;
-			FingerNode b = d;
-			if (d.isLeaf()) {
+			FingerNode b = T.prst.getNode();
+			if (T.prst.getNode().isLeaf()) {
 				isInLeaf = true;
 			} else {
 				isInLeaf = false;
 			}
 			if (! isInLeaf) {
-				int o = d.search(K);
-				d = d.c[o]; // once to the right
-				v.goAbove(d);
+				int o = T.prst.getNode().search(K);
+				T.prst.moveTo(T.prst.getNode().c[o]); // once to the right
+		//		v.goAbove(d);
 				mysuspend();
 				o = 0;
-				while (! d.isLeaf()) {
+				while (! T.prst.getNode().isLeaf()) {
 					// and then still to the left
-					d = d.c[0];
+					T.prst.moveTo(T.prst.getNode().c[0]);
 					o++;
-					v.goAbove(d);
 					mysuspend();
 				}
+			}
+			
+			FingerNode d = T.prst.getNode();
+
+			boolean seen = ((isInLeaf) && (K == d.key[0])) ? false : true;
+			if (! seen) {
+				b = b.parent;
+				while (! b.isIn(K)) {
+					b = b.parent;
+				}
+				b.setColor(NodeColor.FOUND);
+				isInLeaf = false;
 			}
 
 			d.setColor(NodeColor.FOUND);
@@ -246,7 +257,7 @@ public class FingerDelete extends Algorithm {
 			}
 			T.v = null;
 			T.reposition();
-			/// now I will fix the case when the key is also in the index node
+			/// now I will fix the case when the key is also in the index node			
 			// b je moj vrchol
 			d = b;
 			if (! d.isIn(K)) {
@@ -267,7 +278,7 @@ public class FingerDelete extends Algorithm {
 						mysuspend();
 					}
 				} else {*/
-					mysuspend();
+		//			mysuspend();
 					addStep("bdelete2");
 					FingerNode s = (FingerNode) d.way(K + 1);
 					v = T.v = new FingerNode(T, -Node.INF, d.x, d.y);
