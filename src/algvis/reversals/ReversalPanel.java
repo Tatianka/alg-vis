@@ -1,22 +1,22 @@
-package algvis.splaytree;
+package algvis.reversals;
 
 import algvis.core.DataStructure;
 import algvis.core.DictButtons;
 import algvis.core.Settings;
 import algvis.core.VisPanel;
-import algvis.internationalization.Languages;
+import algvis.splaytree.Splay;
 
-public class SplayPanel extends VisPanel {
-	private static final long serialVersionUID = 7896254510404637883L;
+public class ReversalPanel extends VisPanel {
+	private static final long serialVersionUID = 6838150190028844576L;
 	public static Class<? extends DataStructure> DS = Splay.class;
 
-	public SplayPanel(Settings S) {
+	public ReversalPanel(Settings S) {
 		super(S);
 	}
 
 	@Override
 	public void initDS() {
-		D = new Splay(this);
+		D = new Reversal(this);
 		B = new DictButtons(this);
 	}
 }
