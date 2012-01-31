@@ -32,7 +32,7 @@ abstract public class DataStructure {
 	abstract public void clear();
 
 	abstract public void draw(View v);
-
+	
 	public void next() {
 		A.myresume();
 	}

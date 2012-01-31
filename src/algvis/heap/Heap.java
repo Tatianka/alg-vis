@@ -50,8 +50,9 @@ public class Heap extends PriorityQueue implements ClickListener {
 	@Override
 	public String stats() {
 		if (n == 0) {
-			return M.S.L.getString("size") + ": 0 ("
-					+ M.S.L.getString("emptyheap") + ")";
+
+			return M.S.L.getString("size") + ": 0 (" + M.S.L.getString("emptyheap")
+					+ ")";
 		} else if (n == 1000) {
 			return M.S.L.getString("size") + ": 1000 ("
 					+ M.S.L.getString("fullheap") + ")";

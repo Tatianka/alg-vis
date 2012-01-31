@@ -139,10 +139,4 @@ public class Rotations extends DataStructure implements ClickListener {
 			}
 		}
 	}
-	
-	
-	@Override
-	public Layout getLayout() {
-		return Layout.SIMPLE;
-	}
 }

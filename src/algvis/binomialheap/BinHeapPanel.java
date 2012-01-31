@@ -4,6 +4,7 @@ import algvis.core.DataStructure;
 import algvis.core.MeldablePQButtons;
 import algvis.core.Settings;
 import algvis.core.VisPanel;
+import algvis.internationalization.Languages;
 
 public class BinHeapPanel extends VisPanel {
 	private static final long serialVersionUID = 2070258718656241421L;
