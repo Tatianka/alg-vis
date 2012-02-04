@@ -11,7 +11,11 @@ public class ReversalAlg extends SplayAlg {
 	// I just need splay(inf) in subtree T1
 	public ReversalNode splayINF(ReversalNode newRoot) {
 		ReversalNode w = (ReversalNode) find(100000000);
-		while (w != newRoot) {
+		return null;
+		// rather do with subtrees???
+		
+		
+	/*	while (w != newRoot) {
 			if (w.parent == newRoot) {
 				addStep("splayroot");
 				w.setArc(w.parent);
@@ -53,18 +57,18 @@ public class ReversalAlg extends SplayAlg {
 		if (T.root == newRoot) {
 			T.root = w;
 		}
-		return w;		
+		return w;		*/
 	}
 	
 	public void concat(ReversalNode u, ReversalNode v) {
 		v = splayINF(v);
-		v.right = u;
+	/*	v.right = u;
 		if (u.isLeft()) {
 			u.parent.left = null;
 		} else {
 			u.parent.right = null;
 		}
-		u.parent = v;
+		u.parent = v;*/
 	}
 
 }

@@ -2,10 +2,10 @@ package algvis.reversals;
 
 import algvis.core.View;
 import algvis.core.VisPanel;
-import algvis.splaytree.Splay;
+import algvis.splaytree.SplayTree;
 import algvis.splaytree.SplayInsert;
 
-public class Reversal extends Splay {
+public class Reversal extends SplayTree {
 	public static String dsName = "reversal";
 
 	public Reversal(VisPanel M) {
@@ -29,6 +29,13 @@ public class Reversal extends Splay {
 	
 	@Override
 	public void draw(View V) {
+		if (w1 != null && w1.getParent() != null) {
+			V.drawWideLine(w1.x, w1.y, w1.getParent().x, w1.getParent().y);
+		}
+		if (w2 != null && w2.getParent() != null) {
+			V.drawWideLine(w2.x, w2.y, w2.getParent().x, w2.getParent().y);
+		}
+
 		if (root != null) {
 			root.moveTree();
 			root.drawTree(V);
