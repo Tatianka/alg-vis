@@ -11,53 +11,58 @@ public class ReversalAlg extends SplayAlg {
 	// I just need splay(inf) in subtree T1
 	public ReversalNode splayINF(ReversalNode newRoot) {
 		ReversalNode w = (ReversalNode) find(100000000);
-		return null;
 		// rather do with subtrees???
-		
-		
-	/*	while (w != newRoot) {
-			if (w.parent == newRoot) {
+	
+		while (!w.isRoot()) {
+			T.w1 = w;
+			T.w2 = w.getParent();
+			if (w.getParent().isRoot()) {
 				addStep("splayroot");
-				w.setArc(w.parent);
+				w.setArc(w.getParent());
 				mysuspend();
 				w.noArc();
 				T.rotate(w);
 			} else {
-				if (w.isLeft() == w.parent.isLeft()) {
+				if (w.isLeft() == w.getParent().isLeft()) {
 					if (w.isLeft()) {
 						addStep("splayzigzigleft");
 					} else {
 						addStep("splayzigzigright");
 					}
-					w.parent.setArc(w.parent.parent);
+					w.getParent().setArc(w.getParent().getParent());
 					mysuspend();
-					w.parent.noArc();
-					T.rotate(w.parent);
-					w.setArc(w.parent);
+					w.getParent().noArc();
+					T.w2 = w.getParent().getParent();
+					T.rotate(w.getParent());
+					w.setArc(w.getParent());
 					mysuspend();
 					w.noArc();
+					T.w1 = w.getParent();
 					T.rotate(w);
+					mysuspend();
 				} else {
 					if (!w.isLeft()) {
 						addStep("splayzigzagleft");
 					} else {
 						addStep("splayzigzagright");
 					}
-					w.setArc(w.parent);
+					w.setArc(w.getParent());
 					mysuspend();
 					w.noArc();
 					T.rotate(w);
-					w.setArc(w.parent);
+					w.setArc(w.getParent());
 					mysuspend();
 					w.noArc();
+					T.w1 = w.getParent();
 					T.rotate(w);
+					mysuspend();
 				}
 			}
 		}
-		if (T.root == newRoot) {
-			T.root = w;
-		}
-		return w;		*/
+		T.w1 = null;
+		T.w2 = null;
+		if (T.root == newRoot) { T.root = w;}
+		return w;
 	}
 	
 	public void concat(ReversalNode u, ReversalNode v) {

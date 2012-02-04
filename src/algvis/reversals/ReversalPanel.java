@@ -1,7 +1,6 @@
 package algvis.reversals;
 
 import algvis.core.DataStructure;
-import algvis.core.DictButtons;
 import algvis.core.Settings;
 import algvis.core.VisPanel;
 
@@ -16,6 +15,6 @@ public class ReversalPanel extends VisPanel {
 	@Override
 	public void initDS() {
 		D = new Reversal(this);
-		B = new DictButtons(this);
+		B = new ReversalButtons(this);
 	}
 }
