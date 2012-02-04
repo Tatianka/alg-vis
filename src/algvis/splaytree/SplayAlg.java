@@ -5,9 +5,9 @@ import algvis.core.Algorithm;
 import algvis.core.Colors;
 
 public class SplayAlg extends Algorithm {
-	Splay T;
-	BSTNode s, v;
-	int K;
+	public Splay T;
+	public BSTNode s, v;
+	public int K;
 	
 	public SplayAlg(Splay T, int x) {
 		super(T);
