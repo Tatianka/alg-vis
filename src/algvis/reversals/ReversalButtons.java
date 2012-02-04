@@ -46,13 +46,10 @@ public class ReversalButtons extends Buttons {
 	public void actionPerformed(ActionEvent evt) {
 		super.actionPerformed(evt);
 		if (evt.getSource() == insertB) {
-			final Vector<Integer> args = I.getNonEmptyVI();
 			Thread t = new Thread(new Runnable() {
 				@Override
 				public void run() {
-					for (int x : args) {
-						((Dictionary) D).insert(x);
-					}
+						((Reversal) D).insert();
 				}
 			});
 			t.start();

@@ -47,6 +47,10 @@ public class BST extends Dictionary implements LayoutListener, ClickListener {
 		}
 		return root;
 	}
+	
+	public BSTNode getRoot() {
+		return root;
+	}
 
 	@Override
 	public void insert(int x) {
@@ -184,8 +188,8 @@ public class BST extends Dictionary implements LayoutListener, ClickListener {
 	 */
 	public void reposition() {
 		x1 = x2 = y1 = y2 = 0;
-		if (root != null) {
-			root.reposition();
+		if (getRoot() != null) {
+			getRoot().reposition();
 		}
 		M.screen.V.setBounds(x1, y1, x2, y2);
 	}
