@@ -1,6 +1,5 @@
 package algvis.reversals;
 
-import algvis.bst.BSTNode;
 import algvis.core.View;
 import algvis.core.VisPanel;
 import algvis.splaytree.SplayTree;
@@ -9,6 +8,7 @@ public class Reversal extends SplayTree {
 	public static String dsName = "reversal";
 	ReversalNode root = null, left = null, right = null;
 	public int max = 0;
+	Reversal L = null, R = null;
 
 	public Reversal(VisPanel M) {
 		super(M);
@@ -17,8 +17,8 @@ public class Reversal extends SplayTree {
 		max = 10;
 	}
 	
-	public void revers(int x, int y) {
-		start(new Revers(this, x, y));
+	public void reverse(int x, int y) {
+		start(new Reverse(this, x, y));
 	}
 	
 	public void insert() {
@@ -62,16 +62,6 @@ public class Reversal extends SplayTree {
 		v9.setParent(v10);
 		this.reposition();		
 	}
-	
-	public void setTree2() {
-		boolean p = M.pause;
-		M.pause = false;
-		for (int i = 1; i < 10; ++i) {
-			insert(i);
-		}
-		M.pause = p;
-		this.reposition();
-	}
 
 	@Override
 	public String getName() {
@@ -93,12 +83,20 @@ public class Reversal extends SplayTree {
 			getRoot().drawTree(V);
 		}
 		super.draw(V);
+		if (L != null) {
+			L.draw(V);
+		}
+		if (R != null) {
+			R.draw(V);
+		}
 	}
 	
 	@Override
 	public void clear() {
 		super.clear();
-		setTree2();
+		setTree();
+		L = null;
+		R = null;
 	}
 	
 	@Override

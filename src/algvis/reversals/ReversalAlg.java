@@ -2,7 +2,6 @@ package algvis.reversals;
 
 import algvis.core.Algorithm;
 import algvis.core.NodeColor;
-import algvis.splaytree.SplayAlg;
 import algvis.splaytree.SplayNode;
 
 public class ReversalAlg extends Algorithm {
@@ -13,6 +12,10 @@ public class ReversalAlg extends Algorithm {
 	public ReversalAlg(Reversal T, int x, int y) {
 		super(T);
 		this.T = T;
+		if (T.getRoot() != null) {
+			T.v = s = new ReversalNode(T, K = x);
+			s.setColor(NodeColor.FIND);
+		}		
 	}
 	
 	public ReversalAlg(Reversal T, int x) {

@@ -15,7 +15,7 @@ import algvis.internationalization.IButton;
 
 public class ReversalButtons extends Buttons {
 	private static final long serialVersionUID = 2721786904758486239L;
-	IButton insertB, findB, reversB;
+	IButton insertB, findB, reverseB;
 	InputField I2;
 	
 
@@ -33,13 +33,13 @@ public class ReversalButtons extends Buttons {
 		findB.setMnemonic(KeyEvent.VK_F);
 		findB.addActionListener(this);
 
-		reversB = new IButton(M.S.L, "button-revers");
-		reversB.setMnemonic(KeyEvent.VK_R);
-		reversB.addActionListener(this);
+		reverseB = new IButton(M.S.L, "button-reverse");
+		reverseB.setMnemonic(KeyEvent.VK_R);
+		reverseB.addActionListener(this);
 
 		P.add(insertB);
 		P.add(findB);
-		P.add(reversB);
+		P.add(reverseB);
 	}
 	
 	@Override
@@ -66,7 +66,7 @@ public class ReversalButtons extends Buttons {
 				});
 				t.start();
 			}
-		} else if (evt.getSource() == reversB) {
+		} else if (evt.getSource() == reverseB) {
 			final Vector<Integer> args = I.getVI();
 			final Vector<Integer> args2 = I2.getVI();
 			if (args.size() > 0) {
@@ -75,7 +75,7 @@ public class ReversalButtons extends Buttons {
 					public void run() {
 						for (int x : args) {
 							for (int y : args2) {
-								((Reversal) D).revers(x,y);
+								((Reversal) D).reverse(x,y);
 							}
 						}
 					}
@@ -108,7 +108,7 @@ public class ReversalButtons extends Buttons {
 		super.enableAll();
 		insertB.setEnabled(true);
 		findB.setEnabled(true);
-		reversB.setEnabled(true);
+		reverseB.setEnabled(true);
 	}
 
 	@Override
@@ -116,7 +116,7 @@ public class ReversalButtons extends Buttons {
 		super.disableAll();
 		insertB.setEnabled(false);
 		findB.setEnabled(false);
-		reversB.setEnabled(false);
+		reverseB.setEnabled(false);
 	}
 
 }

@@ -1,6 +1,5 @@
 package algvis.reversals;
 
-import algvis.bst.BSTNode;
 import algvis.core.DataStructure;
 import algvis.scenario.commands.bstnode.LinkLeftCommand;
 import algvis.scenario.commands.bstnode.LinkRightCommand;
@@ -8,6 +7,7 @@ import algvis.splaytree.SplayNode;
 
 public class ReversalNode extends SplayNode {
 	int snum; //bigness of subtrees
+	boolean revflag = false;
 
 	public ReversalNode(DataStructure D, int key) {
 		super(D, key);
