@@ -26,14 +26,21 @@ public class Reverse extends ReversalAlg {
 		T.setRoot(T.getRoot().getRight());
 		T.L.getRoot().setRight(null);
 		T.getRoot().setParent(null);
-		w = find(to-from+1);
+		
+		T.reposition();
+		mysuspend();
+		
+		w = find(to-from+2);
 		splay(w);
 		T.R = new Reversal(T.M);
-		T.R.setRoot(T.getRoot().getRight());
+		T.R.setRoot(T.getRoot());
 		T.R.getRoot().setParent(null);
-		T.getRoot().setRight(null);
-		/// let's stick it together
+		T.setRoot(T.getRoot().getLeft());
+		
+		T.reposition();
 		mysuspend();
+		/// let's stick it together
+		T.getRoot().marked = true;
 		T.L.getRoot().setRight(T.R.getRoot());
 		T.R.getRoot().setParent(T.L.getRoot());
 		T.R.getRoot().setLeft(T.getRoot());

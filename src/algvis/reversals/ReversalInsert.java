@@ -49,6 +49,7 @@ public class ReversalInsert extends ReversalAlg {
 			return;
 		}
 		ReversalNode w = find(T.max);
+		mysuspend();
 		if (w == null) {
 			System.out.print("trololo");
 		}

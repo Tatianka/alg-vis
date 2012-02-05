@@ -3,6 +3,7 @@ package algvis.reversals;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.util.Random;
 import java.util.Vector;
 
 import javax.swing.JPanel;
@@ -15,9 +16,7 @@ import algvis.internationalization.IButton;
 
 public class ReversalButtons extends Buttons {
 	private static final long serialVersionUID = 2721786904758486239L;
-	IButton insertB, findB, reverseB;
-	InputField I2;
-	
+	IButton insertB, findB, reverseB;	
 
 	public ReversalButtons(VisPanel M) {
 		super(M);
@@ -45,6 +44,7 @@ public class ReversalButtons extends Buttons {
 	@Override
 	public void actionPerformed(ActionEvent evt) {
 		super.actionPerformed(evt);
+		final Reversal D = (Reversal) this.D;
 		if (evt.getSource() == insertB) {
 			Thread t = new Thread(new Runnable() {
 				@Override
@@ -68,16 +68,35 @@ public class ReversalButtons extends Buttons {
 			}
 		} else if (evt.getSource() == reverseB) {
 			final Vector<Integer> args = I.getVI();
-			final Vector<Integer> args2 = I2.getVI();
+			int count = D.max;
+			if (D.firstSelected != null) {
+				args.insertElementAt(D.order(D.firstSelected), 0); 
+				D.firstSelected = null;
+			}
+			if (D.secondSelected != null) {
+				args.insertElementAt(D.order(D.secondSelected), 1);
+				D.secondSelected = null;
+			}
+			Random G = new Random(System.currentTimeMillis());
+			switch (args.size()) {
+			case 0:
+				args.add(G.nextInt(count) + 1);
+			case 1:
+				int i;
+				int ii = args.elementAt(0);
+				do {
+					i = G.nextInt(count) + 1;
+				} while (i == ii);
+				args.add(i);
+			}
+
 			if (args.size() > 0) {
 				Thread t = new Thread(new Runnable() {
 					@Override
 					public void run() {
-						for (int x : args) {
-							for (int y : args2) {
-								((Reversal) D).reverse(x,y);
-							}
-						}
+						System.out.println(args.elementAt(0));
+						System.out.println(args.elementAt(1));
+						((Reversal) D).reverse(args.elementAt(0) ,args.elementAt(1) );
 					}
 				});
 				t.start();
@@ -91,9 +110,7 @@ public class ReversalButtons extends Buttons {
 		first.setLayout(new FlowLayout());
 
 		I = new InputField(5, M.statusBar);
-		I2 = new InputField(5, M.statusBar);
 		first.add(I);
-		first.add(I2);
 		actionButtons(first);
 		initPrevious();
 		initNext();

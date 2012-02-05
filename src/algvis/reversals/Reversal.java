@@ -1,20 +1,23 @@
 package algvis.reversals;
 
+import algvis.core.ClickListener;
 import algvis.core.View;
 import algvis.core.VisPanel;
 import algvis.splaytree.SplayTree;
 
-public class Reversal extends SplayTree {
+public class Reversal extends SplayTree implements ClickListener {
 	public static String dsName = "reversal";
 	ReversalNode root = null, left = null, right = null;
 	public int max = 0;
 	Reversal L = null, R = null;
+	
+	ReversalNode firstSelected = null, secondSelected = null;
 
 	public Reversal(VisPanel M) {
 		super(M);
 		setTree();
 	//	insert();
-		max = 10;
+		max = 11;
 	}
 	
 	public void reverse(int x, int y) {
@@ -31,6 +34,7 @@ public class Reversal extends SplayTree {
 	}
 	
 	public void setTree() {
+		ReversalNode v0 = new ReversalNode(this, 0);
 		ReversalNode v1 = new ReversalNode(this, 1);
 		ReversalNode v2 = new ReversalNode(this, 2);
 		ReversalNode v3 = new ReversalNode(this, 3);
@@ -41,15 +45,18 @@ public class Reversal extends SplayTree {
 		ReversalNode v8 = new ReversalNode(this, 8);
 		ReversalNode v9 = new ReversalNode(this, 9);
 		ReversalNode v10 = new ReversalNode(this, 10);
+		ReversalNode v11 = new ReversalNode(this, 11);
 		setRoot(v5);
 		v5.setLeft(v3);
 		v3.setParent(v5);
 		v5.setRight(v8);
 		v8.setParent(v5);
-		v3.setLeft(v2);
-		v2.setParent(v3);
-		v2.setLeft(v1);
-		v1.setParent(v2);
+		v3.setLeft(v1);
+		v1.setParent(v3);
+		v1.setLeft(v0);
+		v0.setParent(v1);
+		v1.setRight(v2);
+		v2.setParent(v1);
 		v3.setRight(v4);
 		v4.setParent(v3);
 		v8.setLeft(v6);
@@ -60,7 +67,10 @@ public class Reversal extends SplayTree {
 		v10.setParent(v8);
 		v10.setLeft(v9);
 		v9.setParent(v10);
-		this.reposition();		
+		v10.setRight(v11);
+		v11.setParent(v10);
+		this.reposition();
+		this.getRoot().calcTree();
 	}
 
 	@Override
@@ -102,64 +112,74 @@ public class Reversal extends SplayTree {
 	@Override
 	public void reposition() {
 		super.reposition();
-		if (getRoot() != null) {		
-			this.getRoot().setNum();
+		if (L != null) {
+			x1 = -20; 
+			x2 = y1 = y2 = 0;
+			if (getRoot() != null) {
+				getRoot().reposition();
+			}
+			M.screen.V.setBounds(x1, y1, x2, y2);			
+		}
+		if (R == null) {
+			x1 = 25;
+			x2 = y1 = y2 = 0;
+			if (getRoot() != null) {
+				getRoot().reposition();
+			}
+			M.screen.V.setBounds(x1, y1, x2, y2);
+		}
+		
+	}
+	
+	public boolean isSelected(ReversalNode u) {
+		if ((u == firstSelected) || (u == secondSelected))
+			return true;
+		else
+			return false;
+	}
+	
+	public int order(ReversalNode w) {
+		ReversalNode u = w;
+		int count = 0;
+		if (u.getLeft() != null) {
+			count = u.getLeft().size;
+		}
+		/// i want different search - output = number of that node
+		while (u != getRoot()) {
+			u = u.getParent();
+			if (! u.isLeft()) {
+				count += u.getLeft().size;
+			}
+		}
+		count--;
+		return count;
+	}
+	
+	@Override
+	public void mouseClicked(int x, int y) {
+		ReversalNode w = (ReversalNode) getRoot().find(x, y);
+		if (w != null) {
+			if (isSelected(w)) {
+				w.unmark();
+				if (w == secondSelected) {
+					secondSelected = null;
+				} else if (w == firstSelected) {
+					firstSelected = secondSelected;
+					secondSelected = null;
+				}
+			} else {
+				w.mark();
+				if (firstSelected == null) {
+					firstSelected = w;
+				} else if (secondSelected == null) {
+					secondSelected = w;
+				} else {
+					firstSelected.unmark();
+					firstSelected = secondSelected;
+					secondSelected = w;
+				}
+			}
 		}
 	}
 	
-	protected void rightrot(ReversalNode v) {
-		ReversalNode u = v.getParent();
-		if (v.getRight() == null) {
-			u.unlinkLeft();
-		} else {
-			u.linkLeft(v.getRight());
-		}
-		if (u.isRoot()) {
-			setRoot( v);
-		} else {
-			if (u.isLeft()) {
-				u.getParent().linkLeft(v);
-			} else {
-				u.getParent().linkRight(v);
-			}
-		}
-		v.linkRight(u);
-	}
-	
-	protected void leftrot(ReversalNode v) {
-		ReversalNode u = v.getParent();
-		if (v.getLeft() == null) {
-			u.unlinkRight();
-		} else {
-			u.linkRight(v.getLeft());
-		}
-		if (u.isRoot()) {
-			setRoot(v);
-		} else {
-			if (u.isLeft()) {
-				u.getParent().linkLeft(v);
-			} else {
-				u.getParent().linkRight(v);
-			}
-		}
-		v.linkLeft(u);
-	}
-
-	public void rotate(ReversalNode v) {
-		if (v.isLeft()) {
-			rightrot(v);
-		} else {
-			leftrot(v);
-		}
-		reposition();
-		if (v.getLeft() != null) {
-			v.getLeft().calc();
-		}
-		if (v.getRight() != null) {
-			v.getRight().calc();
-		}
-		v.calc();
-	}
-
-
 }
