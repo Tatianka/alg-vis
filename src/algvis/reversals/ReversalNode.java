@@ -1,7 +1,7 @@
 package algvis.reversals;
 
 import algvis.core.DataStructure;
-import algvis.core.View;
+import algvis.core.NodeColor;
 import algvis.splaytree.SplayNode;
 
 public class ReversalNode extends SplayNode {
@@ -45,13 +45,16 @@ public class ReversalNode extends SplayNode {
 	public void changeFlag() {
 		if (revflag) {
 			revflag = false;
+			this.setColor(NodeColor.NORMAL);
 		} else {
 			revflag = true;
+			this.setColor(NodeColor.GREEN);
 		}
 	}
 	
 	public void flagDown() {
 		revflag = false;
+		this.setColor(NodeColor.NORMAL);
 		if (isLeaf()) {
 			return;
 		}
@@ -67,15 +70,16 @@ public class ReversalNode extends SplayNode {
 			r.setParent(this);
 			r.changeFlag();
 		}
-		reposition();
 	}
 	
-	@Override
+/*	@Override
 	public void draw(View V) {
 		if (revflag) {
-			marked = true;
+			this.setColor(NodeColor.GREEN);
+		} else {
+			this.setColor(NodeColor.NORMAL);
 		}
 		super.draw(V);
-	}
+	}*/
 
 }

@@ -22,6 +22,7 @@ public class Reversal extends SplayTree implements ClickListener {
 	
 	public void reverse(int x, int y) {
 		start(new Reverse(this, x, y));
+		reset();
 	}
 	
 	public void insert() {
@@ -85,7 +86,7 @@ public class Reversal extends SplayTree implements ClickListener {
 	public void setRoot(ReversalNode root) {
 		this.root = root;
 	}
-
+	
 	@Override
 	public void draw(View V) {
 		if (getRoot() != null) {
@@ -109,6 +110,17 @@ public class Reversal extends SplayTree implements ClickListener {
 		R = null;
 	}
 	
+	public void reset() {
+		if (firstSelected != null) {
+			firstSelected.unmark();			
+		}
+		firstSelected = null;
+		if (secondSelected != null) {
+			secondSelected.unmark();
+		}
+		secondSelected = null;
+	}
+	
 	@Override
 	public void reposition() {
 		super.reposition();
@@ -128,7 +140,6 @@ public class Reversal extends SplayTree implements ClickListener {
 			}
 			M.screen.V.setBounds(x1, y1, x2, y2);
 		}
-		
 	}
 	
 	public boolean isSelected(ReversalNode u) {
@@ -145,13 +156,18 @@ public class Reversal extends SplayTree implements ClickListener {
 			count = u.getLeft().size;
 		}
 		/// i want different search - output = number of that node
+		boolean ok;
 		while (u != getRoot()) {
+			ok = u.isLeft();
 			u = u.getParent();
-			if (! u.isLeft()) {
-				count += u.getLeft().size;
+			if (! ok) {
+				if (u.getLeft() != null) {
+					count += u.getLeft().size + 1;
+				} else {
+					count++;
+				}
 			}
 		}
-		count--;
 		return count;
 	}
 	

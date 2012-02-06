@@ -16,7 +16,8 @@ public class Reverse extends ReversalAlg {
 		if (from == to) {
 			return;
 		}
-		if (to > T.max) {
+		if (to > T.max-1) {
+			addStep("toobig");
 			return;
 		}
 		ReversalNode w = find(from-1);
@@ -30,7 +31,7 @@ public class Reverse extends ReversalAlg {
 		T.reposition();
 		mysuspend();
 		
-		w = find(to-from+2);
+		w = find(to-from+1);
 		splay(w);
 		T.R = new Reversal(T.M);
 		T.R.setRoot(T.getRoot());
@@ -40,7 +41,8 @@ public class Reverse extends ReversalAlg {
 		T.reposition();
 		mysuspend();
 		/// let's stick it together
-		T.getRoot().marked = true;
+	//	T.getRoot().revflag = true;
+		T.getRoot().changeFlag();
 		T.L.getRoot().setRight(T.R.getRoot());
 		T.R.getRoot().setParent(T.L.getRoot());
 		T.R.getRoot().setLeft(T.getRoot());

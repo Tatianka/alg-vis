@@ -51,6 +51,8 @@ public class ReversalAlg extends Algorithm {
 		while (true) {
 			if (w.revflag) {
 				w.flagDown();
+				T.reposition();
+				mysuspend();
 			}
 			if (w.getLeft() != null) {
 				//l = w.getLeft().snum + seen;
