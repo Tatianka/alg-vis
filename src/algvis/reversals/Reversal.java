@@ -9,7 +9,8 @@ public class Reversal extends SplayTree implements ClickListener {
 	public static String dsName = "reversal";
 	ReversalNode root = null, left = null, right = null;
 	public int max = 0;
-	Reversal L = null, R = null;
+	//Reversal L = null, R = null;
+	ReversalNode rootL = null, rootR = null;
 	
 	ReversalNode firstSelected = null, secondSelected = null;
 
@@ -70,8 +71,8 @@ public class Reversal extends SplayTree implements ClickListener {
 		v9.setParent(v10);
 		v10.setRight(v11);
 		v11.setParent(v10);
-		this.reposition();
-		this.getRoot().calcTree();
+		reposition();
+		getRoot().calcTree();
 	}
 
 	@Override
@@ -93,21 +94,31 @@ public class Reversal extends SplayTree implements ClickListener {
 			getRoot().moveTree();
 			getRoot().drawTree(V);
 		}
+		if (rootL != null) {
+			rootL.moveTree();
+			rootL.drawTree(V);
+		}
+		if (rootR != null) {
+			rootR.moveTree();
+			rootR.drawTree(V);
+		}
 		super.draw(V);
-		if (L != null) {
+	/*	if (L != null) {
 			L.draw(V);
 		}
 		if (R != null) {
 			R.draw(V);
-		}
+		}*/
 	}
 	
 	@Override
 	public void clear() {
 		super.clear();
 		setTree();
-		L = null;
-		R = null;
+//		L = null;
+	//	R = null;
+		rootL = null;
+		rootR = null;
 	}
 	
 	public void reset() {
@@ -120,11 +131,18 @@ public class Reversal extends SplayTree implements ClickListener {
 		}
 		secondSelected = null;
 	}
-	
+		
 	@Override
 	public void reposition() {
 		super.reposition();
-		if (L != null) {
+		if (rootL != null) {
+			rootL.repositionL(getRoot());
+		}
+		if (rootR != null) {
+			rootR.repositionR(getRoot());
+		}
+	/*	//if (L != null) {
+		if (rootL != null) {
 			x1 = -20; 
 			x2 = y1 = y2 = 0;
 			if (getRoot() != null) {
@@ -132,14 +150,15 @@ public class Reversal extends SplayTree implements ClickListener {
 			}
 			M.screen.V.setBounds(x1, y1, x2, y2);			
 		}
-		if (R == null) {
+		//if (R == null) {
+		if (rootR == null) {
 			x1 = 25;
 			x2 = y1 = y2 = 0;
 			if (getRoot() != null) {
 				getRoot().reposition();
 			}
 			M.screen.V.setBounds(x1, y1, x2, y2);
-		}
+		}*/
 	}
 	
 	public boolean isSelected(ReversalNode u) {

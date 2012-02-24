@@ -1,5 +1,7 @@
 package algvis.reversals;
 
+import algvis.core.NodeColor;
+
 public class Reverse extends ReversalAlg {
 	Reversal T;
 	int from, to;
@@ -22,32 +24,46 @@ public class Reverse extends ReversalAlg {
 		}
 		ReversalNode w = find(from-1);
 		splay(w);
-		T.L = new Reversal(T.M);
-		T.L.setRoot(T.root);
+		mysuspend();
+		
+		T.rootL = T.getRoot();
 		T.setRoot(T.getRoot().getRight());
-		T.L.getRoot().setRight(null);
+		T.rootL.setRight(null);
 		T.getRoot().setParent(null);
 		
 		T.reposition();
 		mysuspend();
 		
+		T.v = s = new ReversalNode(T, K = to);
+		s.setColor(NodeColor.FIND);
 		w = find(to-from+1);
 		splay(w);
-		T.R = new Reversal(T.M);
-		T.R.setRoot(T.getRoot());
-		T.R.getRoot().setParent(null);
+		mysuspend();
+		T.rootR = T.getRoot();
 		T.setRoot(T.getRoot().getLeft());
-		
+		T.getRoot().setParent(null);
+		T.rootR.setLeft(null);
+
 		T.reposition();
 		mysuspend();
 		/// let's stick it together
-	//	T.getRoot().revflag = true;
 		T.getRoot().changeFlag();
-		T.L.getRoot().setRight(T.R.getRoot());
-		T.R.getRoot().setParent(T.L.getRoot());
-		T.R.getRoot().setLeft(T.getRoot());
-		T.getRoot().setParent(T.R.getRoot());
-		T.setRoot(T.L.getRoot());
+		T.rootL.setRight(T.rootR);
+		T.rootR.setParent(T.rootL);
+		
+		T.reposition();
+		mysuspend();
+		
+		T.rootR.setLeft(T.getRoot());
+		T.getRoot().setParent(T.rootR);
+		T.rootR = null;
+		
+	//	T.reposition();
+		//mysuspend();
+		
+		T.setRoot(T.rootL);
+		T.rootL = null;
+		
 		T.reposition();
 	}
 

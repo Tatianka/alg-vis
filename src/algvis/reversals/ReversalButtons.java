@@ -3,7 +3,6 @@ package algvis.reversals;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.util.Random;
 import java.util.Vector;
 
 import javax.swing.JPanel;
