@@ -1,5 +1,7 @@
 package algvis.reversals;
 
+import java.util.Random;
+
 import algvis.core.ClickListener;
 import algvis.core.View;
 import algvis.core.VisPanel;
@@ -9,21 +11,23 @@ public class Reversal extends SplayTree implements ClickListener {
 	public static String dsName = "reversal";
 	ReversalNode root = null, left = null, right = null;
 	public int max = 0;
-	//Reversal L = null, R = null;
 	ReversalNode rootL = null, rootR = null;
+	int[] a;
 	
 	ReversalNode firstSelected = null, secondSelected = null;
 
 	public Reversal(VisPanel M) {
 		super(M);
 		setTree();
-	//	insert();
-		max = 11;
+		setArray();
 	}
 	
 	public void reverse(int x, int y) {
+		if (x>y) {
+			int tmp = x; x=y; y=tmp;
+		}
 		start(new Reverse(this, x, y));
-		reset();
+//		reset();
 	}
 	
 	public void insert() {
@@ -33,6 +37,18 @@ public class Reversal extends SplayTree implements ClickListener {
 	
 	public void find(int x) {
 		start(new ReversalFind(this, x));
+	}
+	
+	@Override
+	public void random(int n) {
+		Random g = new Random(System.currentTimeMillis());
+		boolean p = M.pause;
+		M.pause = false;
+		for (int i = 0; i < n; ++i) {
+			int a = g.nextInt(max-1)+1, b = g.nextInt(max-1)+1;
+			reverse(a,b);
+		}
+		M.pause = p;
 	}
 	
 	public void setTree() {
@@ -73,8 +89,23 @@ public class Reversal extends SplayTree implements ClickListener {
 		v11.setParent(v10);
 		reposition();
 		getRoot().calcTree();
+		max = 11;
 	}
 
+	public void setArray() {
+		a = new int[10];
+		a[0] = 1;
+		a[1] = 2;
+		a[2] = 3;
+		a[3] = 4;
+		a[4] = 5;
+		a[5] = 6;
+		a[6] = 7;
+		a[7] = 8;
+		a[8] = 9;
+		a[9] = 10;
+	}
+	
 	@Override
 	public String getName() {
 		return "reversal";
@@ -86,6 +117,10 @@ public class Reversal extends SplayTree implements ClickListener {
 
 	public void setRoot(ReversalNode root) {
 		this.root = root;
+	}
+	
+	public void drawArray() {
+		
 	}
 	
 	@Override
@@ -102,6 +137,7 @@ public class Reversal extends SplayTree implements ClickListener {
 			rootR.moveTree();
 			rootR.drawTree(V);
 		}
+		drawArray();
 		super.draw(V);
 	/*	if (L != null) {
 			L.draw(V);
@@ -115,6 +151,7 @@ public class Reversal extends SplayTree implements ClickListener {
 	public void clear() {
 		super.clear();
 		setTree();
+		setArray();
 //		L = null;
 	//	R = null;
 		rootL = null;

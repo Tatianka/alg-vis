@@ -54,8 +54,12 @@ public class ReversalInsert extends ReversalAlg {
 			System.out.print("trololo");
 		}
 		splay(w);
-		w = setTree();
-		T.getRoot().setRight(w);	
+		T.rootR = setTree();
+		T.reposition();
+		mysuspend();
+		T.getRoot().setRight(T.rootR);
+		T.rootR.setParent(T.getRoot());
+		T.rootR = null;
 		T.reposition();
 	}
 

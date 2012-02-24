@@ -11,11 +11,13 @@ public class Reverse extends ReversalAlg {
 		from = x;
 		to = y;
 		this.T = T;
+		setHeader("reversion");
 	}
 	
 	@Override
 	public void run() {
 		if (from == to) {
+			addStep("reverse-equal");
 			return;
 		}
 		if (to > T.max-1) {
