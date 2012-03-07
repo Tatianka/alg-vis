@@ -39,10 +39,10 @@ public class BST extends Dictionary implements LayoutListener, ClickListener {
 		}
 		return v;
 	}
-
+	
 	public BSTNode setRoot(BSTNode root) {
-		if (this.root != root) {
-			scenario.add(new SetBSTRootCommand(this, root, this.root));
+		if (getRoot() != root) {
+			scenario.add(new SetBSTRootCommand(this, root, getRoot()));
 			this.root = root;
 		}
 		return root;

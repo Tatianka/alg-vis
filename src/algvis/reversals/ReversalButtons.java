@@ -67,34 +67,10 @@ public class ReversalButtons extends Buttons {
 			}
 		} else if (evt.getSource() == reverseB) {
 			final Vector<Integer> args = I.getVI(1, D.max-1);
-		/*	int count = D.max;
-			if (D.firstSelected != null) {
-				args.insertElementAt(D.order(D.firstSelected), 0); 
-			//	D.firstSelected = null;
-			}
-			if (D.secondSelected != null) {
-				args.insertElementAt(D.order(D.secondSelected), 1);
-			//	D.secondSelected = null;
-			}
-			Random G = new Random(System.currentTimeMillis());
-			switch (args.size()) {
-			case 0:
-				args.add(G.nextInt(count) + 1);
-			case 1:
-				int i;
-				int ii = args.elementAt(0);
-				do {
-					i = G.nextInt(count) + 1;
-				} while (i == ii);
-				args.add(i);
-			}*/
-
 			if (args.size() > 0) {
 				Thread t = new Thread(new Runnable() {
 					@Override
 					public void run() {
-						System.out.println(args.elementAt(0));
-						System.out.println(args.elementAt(1));
 						if (args.elementAt(0) < args.elementAt(1))	{
 							((Reversal) D).reverse(args.elementAt(0) ,args.elementAt(1) );
 						} else {

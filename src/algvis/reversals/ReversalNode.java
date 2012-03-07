@@ -47,16 +47,13 @@ public class ReversalNode extends SplayNode {
 	public void changeFlag() {
 		if (revflag) {
 			revflag = false;
-			this.setColor(NodeColor.NORMAL);
 		} else {
 			revflag = true;
-			this.setColor(NodeColor.GREEN);
 		}
 	}
 	
 	public void flagDown() {
 		revflag = false;
-		this.setColor(NodeColor.NORMAL);
 		if (isLeaf()) {
 			return;
 		}
@@ -74,97 +71,47 @@ public class ReversalNode extends SplayNode {
 		}
 	}
 	
-	public void reboxRootL(ReversalNode root) {
-		leftw = root.leftw + root.rightw;
-		rightw = (getRight() == null) ? DataStructure.minsepx/2 : getRight().leftw
-				+ getRight().rightw;	
-	}
-	
-	public void reboxRootR(ReversalNode root) {
-		leftw = (getLeft() == null) ? DataStructure.minsepx/2 : getLeft().leftw
-				+ getLeft().rightw;
-		rightw = root.leftw + root.rightw;
-	}
-	
-	private void reposL(ReversalNode root) {
-		if (isRoot()) {
-		//	goToRoot();
-			goTo(DataStructure.rootx - rightw - root.leftw, DataStructure.rooty);
-	/*		D.x1 = -leftw;
-			D.x2 = rightw;
-			D.y2 = this.toy;*/
-			// System.out.println ("r" + key + " " +leftw +"  "+ rightw);
-		}
+	private void reposN() {
 		if (this.toy > D.y2) {
 			D.y2 = this.toy;
 		}
 		if (getLeft() != null) {
 			getLeft().goTo(this.tox - getLeft().rightw,
 					this.toy + DataStructure.minsepy);
-			getLeft().reposL(root);
+			getLeft().reposN();
 		}
 		if (getRight() != null) {
 			getRight().goTo(this.tox + getRight().leftw,
 					this.toy + DataStructure.minsepy);
-			getRight().reposL(root);
+			getRight().reposN();
+		}		
+	}
+	
+	public void repositionN() {
+//		reboxTree();
+		reposN();
+	}
+	
+	@Override
+	public void setColor(NodeColor color) {
+		if (color != NodeColor.NORMAL) {
+			super.setColor(color);
+			return;
+		}
+		if ((key == 0) || (key == ((Reversal) D).max)) {
+			super.setColor(NodeColor.CACHED);
+		} else {
+			super.setColor(NodeColor.NORMAL);
 		}
 	}
-
-	private void reposR(ReversalNode root) {
-		if (isRoot()) {
-		//	goToRoot();
-			goTo(DataStructure.rootx + leftw + root.rightw, DataStructure.rooty);
-		/*	D.x1 = -leftw;
-			D.x2 = rightw;
-			D.y2 = this.toy;*/
-			// System.out.println ("r" + key + " " +leftw +"  "+ rightw);
-		}
-		if (this.toy > D.y2) {
-			D.y2 = this.toy;
-		}
-		if (getLeft() != null) {
-			getLeft().goTo(this.tox - getLeft().rightw,
-					this.toy + DataStructure.minsepy);
-			getLeft().reposR(root);
-		}
-		if (getRight() != null) {
-			getRight().goTo(this.tox + getRight().leftw,
-					this.toy + DataStructure.minsepy);
-			getRight().reposR(root);
-		}
-	}
-
-	public void repositionL(ReversalNode root) {
-		//	reboxTree();
-			if (getLeft() != null) {
-				getLeft().reboxTree();
-			}
-			if (getRight() != null) {
-				getRight().reboxTree();
-			}
-	//		reboxRootL(root);
-			rebox();
-
-			reposL(root);
-		}
-		
-	public void repositionR(ReversalNode root) {
-		//	reboxTree();
-			if (getLeft() != null) {
-				getLeft().reboxTree();
-			}
-			if (getRight() != null) {
-				getRight().reboxTree();
-			}
-			reboxRootR(root);
-
-			reposR(root);
-		}
 	
 	@Override
 	public void draw(View V) {
 		super.draw(V);
 		V.drawStringLeft("" + size, x - Node.radius, y - Node.radius, 8);
+		if (revflag) {
+			V.drawImage(((Reversal) D).getImg(), x+Node.radius, y-Node.radius-4, 8, 8);
+		}
 	}
 
 }

@@ -1,8 +1,17 @@
 package algvis.reversals;
 
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.Random;
 
+import javax.imageio.ImageIO;
+
+import algvis.bst.BSTNode;
+import algvis.core.Buttons;
 import algvis.core.ClickListener;
+import algvis.core.DataStructure;
+import algvis.core.Node;
+import algvis.core.NodeColor;
 import algvis.core.View;
 import algvis.core.VisPanel;
 import algvis.splaytree.SplayTree;
@@ -13,11 +22,11 @@ public class Reversal extends SplayTree implements ClickListener {
 	public int max = 0;
 	ReversalNode rootL = null, rootR = null;
 	int[] a;
+	private static BufferedImage img;
 	
-	ReversalNode firstSelected = null, secondSelected = null;
-
 	public Reversal(VisPanel M) {
 		super(M);
+		img = load("../images/flag.png");
 		setTree();
 		setArray();
 	}
@@ -27,12 +36,12 @@ public class Reversal extends SplayTree implements ClickListener {
 			int tmp = x; x=y; y=tmp;
 		}
 		start(new Reverse(this, x, y));
-//		reset();
 	}
 	
 	public void insert() {
 		start(new ReversalInsert(this));
 		max+=10;
+		setColor(getRoot());
 	}
 	
 	public void find(int x) {
@@ -90,20 +99,51 @@ public class Reversal extends SplayTree implements ClickListener {
 		reposition();
 		getRoot().calcTree();
 		max = 11;
+		setColor(getRoot());
+	}
+	
+	public void setColor(ReversalNode v) {
+		if ((v.key == 0) || (v.key == max)) {
+			v.setColor(NodeColor.CACHED);
+		} else {
+			v.setColor(NodeColor.NORMAL);
+		}
+		if (v.getLeft() != null) {
+			setColor(v.getLeft());
+		}
+		if (v.getRight() != null) {
+			setColor(v.getRight());
+		}
 	}
 
 	public void setArray() {
 		a = new int[10];
-		a[0] = 1;
-		a[1] = 2;
-		a[2] = 3;
-		a[3] = 4;
-		a[4] = 5;
-		a[5] = 6;
-		a[6] = 7;
-		a[7] = 8;
-		a[8] = 9;
-		a[9] = 10;
+		for(int i=0;i<10;i++) {
+			a[i] = i+1;
+		}
+	}
+
+	public void insertToArray() {
+		int[] b = a;
+		a = new int[max+9];
+		for(int i=0;i<max-1;i++) {
+			a[i] = b[i];
+		}
+		for(int i=max-1;i<max+9;i++) {
+			a[i] = i+1;
+		}
+	}
+	
+	public void reverseArray(int from, int to) {
+		from--; to--;
+		int tmp;
+		while (from<to) {
+			tmp = a[from];
+			a[from] = a[to];
+			a[to] = tmp;
+			from++;
+			to--;
+		}
 	}
 	
 	@Override
@@ -115,12 +155,53 @@ public class Reversal extends SplayTree implements ClickListener {
 		return root;
 	}
 
+	public BSTNode setRoot(BSTNode root) {
+		this.root = (ReversalNode) root;
+		return root;
+	}
+	
 	public void setRoot(ReversalNode root) {
 		this.root = root;
 	}
 	
-	public void drawArray() {
-		
+	public void drawArray(View V) {
+		int m=0, x;
+		if ((rootL != null) && (rootL.size>1)) {
+			x = getRoot().x - getRoot().leftw +19 - (rootL.size-1)*(2*Node.radius+3) - 10;
+			for(int i=0; i<rootL.size-1; i++) {
+				Node w = new Node(this, a[i], x, -25);
+				w.draw(V);
+				if (i<rootL.size-2) {
+					x+=2*Node.radius+3;
+					V.drawLine(w.x+Node.radius, -25, x, -25);
+				}
+			}
+			m = rootL.size-1;
+		}
+		x = getRoot().x - getRoot().leftw +19;
+		int n = max-1;
+		if ((rootR != null) && (rootR.size>1)) {
+			n -= rootR.size-1;
+		}
+		for(int i=m; i<n; i++) {
+			Node w = new Node(this, a[i], x, -25);
+			w.draw(V);
+			if (i<n-1) {
+				x+=2*Node.radius+3;
+				V.drawLine(w.x+Node.radius, -25, x, -25);
+			}
+		} 
+		x += 2*Node.radius + 10;
+		if ((rootR != null) && (rootR.size>1)) {
+			for(int i=n; i<max-1; i++) {
+				Node w = new Node(this, a[i], x, -25);
+				w.draw(V);
+				if (i<max-2) {
+					x+=2*Node.radius+3;
+					V.drawLine(w.x+Node.radius, -25, x, -25);
+				}
+			} 			
+		}
 	}
 	
 	@Override
@@ -137,14 +218,8 @@ public class Reversal extends SplayTree implements ClickListener {
 			rootR.moveTree();
 			rootR.drawTree(V);
 		}
-		drawArray();
+		drawArray(V);
 		super.draw(V);
-	/*	if (L != null) {
-			L.draw(V);
-		}
-		if (R != null) {
-			R.draw(V);
-		}*/
 	}
 	
 	@Override
@@ -152,106 +227,42 @@ public class Reversal extends SplayTree implements ClickListener {
 		super.clear();
 		setTree();
 		setArray();
-//		L = null;
-	//	R = null;
 		rootL = null;
 		rootR = null;
 	}
 	
-	public void reset() {
-		if (firstSelected != null) {
-			firstSelected.unmark();			
-		}
-		firstSelected = null;
-		if (secondSelected != null) {
-			secondSelected.unmark();
-		}
-		secondSelected = null;
-	}
-		
 	@Override
 	public void reposition() {
+		x1 = x2 = y1 = y2 = 0;
 		super.reposition();
 		if (rootL != null) {
-			rootL.repositionL(getRoot());
+			rootL.reboxTree();
+			rootL.goTo(DataStructure.rootx - rootL.rightw - root.leftw, DataStructure.rooty);
+			rootL.repositionN();
 		}
 		if (rootR != null) {
-			rootR.repositionR(getRoot());
+//			rootR.reboxTree();
+			rootR.leftw = DataStructure.minsepx/2;
+			rootR.goTo(DataStructure.rootx + rootR.leftw + root.rightw, DataStructure.rooty);
+			rootR.repositionN();
 		}
-	/*	//if (L != null) {
-		if (rootL != null) {
-			x1 = -20; 
-			x2 = y1 = y2 = 0;
-			if (getRoot() != null) {
-				getRoot().reposition();
-			}
-			M.screen.V.setBounds(x1, y1, x2, y2);			
-		}
-		//if (R == null) {
-		if (rootR == null) {
-			x1 = 25;
-			x2 = y1 = y2 = 0;
-			if (getRoot() != null) {
-				getRoot().reposition();
-			}
-			M.screen.V.setBounds(x1, y1, x2, y2);
-		}*/
+		M.screen.V.setBounds(x1, y1, x2, y2);
 	}
 	
-	public boolean isSelected(ReversalNode u) {
-		if ((u == firstSelected) || (u == secondSelected))
-			return true;
-		else
-			return false;
-	}
-	
-	public int order(ReversalNode w) {
-		ReversalNode u = w;
-		int count = 0;
-		if (u.getLeft() != null) {
-			count = u.getLeft().size;
-		}
-		/// i want different search - output = number of that node
-		boolean ok;
-		while (u != getRoot()) {
-			ok = u.isLeft();
-			u = u.getParent();
-			if (! ok) {
-				if (u.getLeft() != null) {
-					count += u.getLeft().size + 1;
-				} else {
-					count++;
-				}
+	public static BufferedImage load(String path) {
+		java.net.URL imgURL = Buttons.class.getResource(path);
+		if (imgURL != null) {
+			try {
+				return ImageIO.read(imgURL);
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
-		}
-		return count;
+		} 
+		return null;
 	}
-	
-	@Override
-	public void mouseClicked(int x, int y) {
-		ReversalNode w = (ReversalNode) getRoot().find(x, y);
-		if (w != null) {
-			if (isSelected(w)) {
-				w.unmark();
-				if (w == secondSelected) {
-					secondSelected = null;
-				} else if (w == firstSelected) {
-					firstSelected = secondSelected;
-					secondSelected = null;
-				}
-			} else {
-				w.mark();
-				if (firstSelected == null) {
-					firstSelected = w;
-				} else if (secondSelected == null) {
-					secondSelected = w;
-				} else {
-					firstSelected.unmark();
-					firstSelected = secondSelected;
-					secondSelected = w;
-				}
-			}
-		}
+
+	public BufferedImage getImg() {
+		return img;
 	}
 	
 }

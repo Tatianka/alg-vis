@@ -45,9 +45,9 @@ public class SplayTree extends BST {
 			V.drawWideLine(w2.x, w2.y, w2.getParent().x, w2.getParent().y);
 		}
 
-		if (root != null) {
-			root.moveTree();
-			root.drawTree(V);
+		if (getRoot() != null) {
+			getRoot().moveTree();
+			getRoot().drawTree(V);
 		}
 		if (root2 != null) {
 			root2.moveTree();
