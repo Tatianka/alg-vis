@@ -10,6 +10,7 @@ import algvis.bst.BSTNode;
 import algvis.core.Buttons;
 import algvis.core.ClickListener;
 import algvis.core.DataStructure;
+import algvis.core.Layout;
 import algvis.core.Node;
 import algvis.core.NodeColor;
 import algvis.core.View;
@@ -21,7 +22,7 @@ public class Reversal extends SplayTree implements ClickListener {
 	ReversalNode root = null, left = null, right = null;
 	public int max = 0;
 	ReversalNode rootL = null, rootR = null;
-	int[] a;
+	Node[] ra;
 	private static BufferedImage img;
 	
 	public Reversal(VisPanel M) {
@@ -36,16 +37,20 @@ public class Reversal extends SplayTree implements ClickListener {
 			int tmp = x; x=y; y=tmp;
 		}
 		start(new Reverse(this, x, y));
+		posArray();
 	}
 	
 	public void insert() {
 		start(new ReversalInsert(this));
 		max+=10;
 		setColor(getRoot());
+		posArray();
 	}
 	
 	public void find(int x) {
+		ra[x-1].setColor(NodeColor.FOUND);
 		start(new ReversalFind(this, x));
+		ra[x-1].setColor(NodeColor.NORMAL);
 	}
 	
 	@Override
@@ -58,6 +63,7 @@ public class Reversal extends SplayTree implements ClickListener {
 			reverse(a,b);
 		}
 		M.pause = p;
+		posArray();
 	}
 	
 	public void setTree() {
@@ -117,30 +123,37 @@ public class Reversal extends SplayTree implements ClickListener {
 	}
 
 	public void setArray() {
-		a = new int[10];
-		for(int i=0;i<10;i++) {
-			a[i] = i+1;
+		ra = new Node[10];
+		for(int i=0; i<10; i++) {
+			ra[i] = new Node(this, i+1, getRoot().x - getRoot().leftw +19 + i*(Node.radius*2+3), -35);
 		}
 	}
 
 	public void insertToArray() {
-		int[] b = a;
-		a = new int[max+9];
-		for(int i=0;i<max-1;i++) {
-			a[i] = b[i];
+		Node[] rb = ra;
+		ra = new Node[max+9];
+		for(int i=0; i<max-1; i++) {
+			ra[i] = rb[i];
 		}
-		for(int i=max-1;i<max+9;i++) {
-			a[i] = i+1;
+		for(int i=max-1; i<max+9; i++) {
+			ra[i] = new Node(this, i+1, ra[i-1].x+(Node.radius*2+3), ra[i-1].y);
 		}
 	}
 	
 	public void reverseArray(int from, int to) {
 		from--; to--;
-		int tmp;
+		int fx,fy,tx,ty;
+		Node tmp;
 		while (from<to) {
-			tmp = a[from];
-			a[from] = a[to];
-			a[to] = tmp;
+			fx = ra[from].x;
+			fy = ra[from].y;
+			tx = ra[to].x;
+			ty = ra[to].y;
+			ra[from].goTo(tx, ty);
+			ra[to].goTo(fx, fy);
+			tmp = ra[from];
+			ra[from] = ra[to];
+			ra[to] = tmp;
 			from++;
 			to--;
 		}
@@ -164,44 +177,34 @@ public class Reversal extends SplayTree implements ClickListener {
 		this.root = root;
 	}
 	
+	public void posArray() {
+		goToArray(getRoot().x - getRoot().leftw +19);
+	}
+	
+	public void goToArray(int x) {
+		for(int i=0; i<max-1; i++) {
+			ra[i].goTo(x+i*(Node.radius*2+3), ra[i].y);
+		}
+	}
+	
+	public void goToPartOfArray(int from, int to, int x) {
+		for(int i=from-1; i<to; i++) {
+			ra[i].goTo(ra[i].x + x, ra[i].y);
+		}
+	}
+	
+	public void moveArray() {
+		for(int i=0; i< max-1; i++) {
+			ra[i].move();
+		}
+	}
+	
 	public void drawArray(View V) {
-		int m=0, x;
-		if ((rootL != null) && (rootL.size>1)) {
-			x = getRoot().x - getRoot().leftw +19 - (rootL.size-1)*(2*Node.radius+3) - 10;
-			for(int i=0; i<rootL.size-1; i++) {
-				Node w = new Node(this, a[i], x, -25);
-				w.draw(V);
-				if (i<rootL.size-2) {
-					x+=2*Node.radius+3;
-					V.drawLine(w.x+Node.radius, -25, x, -25);
-				}
-			}
-			m = rootL.size-1;
+		for(int i=0; i<max-2; i++) {
+			ra[i].draw(V);
+			V.drawLine(ra[i].x+Node.radius, ra[i].y, ra[i+1].x-Node.radius, ra[i+1].y);
 		}
-		x = getRoot().x - getRoot().leftw +19;
-		int n = max-1;
-		if ((rootR != null) && (rootR.size>1)) {
-			n -= rootR.size-1;
-		}
-		for(int i=m; i<n; i++) {
-			Node w = new Node(this, a[i], x, -25);
-			w.draw(V);
-			if (i<n-1) {
-				x+=2*Node.radius+3;
-				V.drawLine(w.x+Node.radius, -25, x, -25);
-			}
-		} 
-		x += 2*Node.radius + 10;
-		if ((rootR != null) && (rootR.size>1)) {
-			for(int i=n; i<max-1; i++) {
-				Node w = new Node(this, a[i], x, -25);
-				w.draw(V);
-				if (i<max-2) {
-					x+=2*Node.radius+3;
-					V.drawLine(w.x+Node.radius, -25, x, -25);
-				}
-			} 			
-		}
+		ra[max-2].draw(V);
 	}
 	
 	@Override
@@ -218,6 +221,7 @@ public class Reversal extends SplayTree implements ClickListener {
 			rootR.moveTree();
 			rootR.drawTree(V);
 		}
+		moveArray();
 		drawArray(V);
 		super.draw(V);
 	}
@@ -241,8 +245,8 @@ public class Reversal extends SplayTree implements ClickListener {
 			rootL.repositionN();
 		}
 		if (rootR != null) {
-//			rootR.reboxTree();
-			rootR.leftw = DataStructure.minsepx/2;
+			rootR.reboxTree();
+//			rootR.leftw = DataStructure.minsepx/2;
 			rootR.goTo(DataStructure.rootx + rootR.leftw + root.rightw, DataStructure.rooty);
 			rootR.repositionN();
 		}
@@ -264,5 +268,11 @@ public class Reversal extends SplayTree implements ClickListener {
 	public BufferedImage getImg() {
 		return img;
 	}
+	
+    @Override
+    public Layout getLayout() {
+            return Layout.SIMPLE;
+    }
+
 	
 }

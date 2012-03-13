@@ -30,11 +30,11 @@ public class Reverse extends ReversalAlg {
 		mysuspend();
 		
 		T.rootL = T.getRoot();
-		T.rootL.setParent(T.rootL); ///////////////////
 		T.setRoot(T.getRoot().getRight());
 		T.rootL.setRight(null);
 		T.rootL.calcTree();
 		T.getRoot().setParent(null);
+		T.goToPartOfArray(1, from-1, -20);
 		
 		T.reposition();
 		mysuspend();
@@ -46,38 +46,38 @@ public class Reverse extends ReversalAlg {
 		T.reposition();
 		mysuspend();
 		T.rootR = T.getRoot();
-		T.rootR.setParent(T.rootR); ////////////////////
 		T.setRoot(T.getRoot().getLeft());
 		T.getRoot().setParent(null);
 		T.rootR.setLeft(null);
 		T.rootR.calcTree();
+		T.goToPartOfArray(to+1, T.max-1, 20);
 
 		T.reposition();
 		mysuspend();
 		/// let's stick it together
 		T.getRoot().changeFlag();
 		T.reverseArray(from, to);
-		T.rootL.setRight(T.rootR);
-		T.rootR.setParent(T.rootL);
-		
-		w = T.rootR;
+		mysuspend();
+
+		T.rootR.setLeft(T.getRoot());
+		T.getRoot().setParent(T.rootR);
+		T.setRoot(T.rootR);
 		T.rootR = null;
+		T.getRoot().calcTree();
+		T.goToPartOfArray(to+1, T.max-1, -20);
 		
 		T.reposition();
 		mysuspend();
 		
-		w.setLeft(T.getRoot());
-		T.getRoot().setParent(w);
-		
-	//	T.reposition();
-		//mysuspend();
-		
+		T.rootL.setRight(T.getRoot());
+		T.getRoot().setParent(T.rootL);
 		T.setRoot(T.rootL);
-		T.rootL.setParent(null);
 		T.rootL = null;
+		T.getRoot().calcTree();
+		T.goToPartOfArray(1, from-1, 20);
 		
 		T.reposition();
-		T.getRoot().calcTree();
+		mysuspend();
 	}
 
 }

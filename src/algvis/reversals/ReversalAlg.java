@@ -55,7 +55,6 @@ public class ReversalAlg extends Algorithm {
 				mysuspend();
 			}
 			if (w.getLeft() != null) {
-				//l = w.getLeft().snum + seen;
 				l = w.getLeft().size + seen;
 			} else {
 				l = seen;

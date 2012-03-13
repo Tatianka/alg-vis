@@ -19,7 +19,6 @@ public class ReversalInsert extends ReversalAlg {
 		ReversalNode v8 = new ReversalNode(T, T.max+8);
 		ReversalNode v9 = new ReversalNode(T, T.max+9);
 		ReversalNode v10 = new ReversalNode(T, T.max+10);
-	//	T.root = v5;
 		v5.setLeft(v3);
 		v3.setParent(v5);
 		v5.setRight(v8);
@@ -38,7 +37,7 @@ public class ReversalInsert extends ReversalAlg {
 		v10.setParent(v8);
 		v10.setLeft(v9);
 		v9.setParent(v10);
-	//	T.reposition();	
+		v5.reposition();	
 		return v5;
 	}
 
