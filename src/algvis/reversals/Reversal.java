@@ -24,6 +24,7 @@ public class Reversal extends SplayTree implements ClickListener {
 	ReversalNode rootL = null, rootR = null;
 	Node[] ra;
 	private static BufferedImage img;
+	public static int minsepx = 1;//, minsepy = 43;
 	
 	public Reversal(VisPanel M) {
 		super(M);
