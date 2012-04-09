@@ -39,7 +39,7 @@ public class ReversalAlg extends Algorithm {
 	public ReversalNode find(int K) {
 		ReversalNode w = T.getRoot();
 		int seen = -1;
-	/*	if (K > w.snum) {*/ if (K > w.size) {
+	if (K > w.size) {
 			addStep("toobig");
 			mysuspend();
 			return null;
@@ -52,6 +52,7 @@ public class ReversalAlg extends Algorithm {
 			if (w.revflag) {
 				w.flagDown();
 				T.reposition();
+				s.goTo(w);
 				mysuspend();
 			}
 			if (w.getLeft() != null) {

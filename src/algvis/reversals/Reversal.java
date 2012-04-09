@@ -20,11 +20,11 @@ import algvis.splaytree.SplayTree;
 public class Reversal extends SplayTree implements ClickListener {
 	public static String dsName = "reversal";
 	ReversalNode root = null, left = null, right = null;
-	public int max = 0;
+	public int max = 0, arrayY = -35;
 	ReversalNode rootL = null, rootR = null;
 	Node[] ra;
 	private static BufferedImage img;
-	public static int minsepx = 1;//, minsepy = 43;
+	public static int minsepx = Node.radius*4+6;
 	
 	public Reversal(VisPanel M) {
 		super(M);
@@ -126,8 +126,9 @@ public class Reversal extends SplayTree implements ClickListener {
 	public void setArray() {
 		ra = new Node[10];
 		for(int i=0; i<10; i++) {
-			ra[i] = new Node(this, i+1, getRoot().x - getRoot().leftw +19 + i*(Node.radius*2+3), -35);
+			ra[i] = new Node(this, i+1);
 		}
+		posArray();
 	}
 
 	public void insertToArray() {
@@ -137,7 +138,7 @@ public class Reversal extends SplayTree implements ClickListener {
 			ra[i] = rb[i];
 		}
 		for(int i=max-1; i<max+9; i++) {
-			ra[i] = new Node(this, i+1, ra[i-1].x+(Node.radius*2+3), ra[i-1].y);
+			ra[i] = new Node(this, i+1/*, ra[i-1].x+(Node.radius*2+3), ra[i-1].y*/);
 		}
 	}
 	
@@ -179,18 +180,18 @@ public class Reversal extends SplayTree implements ClickListener {
 	}
 	
 	public void posArray() {
-		goToArray(getRoot().x - getRoot().leftw +19);
+		goToArray(getRoot().tox - getRoot().leftw +19+4 + Node.radius*2 +3);
 	}
 	
 	public void goToArray(int x) {
 		for(int i=0; i<max-1; i++) {
-			ra[i].goTo(x+i*(Node.radius*2+3), ra[i].y);
+			ra[i].goTo(x+i*(Node.radius*2+3), arrayY);
 		}
 	}
 	
 	public void goToPartOfArray(int from, int to, int x) {
 		for(int i=from-1; i<to; i++) {
-			ra[i].goTo(ra[i].x + x, ra[i].y);
+			ra[i].goTo(ra[i].x + x, arrayY);
 		}
 	}
 	
@@ -238,7 +239,6 @@ public class Reversal extends SplayTree implements ClickListener {
 	
 	@Override
 	public void reposition() {
-		x1 = x2 = y1 = y2 = 0;
 		super.reposition();
 		if (rootL != null) {
 			rootL.reboxTree();
@@ -247,11 +247,9 @@ public class Reversal extends SplayTree implements ClickListener {
 		}
 		if (rootR != null) {
 			rootR.reboxTree();
-//			rootR.leftw = DataStructure.minsepx/2;
 			rootR.goTo(DataStructure.rootx + rootR.leftw + root.rightw, DataStructure.rooty);
 			rootR.repositionN();
 		}
-		M.screen.V.setBounds(x1, y1, x2, y2);
 	}
 	
 	public static BufferedImage load(String path) {

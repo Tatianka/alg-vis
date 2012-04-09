@@ -11,19 +11,16 @@ public class Reverse extends ReversalAlg {
 		from = x;
 		to = y;
 		this.T = T;
-		setHeader("reverse");
+		setHeader("reversal");
 	}
 	
 	@Override
 	public void run() {
-		if (from == to) {
-			addStep("reverse-equal");
-			return;
-		}
 		if (to > T.max-1) {
 			addStep("toobig");
 			return;
 		}
+		addStep("revfindl", from);
 		ReversalNode w = find(from-1);
 		splay(w);
 		T.reposition();
@@ -34,10 +31,10 @@ public class Reverse extends ReversalAlg {
 		T.rootL.setRight(null);
 		T.rootL.calcTree();
 		T.getRoot().setParent(null);
-		T.goToPartOfArray(1, from-1, -20);
 		
 		T.reposition();
-		addStep("revl");
+		T.goToPartOfArray(1, from-1, -20);
+		addStep("revft", 1, from-1);
 		mysuspend();
 		
 		T.v = s = new ReversalNode(T, K = to);
@@ -51,10 +48,10 @@ public class Reverse extends ReversalAlg {
 		T.getRoot().setParent(null);
 		T.rootR.setLeft(null);
 		T.rootR.calcTree();
-		T.goToPartOfArray(to+1, T.max-1, 20);
 
 		T.reposition();
-		addStep("revr");
+		T.goToPartOfArray(to+1, T.max-1, 20);
+		addStep("revft", to+1, T.max-1);
 		mysuspend();
 		/// let's stick it together
 		T.getRoot().changeFlag();

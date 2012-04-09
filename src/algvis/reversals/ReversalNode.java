@@ -113,5 +113,17 @@ public class ReversalNode extends SplayNode {
 			V.drawImage(((Reversal) D).getImg(), x+Node.radius, y-Node.radius-4, 8, 8);
 		}
 	}
+	
+	public void goNextTo(Node v) {
+		goTo(v.tox + Reversal.minsepx, v.toy);
+	}
+	
+	public void rebox() {
+		leftw = (getLeft() == null) ? Reversal.minsepx/2 : getLeft().leftw
+				+ getLeft().rightw;
+		rightw = (getRight() == null) ? Reversal.minsepx/2 : getRight().leftw
+				+ getRight().rightw;
+	}
+
 
 }
