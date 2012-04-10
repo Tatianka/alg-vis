@@ -1,20 +1,12 @@
 package algvis.fingertree;
 
 import algvis.bplustree.BPlusNode;
+import algvis.btree.BNode;
 import algvis.core.*;
 
 import java.awt.Color;
 
 public class FingerNode extends BPlusNode {
-	
-/*	int width, leftw, rightw;
-	FingerNode parent = null, leftNeighbour = null, rightNeighbour = null; 
-	int numKeys = 1, numChildren = 0;
-	int[] key;
-	FingerNode[] c;
-
-	int nkeys = 1, nnodes = 1, height = 1;*/
-	
 	FingerNode parent = null, leftNeighbour = null, rightNeighbour = null;
 	FingerNode[] c;	
 	
@@ -32,9 +24,11 @@ public class FingerNode extends BPlusNode {
 		this(v.D, v.key[0], v.x, v.y);
 		leftNeighbour = v.leftNeighbour;
 		rightNeighbour = v.rightNeighbour;
+		if (leftNeighbour != null) {leftNeighbour.rightNeighbour = this;}
+		if (rightNeighbour != null) {rightNeighbour.leftNeighbour = this;}
 	}
 	
-	public FingerNode(FingerNode u, FingerNode v, FingerNode w) {
+	public FingerNode(FingerNode u, BNode v, FingerNode w) {
 		//super(u,v,w);
 		this(u.D, Node.NOKEY, v.x, v.y);
 		int n1 = u.numKeys, n2 = w.numKeys;
@@ -62,6 +56,8 @@ public class FingerNode extends BPlusNode {
 		
 		leftNeighbour = u.leftNeighbour;
 		rightNeighbour = w.rightNeighbour;
+		if (leftNeighbour != null) {leftNeighbour.rightNeighbour = this;}
+		if (rightNeighbour != null) {rightNeighbour.leftNeighbour = this;}
 	}
 	
 	public FingerNode(FingerNode u, FingerNode v) { //needed in B+tree
@@ -89,6 +85,8 @@ public class FingerNode extends BPlusNode {
 		
 		leftNeighbour = u.leftNeighbour;
 		rightNeighbour = v.rightNeighbour;
+		if (leftNeighbour != null) {leftNeighbour.rightNeighbour = this;}
+		if (rightNeighbour != null) {rightNeighbour.leftNeighbour = this;}
 
 		width = _width();		
 	}
@@ -100,8 +98,15 @@ public class FingerNode extends BPlusNode {
 	
 ///// if x belongs to this undertree //////////
 	public boolean belongsHere(int x) {
+		if (isLeaf()) {
+			if (((x >= key[0]) || (leftNeighbour == null)) && 
+					(((rightNeighbour != null) && (x < rightNeighbour.key[0])) || (rightNeighbour == null))) {
+				return true;
+			}
+			return false;			
+		}
 		if (((x >= key[0]) || (leftNeighbour == null)) && 
-				(((rightNeighbour != null) && (x < rightNeighbour.key[0])) || (rightNeighbour == null))) {
+				((x <= key[numKeys-1]) || (rightNeighbour == null))) {
 			return true;
 		}
 		return false;
@@ -232,11 +237,12 @@ public class FingerNode extends BPlusNode {
 		}
 		
 		if (leftNeighbour != null) {
-			v.drawDashedLine(x, y, leftNeighbour.x + leftNeighbour.width/2, leftNeighbour.y);
+	//		v.drawDashedLine(x, y, leftNeighbour.x + leftNeighbour.width/2, leftNeighbour.y);
+			v.drawLine(x, y, leftNeighbour.x + leftNeighbour.width/2, leftNeighbour.y);
 		}
-/*		if (rightNeighbour != null) {
+		if (rightNeighbour != null) {
 			v.drawLine(x, y+2, rightNeighbour.x - rightNeighbour.width/2, rightNeighbour.y+2);
-		}*/
+		}
 		
 		draw(v);
 	}

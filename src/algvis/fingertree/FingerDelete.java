@@ -99,38 +99,18 @@ public class FingerDelete extends Algorithm {
 			d.setColor(NodeColor.FOUND);
 			mysuspend();
 			d.setColor(NodeColor.NORMAL);
-	//		if (d.isLeaf()) {
-				addStep("bdelete1");
-				if (d.isRoot() && d.numKeys == 1) {
-					T.v = d;
-					T.root = null;
-					T.v.goDown();
-				} else {
-					T.v = d.del(K);
-					T.reposition();
-					T.v.goDown();
-					mysuspend();
-				}
-	/*		} else {
-				addStep("bdelete2");
-				BPlusNode s = (BPlusNode) d.way(K + 1);
-				v = T.v = new BPlusNode(T, -Node.INF, d.x, d.y);
-				v.goAbove(s);
+	
+			addStep("bdelete1");
+			if (d.isRoot() && d.numKeys == 1) {
+				T.v = d;
+				T.root = null;
+				T.v.goDown();
+			} else {
+				T.v = d.del(K);
+				T.reposition();
+				T.v.goDown();
 				mysuspend();
-				while (!s.isLeaf()) {
-					s = (FingerNode) s.c[0];
-					v.goAbove(s);
-					mysuspend();
-				}
-				v = T.v = s.delMin();
-				v.goTo(d);
-				mysuspend();
-				d.replace(K, v.key[0]);
-				T.v = null;
-				mysuspend();
-				d.setColor(NodeColor.NORMAL);
-				d = s;
-			}*/
+			}
 			while (!d.isRoot() && d.numKeys < (T.order - 1) / 2) {
 				d.setColor(NodeColor.NOTFOUND);
 				FingerNode s, s1 = null, s2 = null, p = (FingerNode) d.parent;
@@ -172,7 +152,7 @@ public class FingerDelete extends Algorithm {
 							pkey = s.key[0];
 						}
 						p.key[k] = pkey;
-						T.v = new FingerNode(T, T.v.key[0], p.x, p.y);
+					//	T.v = new FingerNode(T, T.v.key[0], p.x, p.y);
 						T.v.goTo(d);
 						mysuspend();
 						
@@ -193,13 +173,20 @@ public class FingerDelete extends Algorithm {
 //							if (!d.isLeaf()) {
 								d.insMinCh(s.delMaxCh());
 								d.c[0].parent = d;
+								d.c[0].rightNeighbour = d.c[1];
 	//						}
 						} else {
 							d.insMax(pkey);
 		//					if (!d.isLeaf()) {
 								d.insMaxCh(s.delMinCh());
 								d.c[d.numChildren - 1].parent = d;
+								d.c[d.numChildren - 1].leftNeighbour = d.c[d.numChildren - 2];
 			//				}
+						}
+						if (pkey == K) {
+							b.setColor(NodeColor.NORMAL); 
+							b = d;
+							b.setColor(NodeColor.FOUND);
 						}
 						d.setColor(NodeColor.NORMAL);
 					}
@@ -215,9 +202,14 @@ public class FingerDelete extends Algorithm {
 						T.v.goTo((d.tox + s.tox) / 2, d.y);
 						mysuspend();
 						if (lefts) {
-							T.root = new FingerNode((FingerNode)s, (FingerNode)T.v, d);
+							T.root = new FingerNode(s, T.v, d);
 						} else {
-							T.root = new FingerNode(d, (FingerNode)T.v, (FingerNode)s);
+							T.root = new FingerNode(d, T.v, s);
+						}
+						if (T.v.key[0] == K) {
+							b.setColor(NodeColor.NORMAL);
+							b = T.root; 
+							b.setColor(NodeColor.FOUND);
 						}
 						break;
 					} else {
@@ -230,6 +222,7 @@ public class FingerDelete extends Algorithm {
 							} else {
 								p.c[k] = new FingerNode(d, s);
 							}
+							T.prst.moveTo(p.c[k]);
 							p.c[k].parent = p;
 							--p.numChildren;
 							for (int i = k + 1; i < p.numChildren; ++i) {
@@ -241,9 +234,14 @@ public class FingerDelete extends Algorithm {
 							T.v.goTo((d.tox + s.tox) / 2, d.y);
 							mysuspend();
 							if (lefts) {
-								p.c[k] = new FingerNode(s, (FingerNode) T.v, d);
+								p.c[k] = new FingerNode(s, T.v, d);
 							} else {
-								p.c[k] = new FingerNode(d, (FingerNode) T.v, s);
+								p.c[k] = new FingerNode(d, T.v, s);
+							}
+							if (T.v.key[0] == K) {
+								b.setColor(NodeColor.NORMAL);
+								b = p.c[k]; 
+								b.setColor(NodeColor.FOUND);								
 							}
 							p.c[k].parent = p;
 							--p.numChildren;
@@ -265,39 +263,26 @@ public class FingerDelete extends Algorithm {
 				d.setColor(NodeColor.NORMAL);
 			}
 			if (! isInLeaf) {
-				/*if (d.isLeaf()) {
-					addStep("bdelete1");
-					if (d.isRoot() && d.numKeys == 1) {
-						T.v = d;
-						T.root = null;
-						T.v.goDown();
-					} else {
-						T.v = d.del(K);
-						T.reposition();
-						T.v.goDown();
-						mysuspend();
-					}
-				} else {*/
-		//			mysuspend();
-					addStep("bdelete2");
-					FingerNode s = (FingerNode) d.way(K + 1);
-					v = T.v = new FingerNode(T, -Node.INF, d.x, d.y);
+				mysuspend();
+				addStep("bdelete2");
+				FingerNode s = (FingerNode) d.way(K + 1);
+				v = T.v = new FingerNode(T, -Node.INF, d.x, d.y);
+				v.goAbove(s);
+				mysuspend();
+				while (!s.isLeaf()) {
+					s = (FingerNode) s.c[0];
 					v.goAbove(s);
 					mysuspend();
-					while (!s.isLeaf()) {
-						s = (FingerNode) s.c[0];
-						v.goAbove(s);
-						mysuspend();
-					}
+			}
 				//	v = T.v = s.delMin();
-					v = T.v = new FingerNode(s.D,s.key[0], s.x - (s.numKeys - 1) * s.D.radius, s.y);
-					v.goTo(d);
-					mysuspend();
-					d.replace(K, v.key[0]);
-					T.v = null;
-					mysuspend();
-					d.setColor(NodeColor.NORMAL);
-					d = s;
+			v = T.v = new FingerNode(s.D,s.key[0], s.x - (s.numKeys - 1) * s.D.radius, s.y);
+			v.goTo(d);
+			mysuspend();
+			d.replace(K, v.key[0]);
+			T.v = null;
+			mysuspend();
+			d.setColor(NodeColor.NORMAL);
+			d = s;
 			//	}
 
 				while (!d.isRoot() && d.numKeys < (T.order - 1) / 2) {
@@ -387,148 +372,8 @@ public class FingerDelete extends Algorithm {
 						}
 					}
 				}
-
 			}
-			
 			T.v = null;
-
-			
-			
-/*			FingerNode w = T.prst.getNode();
-			w.setColor(NodeColor.FOUND);
-			mysuspend();
-			w.setColor(NodeColor.NORMAL);
-			if (w.isLeaf()) {
-				addStep("bdelete1");
-				if (w.isRoot() && w.numKeys == 1) {
-					T.v = w;
-					T.root = null;
-					T.prst.moveTo(T.v);
-					T.v.goDown();
-				} else {
-					T.v = (FingerNode) w.del(K);
-					T.reposition();
-					T.v.goDown();
-					mysuspend();
-				}
-			} else {
-				addStep("bdelete2");
-				FingerNode s = (FingerNode) w.way(K + 1);
-				v = T.v = new FingerNode(T, -Node.INF, w.x, w.y);
-				v.goAbove(s);
-				mysuspend();
-				while (!s.isLeaf()) {
-					s = (FingerNode) s.c[0];
-					v.goAbove(s);
-					mysuspend();
-				}
-				v = T.v = (FingerNode) s.delMin();
-				v.goTo(w);
-				mysuspend();
-				w.replace(K, v.key[0]);
-				T.v = null;
-				mysuspend();
-				w.setColor(NodeColor.NORMAL);
-				w = s;
-			}
-
-			while (!w.isRoot() && w.numKeys < 1) {
-				w.setColor(NodeColor.NOTFOUND);
-				FingerNode s, s1 = null, s2 = null, p = w.parent;
-				boolean lefts = true;
-				int k = w.order(), n1 = 0, n2 = 0;
-				if (k > 0) {
-					s1 = (FingerNode) p.c[k - 1];
-					n1 = s1.numKeys;
-				}
-				if (k + 1 < p.numChildren) {
-					s2 = (FingerNode) p.c[k + 1];
-					n2 = s2.numKeys;
-				}
-				if (n1 >= n2) {
-					s = s1;
-					--k;
-				} else {
-					s = s2;
-					lefts = false;
-				}
-
-				if (s.numKeys > 1) {
-					// treba zobrat prvok z s, nahradit nim p.key[k]
-					// a p.key[k] pridat do d
-					// tiez treba prehodit pointer z s ku d
-					if (lefts) {
-						addStep("bleft");
-					} else {
-						addStep("bright");
-					}
-					T.v = lefts ? (FingerNode) s.delMax() : (FingerNode) s.delMin();
-					T.v.goTo(p);
-					mysuspend();
-					int pkey = p.key[k];
-					p.key[k] = T.v.key[0];
-					T.v = new FingerNode(T, pkey, p.x, p.y);
-					T.v.goTo(w);
-					mysuspend();
-					if (lefts) {
-						w.insMin(pkey);
-						if (!w.isLeaf()) {
-							w.insMinCh(s.delMaxCh());
-							w.c[0].parent = w;
-						}
-					} else {
-						w.insMax(pkey);
-						if (!w.isLeaf()) {
-							w.insMaxCh(s.delMinCh());
-							w.c[w.numChildren - 1].parent = w;
-						}
-					}
-					w.setColor(NodeColor.NORMAL);
-					T.v = null;
-					break;
-				} else {
-					// treba spojit vrchol d + p.key[k] + s
-					// zmenit p.c[k] na novy vrchol a posunut to
-					addStep("bmerge");
-					if (p.isRoot() && p.numKeys == 1) {
-						T.v = new FingerNode(T.root);
-						T.root.key[0] = Node.NOKEY;
-						T.v.goTo((w.tox + s.tox) / 2, w.y);
-						mysuspend();
-						if (lefts) {
-							T.root = new FingerNode(s, T.v, w);
-						} else {
-							T.root = new FingerNode(w, T.v, s);
-						}
-						T.prst.moveTo(T.root);
-						break;
-					} else {
-						T.v = (FingerNode) p.del(p.key[k]);
-						T.v.goTo((w.tox + s.tox) / 2, w.y);
-						mysuspend();
-						if (lefts) {
-							p.c[k] = new FingerNode(s, T.v, w);
-						} else {
-							p.c[k] = new FingerNode(w, T.v, s);
-						}
-						p.c[k].parent = p;
-						--p.numChildren;
-						for (int i = k + 1; i < p.numChildren; ++i) {
-							p.c[i] = p.c[i + 1];
-						}
-						if (p.c[k].leftNeighbour != null) {
-							p.c[k].leftNeighbour.rightNeighbour = p.c[k];
-						}
-						if (p.c[k].rightNeighbour != null) {
-							p.c[k].rightNeighbour.leftNeighbour = p.c[k];
-						}
-						w = p;
-						T.prst.moveTo(w);
-					}
-				}
-			}
-			T.v = null;*/
-////////////////////////////////////////////////
 		}
 		T.reposition();
 	}
