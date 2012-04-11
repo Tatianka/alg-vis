@@ -167,6 +167,11 @@ public class FingerDelete extends Algorithm {
 						p.key[k] = T.v.key[0];
 						T.v = new FingerNode(T, pkey, p.x, p.y);
 						T.v.goTo(d);
+						if (pkey == K) {
+							b.setColor(NodeColor.NORMAL); 
+							b = d;
+							T.v.setColor(NodeColor.FOUND);
+						}
 						mysuspend();
 						if (lefts) {
 							d.insMin(pkey);
@@ -183,12 +188,11 @@ public class FingerDelete extends Algorithm {
 								d.c[d.numChildren - 1].leftNeighbour = d.c[d.numChildren - 2];
 			//				}
 						}
-						if (pkey == K) {
-							b.setColor(NodeColor.NORMAL); 
-							b = d;
+						d.setColor(NodeColor.NORMAL);
+						if (pkey==K) {
+							T.v.setColor(NodeColor.NORMAL);
 							b.setColor(NodeColor.FOUND);
 						}
-						d.setColor(NodeColor.NORMAL);
 					}
 					T.v = null;
 					break;

@@ -237,12 +237,12 @@ public class FingerNode extends BPlusNode {
 		}
 		
 		if (leftNeighbour != null) {
-	//		v.drawDashedLine(x, y, leftNeighbour.x + leftNeighbour.width/2, leftNeighbour.y);
-			v.drawLine(x, y, leftNeighbour.x + leftNeighbour.width/2, leftNeighbour.y);
+			v.drawDashedLine(x, y, leftNeighbour.x + leftNeighbour.width/2, leftNeighbour.y);
+	//		v.drawLine(x, y, leftNeighbour.x + leftNeighbour.width/2, leftNeighbour.y);
 		}
-		if (rightNeighbour != null) {
+	/*	if (rightNeighbour != null) {
 			v.drawLine(x, y+2, rightNeighbour.x - rightNeighbour.width/2, rightNeighbour.y+2);
-		}
+		}*/
 		
 		draw(v);
 	}
