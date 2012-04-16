@@ -1,7 +1,11 @@
 package algvis.bplustree;
 
+import java.awt.Color;
+
 import algvis.btree.BNode;
 import algvis.core.DataStructure;
+import algvis.core.NodeColor;
+import algvis.core.View;
 
 public class BPlusNode extends BNode {
 //	BPlusNode[] c;
@@ -114,6 +118,14 @@ public class BPlusNode extends BNode {
 			return copyUp();
 		}
 		return pushUp();
+	}
+	
+	@Override
+	public void draw(View V) {
+		if (isLeaf() && getColor() == NodeColor.NORMAL) {
+			setColor(new NodeColor(Color.BLACK, Color.ORANGE));
+		}
+		super.draw(V);
 	}
 //////////////////////////////////////////////////////////////////////////
 /*	@Override
