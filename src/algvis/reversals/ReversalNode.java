@@ -71,27 +71,6 @@ public class ReversalNode extends SplayNode {
 		}
 	}
 	
-	private void reposN() {
-		if (this.toy > D.y2) {
-			D.y2 = this.toy;
-		}
-		if (getLeft() != null) {
-			getLeft().goTo(this.tox - getLeft().rightw,
-					this.toy + DataStructure.minsepy);
-			getLeft().reposN();
-		}
-		if (getRight() != null) {
-			getRight().goTo(this.tox + getRight().leftw,
-					this.toy + DataStructure.minsepy);
-			getRight().reposN();
-		}		
-	}
-	
-	public void repositionN() {
-//		reboxTree();
-		reposN();
-	}
-	
 	@Override
 	public void setColor(NodeColor color) {
 		if (color != NodeColor.NORMAL) {

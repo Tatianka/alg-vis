@@ -64,6 +64,7 @@ public class Reversal extends SplayTree implements ClickListener {
 			reverse(a,b);
 		}
 		M.pause = p;
+		getRoot().repos(getRoot().leftw - (max+2)/2*(Node.radius*2+3), DataStructure.rooty);
 		posArray();
 	}
 	
@@ -239,16 +240,18 @@ public class Reversal extends SplayTree implements ClickListener {
 	
 	@Override
 	public void reposition() {
+		int x = getRoot().tox;
 		super.reposition();
+		if (max != 0) {getRoot().repos(/*getRoot().leftw - (max+2)/2*(Node.radius*2+3)*/ x, DataStructure.rooty);}
 		if (rootL != null) {
-			rootL.reboxTree();
-			rootL.goTo(DataStructure.rootx - rootL.rightw - root.leftw, DataStructure.rooty);
-			rootL.repositionN();
+			x = rootL.tox;
+			rootL.reposition();
+			rootL.repos(/*getRoot().x - rootL.rightw - getRoot().leftw /*+ Node.radius*2*/x, 0);
 		}
 		if (rootR != null) {
-			rootR.reboxTree();
-			rootR.goTo(DataStructure.rootx + rootR.leftw + root.rightw, DataStructure.rooty);
-			rootR.repositionN();
+			x = rootR.tox;
+			rootR.reposition();
+			rootR.repos(/*getRoot().x + rootR.leftw + getRoot().rightw /*- Node.radius*2*/x, 0);
 		}
 	}
 	

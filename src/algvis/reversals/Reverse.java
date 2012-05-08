@@ -32,6 +32,7 @@ public class Reverse extends ReversalAlg {
 		T.rootL.calcTree();
 		T.getRoot().setParent(null);
 		
+		T.rootL.goTo(T.rootL.x-20, T.rootL.y);
 		T.reposition();
 		T.goToPartOfArray(1, from-1, -20);
 		addStep("revft", 1, from-1);
@@ -49,6 +50,7 @@ public class Reverse extends ReversalAlg {
 		T.rootR.setLeft(null);
 		T.rootR.calcTree();
 
+		T.rootR.goTo(T.rootR.x+20, T.rootR.y);
 		T.reposition();
 		T.goToPartOfArray(to+1, T.max-1, 20);
 		addStep("revft", to+1, T.max-1);
@@ -58,7 +60,8 @@ public class Reverse extends ReversalAlg {
 		T.reverseArray(from, to);
 		addStep("rev");
 		mysuspend();
-
+		
+		T.rootR.goTo(T.rootR.x-20, T.rootR.y);
 		T.rootR.setLeft(T.getRoot());
 		T.getRoot().setParent(T.rootR);
 		T.setRoot(T.rootR);
@@ -70,6 +73,7 @@ public class Reverse extends ReversalAlg {
 		addStep("revstickr");
 		mysuspend();
 		
+		T.rootL.goTo(T.rootL.x+20, T.rootL.y);
 		T.rootL.setRight(T.getRoot());
 		T.getRoot().setParent(T.rootL);
 		T.setRoot(T.rootL);

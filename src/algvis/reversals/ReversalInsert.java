@@ -1,5 +1,8 @@
 package algvis.reversals;
 
+import algvis.core.DataStructure;
+import algvis.core.Node;
+
 public class ReversalInsert extends ReversalAlg {
 	Reversal T;
 
@@ -53,8 +56,11 @@ public class ReversalInsert extends ReversalAlg {
 			System.out.print("trololo");
 		}
 		splay(w);
+		T.getRoot().repos(T.getRoot().leftw - (T.max+10+2)/2*(Node.radius*2+3), DataStructure.rooty);
+		T.posArray();
 		T.insertToArray();
 		T.rootR = setTree();
+		T.rootR.goTo(T.rootR.x + T.getRoot().rightw + T.rootR.leftw + 20, T.rootR.y);
 		T.reposition();
 		mysuspend();
 		T.getRoot().setRight(T.rootR);
