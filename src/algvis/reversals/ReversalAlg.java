@@ -45,31 +45,60 @@ public class ReversalAlg extends Algorithm {
 			return null;
 		}
 		s.goTo(w);
-		addStep("splaystart");
+		addStep("rev-find-start",K);
 		mysuspend();
-		int l;
+		int ll;
 		while (true) {
 			if (w.revflag) {
+				ReversalNode r = w.getRight(), l = w.getLeft();
+				if (l != null) {
+					if (r != null) {
+						l.pointTo(r);
+						r.pointTo(l);
+					} else {
+						l.pointInDir(0);
+					}
+				} else {
+					if (r!=null) {
+						r.pointInDir(180);
+					}
+				}
+				addStep("rev-flagdown");
+				mysuspend();
+				if (l != null) {
+					l.noArrow();
+				}
+				if (r != null) {
+					r.noArrow();			
+				}
 				w.flagDown();
 				T.reposition();
 				s.goTo(w);
 				mysuspend();
 			}
 			if (w.getLeft() != null) {
-				l = w.getLeft().size + seen;
+				ll = w.getLeft().size + seen;
 			} else {
-				l = seen;
+				ll = seen;
 			}
-			if (K <= l) {
+			if (K <= ll) {
+				addStep("rev-find-downl", ll+1, K);
 				w = (ReversalNode) w.getLeft();
+				s.pointTo(w);
+				mysuspend();
+				s.noArrow();
 				s.goTo(w);
 				mysuspend();
 			} else {
-				if (K == l+1) {
+				if (K == ll+1) {
 					break;
 				}
+				addStep("rev-find-downr", ll+1, K);
 				w =  (ReversalNode) w.getRight();
-				seen = l+1;
+				s.pointTo(w);
+				mysuspend();
+				s.noArrow();
+				seen = ll+1;
 				s.goTo(w);
 				mysuspend();
 			}
@@ -77,7 +106,7 @@ public class ReversalAlg extends Algorithm {
 		w.setColor(NodeColor.FIND);
 		s.goTo(w);
 		T.v = null;
-		addStep("found");
+		addStep("rev-found", K);
 		mysuspend();
 		w.setColor(NodeColor.NORMAL);
 		s.goDown();

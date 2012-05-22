@@ -50,11 +50,13 @@ public class ReversalInsert extends ReversalAlg {
 			T.setRoot( setTree() );
 			return;
 		}
+		addStep("rev-ins-start");
+		mysuspend();
 		ReversalNode w = find(T.max);
 		mysuspend();
-		if (w == null) {
+/*		if (w == null) {
 			System.out.print("trololo");
-		}
+		}*/
 		splay(w);
 		T.getRoot().repos(T.getRoot().leftw - (T.max+10+2)/2*(Node.radius*2+3), DataStructure.rooty);
 		T.posArray();
@@ -62,6 +64,7 @@ public class ReversalInsert extends ReversalAlg {
 		T.rootR = setTree();
 		T.rootR.goTo(T.rootR.x + T.getRoot().rightw + T.rootR.leftw + 20, T.rootR.y);
 		T.reposition();
+		addStep("rev-insert");
 		mysuspend();
 		T.getRoot().setRight(T.rootR);
 		T.rootR.setParent(T.getRoot());
