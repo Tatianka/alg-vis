@@ -48,7 +48,7 @@ public class Reverse extends ReversalAlg {
 		addStep("revfindr", to);
 		T.setColorOfNodeArray(to-from+1, NodeColor.FOUND);
 		mysuspend();
-		T.v = s = new ReversalNode(T, K = to);
+		T.setV( s = new ReversalNode(T, K = to));
 		s.setColor(NodeColor.FIND);
 		w = find(to-from+1);
 		addStep("splayfound");

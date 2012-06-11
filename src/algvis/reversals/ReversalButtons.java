@@ -88,7 +88,7 @@ public class ReversalButtons extends Buttons {
 		JPanel first = new JPanel();
 		first.setLayout(new FlowLayout());
 
-		I = new InputField(5, M.statusBar);
+		I = new InputField(5, M.statusBar, D.M.S);
 		first.add(I);
 		actionButtons(first);
 		initPrevious();

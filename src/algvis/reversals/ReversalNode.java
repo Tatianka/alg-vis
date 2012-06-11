@@ -1,6 +1,7 @@
 package algvis.reversals;
 
 import algvis.core.DataStructure;
+import algvis.core.Fonts;
 import algvis.core.Node;
 import algvis.core.NodeColor;
 import algvis.core.View;
@@ -87,7 +88,7 @@ public class ReversalNode extends SplayNode {
 	@Override
 	public void draw(View V) {
 		super.draw(V);
-		V.drawStringLeft("" + size, x - Node.radius, y - Node.radius, 8);
+		V.drawStringLeft("" + size, x - Node.radius, y - Node.radius, Fonts.SMALL);
 		if (revflag) {
 			V.drawImage(((Reversal) D).getImg(), x+Node.radius, y-Node.radius-4, 8, 8);
 		}

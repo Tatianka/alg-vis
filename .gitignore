@@ -5,3 +5,5 @@
 bin/
 *.pdf
 *.pyc
+*.xml
+!format.xml

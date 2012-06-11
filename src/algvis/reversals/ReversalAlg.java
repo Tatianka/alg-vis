@@ -13,7 +13,7 @@ public class ReversalAlg extends Algorithm {
 		super(T);
 		this.T = T;
 		if (T.getRoot() != null) {
-			T.v = s = new SplayNode(T, K = x);
+			T.setV( s = new SplayNode(T, K = x));
 			s.setColor(NodeColor.FIND);
 		}		
 	}
@@ -22,7 +22,7 @@ public class ReversalAlg extends Algorithm {
 		super(T);
 		this.T = T;
 		if (T.getRoot() != null) {
-			T.v = s = new SplayNode(T, K = x);
+			T.setV( s = new SplayNode(T, K = x));
 			s.setColor(NodeColor.FIND);
 		}		
 	}
@@ -31,7 +31,7 @@ public class ReversalAlg extends Algorithm {
 		super(T);
 		this.T = T;
 		if (T.getRoot() != null) {
-			T.v = s = new SplayNode(T, K = T.max+1);
+			T.setV( s = new SplayNode(T, K = T.max+1));
 			s.setColor(NodeColor.FIND);
 		}			
 	}
@@ -129,7 +129,7 @@ public class ReversalAlg extends Algorithm {
 		}
 		w.setColor(NodeColor.FIND);
 		s.goTo(w);
-		T.v = null;
+		T.setV(null);
 		int leftSize = (w.getLeft() == null)?0:w.getLeft().size;
 		if (seen == -1) {
 			addStep("rev-first-found", leftSize, K);
@@ -145,8 +145,8 @@ public class ReversalAlg extends Algorithm {
 	
 	public void splay(ReversalNode w) {
 		while (!w.isRoot()) {
-			T.w1 = (SplayNode) w;
-			T.w2 = (SplayNode) w.getParent();
+			T.setW1( (SplayNode) w);
+			T.setW2( (SplayNode) w.getParent());
 			if (w.getParent().isRoot()) {
 				addStep("splayroot");
 				w.setArc(w.getParent());
@@ -163,12 +163,12 @@ public class ReversalAlg extends Algorithm {
 					w.getParent().setArc(w.getParent().getParent());
 					mysuspend();
 					w.getParent().noArc();
-					T.w2 = (SplayNode) w.getParent().getParent();
+					T.setW2( (SplayNode) w.getParent().getParent());
 					T.rotate(w.getParent());
 					w.setArc(w.getParent());
 					mysuspend();
 					w.noArc();
-					T.w1 = (SplayNode) w.getParent();
+					T.setW1( (SplayNode) w.getParent());
 					T.rotate(w);
 					mysuspend();
 				} else {
@@ -184,14 +184,14 @@ public class ReversalAlg extends Algorithm {
 					w.setArc(w.getParent());
 					mysuspend();
 					w.noArc();
-					T.w1 = w.getParent();
+					T.setW1( w.getParent());
 					T.rotate(w);
 					mysuspend();
 				}
 			}
 		}
-		T.w1 = null;
-		T.w2 = null;
+		T.setW1(null);
+		T.setW2(null);
 		T.setRoot(w);
 	}
 
