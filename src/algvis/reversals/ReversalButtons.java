@@ -23,7 +23,7 @@ public class ReversalButtons extends Buttons {
 
 	@Override
 	public void actionButtons(JPanel P) {
-		insertB = new IButton(M.S.L, "button-insert");
+		insertB = new IButton(M.S.L, "button-makeset");
 		insertB.setMnemonic(KeyEvent.VK_I);
 		insertB.addActionListener(this);
 

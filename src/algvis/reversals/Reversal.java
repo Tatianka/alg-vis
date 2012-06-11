@@ -25,12 +25,15 @@ public class Reversal extends SplayTree implements ClickListener {
 	Node[] ra;
 	private static BufferedImage img;
 	public static int minsepx = Node.radius*4+6;
+	private Node arrayTMP;
 	
 	public Reversal(VisPanel M) {
 		super(M);
 		img = load("../images/flag.png");
 		setTree();
 		setArray();
+		arrayTMP = new Node(this,0);
+		arrayTMP.state = Node.INVISIBLE;
 	}
 	
 	public void reverse(int x, int y) {
@@ -162,6 +165,41 @@ public class Reversal extends SplayTree implements ClickListener {
 		}
 	}
 	
+	public void setColorOfNodeArray(int x, NodeColor color) {
+		if (rootL != null) {
+			x += rootL.size;
+		}
+		if (x == 0) {
+			if (color == NodeColor.FOUND) {
+				arrayTMP.key = 0;
+				arrayTMP.x = ra[0].x - (2*Node.radius + 3);
+				arrayTMP.y = ra[0].y;
+				arrayTMP.setColor(color);
+				arrayTMP.state = Node.ALIVE;
+				return;
+			} else {
+				/* color== Node.NORMAL */
+				arrayTMP.state = Node.INVISIBLE;
+				return;
+			}
+		}
+		if (x == max) {
+			if (color == NodeColor.FOUND) {
+				arrayTMP.key = max;
+				arrayTMP.x = ra[max-2].x + (2*Node.radius + 3);
+				arrayTMP.y = ra[max-2].y;
+				arrayTMP.setColor(color);
+				arrayTMP.state = Node.ALIVE;
+				return;
+			} else {
+				/* color == Node.NORMAL */
+				arrayTMP.state = Node.INVISIBLE;
+				return;
+			}
+		}		
+		ra[x-1].setColor(color);
+	}
+	
 	@Override
 	public String getName() {
 		return "reversal";
@@ -226,6 +264,8 @@ public class Reversal extends SplayTree implements ClickListener {
 		}
 		moveArray();
 		drawArray(V);
+		arrayTMP.move();
+		arrayTMP.draw(V);
 		super.draw(V);
 	}
 	

@@ -6,14 +6,14 @@ import algvis.splaytree.SplayNode;
 
 public class ReversalAlg extends Algorithm {
 	Reversal T;
-	public ReversalNode s, v;
+	public SplayNode s, v;
 	public int K;
 
 	public ReversalAlg(Reversal T, int x, int y) {
 		super(T);
 		this.T = T;
 		if (T.getRoot() != null) {
-			T.v = s = new ReversalNode(T, K = x);
+			T.v = s = new SplayNode(T, K = x);
 			s.setColor(NodeColor.FIND);
 		}		
 	}
@@ -22,7 +22,7 @@ public class ReversalAlg extends Algorithm {
 		super(T);
 		this.T = T;
 		if (T.getRoot() != null) {
-			T.v = s = new ReversalNode(T, K = x);
+			T.v = s = new SplayNode(T, K = x);
 			s.setColor(NodeColor.FIND);
 		}		
 	}
@@ -31,7 +31,7 @@ public class ReversalAlg extends Algorithm {
 		super(T);
 		this.T = T;
 		if (T.getRoot() != null) {
-			T.v = s = new ReversalNode(T, K = T.max+1);
+			T.v = s = new SplayNode(T, K = T.max+1);
 			s.setColor(NodeColor.FIND);
 		}			
 	}
@@ -39,12 +39,19 @@ public class ReversalAlg extends Algorithm {
 	public ReversalNode find(int K) {
 		ReversalNode w = T.getRoot();
 		int seen = -1;
-	if (K > w.size) {
+		if (K > w.size) {
 			addStep("toobig");
 			mysuspend();
 			return null;
 		}
 		s.goTo(w);
+		int col;
+		if (w.getLeft() != null) {
+			col = w.getLeft().size;
+		} else {
+			col = 0;
+		}
+		T.setColorOfNodeArray(col, NodeColor.FIND);
 		addStep("rev-find-start",K);
 		mysuspend();
 		int ll;
@@ -82,31 +89,53 @@ public class ReversalAlg extends Algorithm {
 				ll = seen;
 			}
 			if (K <= ll) {
-				addStep("rev-find-downl", ll+1, K);
+				if (seen == -1) {
+					addStep("rev-find-first-downl",w.getLeft().size-1, ll+1,K);
+				} else {
+					addStep("rev-find-downl",w.getLeft().size, seen+1, ll+1, K);
+				}
 				w = (ReversalNode) w.getLeft();
 				s.pointTo(w);
 				mysuspend();
 				s.noArrow();
 				s.goTo(w);
+				T.setColorOfNodeArray(col, NodeColor.NORMAL);
+				col--;
+				T.setColorOfNodeArray(col, NodeColor.FIND);
 				mysuspend();
 			} else {
 				if (K == ll+1) {
+					T.setColorOfNodeArray(col, NodeColor.NORMAL);
 					break;
 				}
-				addStep("rev-find-downr", ll+1, K);
+				int leftSize = (w.getLeft() == null)?0:w.getLeft().size;
+				if (seen == -1) {
+					if (leftSize>0) {leftSize--;}
+					addStep("rev-find-first-downr",leftSize, ll+1,K);
+				} else {
+					addStep("rev-find-downr",leftSize, seen+1, ll+1, K);
+				}
 				w =  (ReversalNode) w.getRight();
 				s.pointTo(w);
 				mysuspend();
 				s.noArrow();
 				seen = ll+1;
 				s.goTo(w);
+				T.setColorOfNodeArray(col, NodeColor.NORMAL);
+				col++;
+				T.setColorOfNodeArray(col, NodeColor.FIND);
 				mysuspend();
 			}
 		}
 		w.setColor(NodeColor.FIND);
 		s.goTo(w);
 		T.v = null;
-		addStep("rev-found", K);
+		int leftSize = (w.getLeft() == null)?0:w.getLeft().size;
+		if (seen == -1) {
+			addStep("rev-first-found", leftSize, K);
+		} else {
+			addStep("rev-found", leftSize, seen+1, K);
+		}
 		mysuspend();
 		w.setColor(NodeColor.NORMAL);
 		s.goDown();

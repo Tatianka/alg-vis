@@ -2,6 +2,7 @@ package algvis.reversals;
 
 import algvis.core.DataStructure;
 import algvis.core.Node;
+import algvis.core.NodeColor;
 
 public class ReversalInsert extends ReversalAlg {
 	Reversal T;
@@ -51,6 +52,7 @@ public class ReversalInsert extends ReversalAlg {
 			return;
 		}
 		addStep("rev-ins-start");
+		T.setColorOfNodeArray(T.max, NodeColor.FOUND);
 		mysuspend();
 		ReversalNode w = find(T.max);
 		mysuspend();

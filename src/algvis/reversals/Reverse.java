@@ -21,13 +21,17 @@ public class Reverse extends ReversalAlg {
 			return;
 		}
 		addStep("revfindl", from);
+		T.setColorOfNodeArray(from-1, NodeColor.FOUND);
 		mysuspend();
 		ReversalNode w = find(from-1);
 		addStep("splayfound");
 		mysuspend();
+		w.setColor(NodeColor.FOUND);
 		splay(w);
 		T.reposition();
 		mysuspend();
+		w.setColor(NodeColor.NORMAL);
+		T.setColorOfNodeArray(from-1, NodeColor.NORMAL);
 		
 		T.rootL = T.getRoot();
 		T.setRoot(T.getRoot().getRight());
@@ -42,15 +46,20 @@ public class Reverse extends ReversalAlg {
 		mysuspend();
 		
 		addStep("revfindr", to);
+		T.setColorOfNodeArray(to-from+1, NodeColor.FOUND);
 		mysuspend();
 		T.v = s = new ReversalNode(T, K = to);
 		s.setColor(NodeColor.FIND);
 		w = find(to-from+1);
 		addStep("splayfound");
 		mysuspend();
+		w.setColor(NodeColor.FOUND);
 		splay(w);
 		T.reposition();
 		mysuspend();
+		w.setColor(NodeColor.NORMAL);
+		T.setColorOfNodeArray(to-from+1, NodeColor.NORMAL);
+
 		T.rootR = T.getRoot();
 		T.setRoot(T.getRoot().getLeft());
 		T.getRoot().setParent(null);
