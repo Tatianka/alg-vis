@@ -24,9 +24,8 @@ public class Reverse extends ReversalAlg {
 		T.setColorOfNodeArray(from-1, NodeColor.FOUND);
 		mysuspend();
 		ReversalNode w = find(from-1);
-		addStep("splayfound");
-		mysuspend();
 		w.setColor(NodeColor.FOUND);
+	//	mysuspend();
 		splay(w);
 		T.reposition();
 		mysuspend();
@@ -51,9 +50,8 @@ public class Reverse extends ReversalAlg {
 		T.setV( s = new ReversalNode(T, K = to));
 		s.setColor(NodeColor.FIND);
 		w = find(to-from+1);
-		addStep("splayfound");
-		mysuspend();
 		w.setColor(NodeColor.FOUND);
+		//mysuspend();
 		splay(w);
 		T.reposition();
 		mysuspend();
@@ -103,6 +101,7 @@ public class Reverse extends ReversalAlg {
 		mysuspend();
 		T.getRoot().noArrow();
 		
+		addStep("rev-done");
 		T.rootL.goTo(T.rootL.x+20, T.rootL.y);
 		T.rootL.setRight(T.getRoot());
 		T.getRoot().setParent(T.rootL);

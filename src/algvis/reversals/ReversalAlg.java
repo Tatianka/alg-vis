@@ -1,16 +1,17 @@
 package algvis.reversals;
 
-import algvis.core.Algorithm;
 import algvis.core.NodeColor;
+import algvis.splaytree.SplayAlg;
 import algvis.splaytree.SplayNode;
+import algvis.splaytree.SplayTree;
 
-public class ReversalAlg extends Algorithm {
+public class ReversalAlg extends SplayAlg {
 	Reversal T;
 	public SplayNode s, v;
 	public int K;
 
 	public ReversalAlg(Reversal T, int x, int y) {
-		super(T);
+		super((SplayTree) T, x);
 		this.T = T;
 		if (T.getRoot() != null) {
 			T.setV( s = new SplayNode(T, K = x));
@@ -19,7 +20,7 @@ public class ReversalAlg extends Algorithm {
 	}
 	
 	public ReversalAlg(Reversal T, int x) {
-		super(T);
+		super((SplayTree) T, x);
 		this.T = T;
 		if (T.getRoot() != null) {
 			T.setV( s = new SplayNode(T, K = x));
@@ -28,7 +29,7 @@ public class ReversalAlg extends Algorithm {
 	}
 
 	public ReversalAlg(Reversal T) {
-		super(T);
+		super((SplayTree) T, 0);
 		this.T = T;
 		if (T.getRoot() != null) {
 			T.setV( s = new SplayNode(T, K = T.max+1));
@@ -143,7 +144,7 @@ public class ReversalAlg extends Algorithm {
 	}
 
 	
-	public void splay(ReversalNode w) {
+/*	public void splay(ReversalNode w) {
 		while (!w.isRoot()) {
 			T.setW1( (SplayNode) w);
 			T.setW2( (SplayNode) w.getParent());
@@ -193,6 +194,6 @@ public class ReversalAlg extends Algorithm {
 		T.setW1(null);
 		T.setW2(null);
 		T.setRoot(w);
-	}
+	}*/
 
 }
