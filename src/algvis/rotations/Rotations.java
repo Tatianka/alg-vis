@@ -8,7 +8,6 @@ import algvis.core.Alignment;
 import algvis.core.ClickListener;
 import algvis.core.DataStructure;
 import algvis.core.InputField;
-import algvis.core.Layout;
 import algvis.core.View;
 import algvis.core.VisPanel;
 
