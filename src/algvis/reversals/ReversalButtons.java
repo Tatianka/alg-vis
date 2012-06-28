@@ -7,10 +7,10 @@ import java.util.Vector;
 
 import javax.swing.JPanel;
 
-import algvis.core.Buttons;
 import algvis.core.Dictionary;
-import algvis.core.InputField;
-import algvis.core.VisPanel;
+import algvis.gui.Buttons;
+import algvis.gui.InputField;
+import algvis.gui.VisPanel;
 import algvis.internationalization.IButton;
 
 public class ReversalButtons extends Buttons {

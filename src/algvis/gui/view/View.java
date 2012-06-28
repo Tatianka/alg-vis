@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package algvis.core;
+package algvis.gui.view;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -37,18 +37,21 @@ import java.awt.geom.RoundRectangle2D;
 
 import javax.swing.JPanel;
 
+import algvis.gui.Fonts;
+
 public class View implements MouseListener, MouseMotionListener,
 		MouseWheelListener {
-	Graphics2D g;
+	private Graphics2D g;
 	final static double SCALE_FACTOR = 1.1, MIN_ZOOM = 0.16, MAX_ZOOM = 5.5;
 	public int W, H; // display width&height
 	public int minx, miny, maxx, maxy;
-	int mouseX, mouseY; // mouse position
+	private int mouseX, mouseY; // mouse position
 	public Alignment align = Alignment.CENTER;
 
-	double x, y, f;
-	AffineTransform at, oldTransform;
-	ClickListener D;
+	//private double x, y, f; // TODO not needed 120429
+	public final AffineTransform at;
+	private AffineTransform oldTransform;
+	private ClickListener D;
 
 	public View(JPanel P) {
 		P.addMouseListener(this);
@@ -221,6 +224,11 @@ public class View implements MouseListener, MouseMotionListener,
 		g.setTransform(oldTransform);
 	}
 
+	public Point2D cut (double x, double y, double x2, double y2, double c) {
+		double d = new Point2D.Double(x, y).distance(x2, y2);
+		return new Point2D.Double(x + (x2-x)*(d-c)/d, y + (y2-y)*(d-c)/d);
+	}
+
 	public void fillSqr(double x, double y, double a) {
 		g.fillRect((int) (x - a), (int) (y - a), 2 * (int) a, 2 * (int) a);
 	}
@@ -308,6 +316,16 @@ public class View implements MouseListener, MouseMotionListener,
 		y -= f.fm.getHeight();
 		g.setFont(f.font);
 		g.drawString(str, (int) x, (int) y);
+	}
+
+	public void drawVerticalString(String str, double x, double y, Fonts f) {
+		int xx = (int)x;
+		int yy = (int)y - str.length() * f.fm.getHeight() / 2;
+		g.setFont(f.font);
+		for (int i=0; i<str.length(); ++i) {
+			g.drawString(""+str.charAt(i), xx, yy);
+			yy += f.fm.getHeight();
+		}
 	}
 
 	public void fillArc(double x, double y, double w, double h, double a1,
@@ -432,10 +450,6 @@ public class View implements MouseListener, MouseMotionListener,
 			double x2, double y2) {
 		g.draw(new CubicCurve2D.Double(x1, y1, cx1, cy1, cx2, cy2, x2, y2));
 	}
-	
-	 public void drawImage(Image img, int x, int y, int w, int h) {
-		 g.drawImage(img, x, y, w, h, null);
-	 }
 
 	public void fillPolygon(Polygon p) {
 		final Stroke old = g.getStroke(), wide = new BasicStroke(27.0f,

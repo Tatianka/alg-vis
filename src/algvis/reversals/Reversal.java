@@ -7,14 +7,14 @@ import java.util.Random;
 import javax.imageio.ImageIO;
 
 import algvis.bst.BSTNode;
-import algvis.core.Buttons;
-import algvis.core.ClickListener;
 import algvis.core.DataStructure;
-import algvis.core.Layout;
 import algvis.core.Node;
 import algvis.core.NodeColor;
-import algvis.core.View;
-import algvis.core.VisPanel;
+import algvis.gui.Buttons;
+import algvis.gui.VisPanel;
+import algvis.gui.view.ClickListener;
+import algvis.gui.view.Layout;
+import algvis.gui.view.View;
 import algvis.splaytree.SplayTree;
 
 public class Reversal extends SplayTree implements ClickListener {
@@ -114,7 +114,7 @@ public class Reversal extends SplayTree implements ClickListener {
 	}
 	
 	public void setColor(ReversalNode v) {
-		if ((v.key == 0) || (v.key == max)) {
+		if ((v.getKey() == 0) || (v.getKey() == max)) {
 			v.setColor(NodeColor.CACHED);
 		} else {
 			v.setColor(NodeColor.NORMAL);
@@ -171,7 +171,7 @@ public class Reversal extends SplayTree implements ClickListener {
 		}
 		if (x == 0) {
 			if (color == NodeColor.FOUND) {
-				arrayTMP.key = 0;
+				arrayTMP.setKey(0);
 				arrayTMP.x = ra[0].x - (2*Node.radius + 3);
 				arrayTMP.y = ra[0].y;
 				arrayTMP.setColor(color);
@@ -185,7 +185,7 @@ public class Reversal extends SplayTree implements ClickListener {
 		}
 		if (x == max) {
 			if (color == NodeColor.FOUND) {
-				arrayTMP.key = max;
+				arrayTMP.setKey(max);
 				arrayTMP.x = ra[max-2].x + (2*Node.radius + 3);
 				arrayTMP.y = ra[max-2].y;
 				arrayTMP.setColor(color);
@@ -280,6 +280,10 @@ public class Reversal extends SplayTree implements ClickListener {
 	
 	@Override
 	public void reposition() {
+		if (getRoot() == null) {
+			super.reposition();
+			return;
+		}
 		int x = getRoot().tox;
 		super.reposition();
 		if (max != 0) {getRoot().repos(/*getRoot().leftw - (max+2)/2*(Node.radius*2+3)*/ x, DataStructure.rooty);}

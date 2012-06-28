@@ -1,10 +1,10 @@
 package algvis.reversals;
 
 import algvis.core.DataStructure;
-import algvis.core.Fonts;
 import algvis.core.Node;
 import algvis.core.NodeColor;
-import algvis.core.View;
+import algvis.gui.Fonts;
+import algvis.gui.view.View;
 import algvis.splaytree.SplayNode;
 
 public class ReversalNode extends SplayNode {
@@ -78,7 +78,7 @@ public class ReversalNode extends SplayNode {
 			super.setColor(color);
 			return;
 		}
-		if ((key == 0) || (key == ((Reversal) D).max)) {
+		if ((getKey() == 0) || (getKey() == ((Reversal) D).max)) {
 			super.setColor(NodeColor.CACHED);
 		} else {
 			super.setColor(NodeColor.NORMAL);

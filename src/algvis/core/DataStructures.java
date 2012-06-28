@@ -27,9 +27,12 @@ import algvis.btree.a234Panel;
 import algvis.btree.a23Panel;
 import algvis.daryheap.DaryHeapPanel;
 import algvis.fibonacciheap.FibHeapPanel;
+import algvis.gui.VisPanel;
 import algvis.heap.HeapPanel;
+import algvis.intervaltree.IntervalPanel;
 import algvis.lazybinomialheap.LazyBinHeapPanel;
 import algvis.leftistheap.LeftHeapPanel;
+import algvis.pairingheap.PairHeapPanel;
 import algvis.redblacktree.RBPanel;
 import algvis.reversals.ReversalPanel;
 import algvis.rotations.RotPanel;
@@ -37,6 +40,7 @@ import algvis.scapegoattree.GBPanel;
 import algvis.skewheap.SkewHeapPanel;
 import algvis.skiplist.SkipListPanel;
 import algvis.splaytree.SplayPanel;
+import algvis.suffixtree.SuffixTreePanel;
 import algvis.treap.TreapPanel;
 import algvis.trie.TriePanel;
 import algvis.unionfind.UnionFindPanel;
@@ -56,10 +60,11 @@ public class DataStructures {
 			RBPanel.class, AAPanel.class, TreapPanel.class,
 			SkipListPanel.class, GBPanel.class, SplayPanel.class,
 			HeapPanel.class, DaryHeapPanel.class, LeftHeapPanel.class,
-			SkewHeapPanel.class, BinHeapPanel.class, LazyBinHeapPanel.class,
-			FibHeapPanel.class, UnionFindPanel.class, TriePanel.class, ReversalPanel.class };
+			SkewHeapPanel.class, PairHeapPanel.class, BinHeapPanel.class,
+			LazyBinHeapPanel.class, FibHeapPanel.class, UnionFindPanel.class,
+			IntervalPanel.class, TriePanel.class, SuffixTreePanel.class, ReversalPanel.class  };
 
-	static final int N = PANEL.length;
+	public static final int N = PANEL.length;
 
 	private static boolean check_range(int i) {
 		if (i < 0 || i >= N) {
@@ -130,7 +135,10 @@ public class DataStructures {
 		}
 	}
 
-	public static VisPanel getPanel(int i, Settings S) {
+	/**
+	 * create new VisPanel for DS i (should be called once for each i)
+	 */
+	public static VisPanel createPanel(int i, Settings S) {
 		switch (i) {
 		case 0:
 			return new BSTPanel(S);
@@ -165,15 +173,21 @@ public class DataStructures {
 		case 15:
 			return new SkewHeapPanel(S);
 		case 16:
-			return new BinHeapPanel(S);
+			return new PairHeapPanel(S);
 		case 17:
-			return new LazyBinHeapPanel(S);
+			return new BinHeapPanel(S);
 		case 18:
-			return new FibHeapPanel(S);
+			return new LazyBinHeapPanel(S);
 		case 19:
-			return new UnionFindPanel(S);
+			return new FibHeapPanel(S);
 		case 20:
+			return new UnionFindPanel(S);
+		case 21:
+			return new IntervalPanel(S);
+		case 22:
 			return new TriePanel(S);
+		case 23:
+			return new SuffixTreePanel(S);
 		}
 		if (!check_range(i))
 			return null;
@@ -184,6 +198,7 @@ public class DataStructures {
 			return (VisPanel) ct.newInstance(S);
 		} catch (Exception e) {
 			System.out.println("DataStructures is unable to get panel: " + i);
+			e.printStackTrace();
 			// System.out.println(((InvocationTargetException)e).getTargetException().toString());
 			return null;
 		}

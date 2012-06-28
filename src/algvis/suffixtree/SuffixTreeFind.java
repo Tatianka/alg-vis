@@ -14,11 +14,42 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package algvis.core;
+package algvis.suffixtree;
 
-public interface Highlighting {
-	
-	public void highlight(int i);
-	public void lowlight();
+import algvis.core.Algorithm;
 
+public class SuffixTreeFind extends Algorithm {
+	SuffixTree T;
+	String s;
+
+	public SuffixTreeFind(SuffixTree T, String s) {
+		super(T);
+		this.T = T;
+		this.s = s;
+		setHeader("triefind", s.substring(0, s.length() - 1));
+	}
+
+	public void beforeReturn() {
+		T.clearExtraColor();
+		addStep("done");
+	}
+
+	@Override
+	public void run() {
+		if (s.compareTo("$") == 0) {
+			addNote("badword");
+		}
+/*
+		SuffixTreeNode v = T.getRoot();
+		addNote("triefindnote");
+		addStep("trierootstart");
+		v.mark();
+		mysuspend();
+		v.unmark();
+		T.hw = new SuffixTreeWordNode(T, s);
+		T.hw.setC(NodeColor.CACHED);
+		T.hw.goNextTo(v);
+*/
+		beforeReturn();
+	}
 }

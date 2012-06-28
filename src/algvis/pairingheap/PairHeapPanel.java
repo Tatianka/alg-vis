@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 Jakub Kováč, Katarína Kotrlová, Pavol Lukča, Viktor Tomkovič, Tatiana Tóthová
+ * Copyright (c) 2012 Jakub Kov��, Katar�na Kotrlov�, Pavol Luk�a, Viktor Tomkovi�, Tatiana T�thov�
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,8 +14,25 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package algvis.core;
+package algvis.pairingheap;
 
-public interface ClickListener {
-	void mouseClicked(int x, int y);
+
+import algvis.core.DataStructure;
+import algvis.core.Settings;
+import algvis.gui.VisPanel;
+
+public class PairHeapPanel extends VisPanel{
+	private static final long serialVersionUID = 7766114341156126683L;
+	public static Class<? extends DataStructure> DS = PairingHeap.class;
+
+	public PairHeapPanel(Settings S) {
+		super(S);
+	}
+
+	@Override
+	public void initDS() {
+		D = new PairingHeap(this);
+		B = new PairHeapButtons(this);
+	}
+
 }

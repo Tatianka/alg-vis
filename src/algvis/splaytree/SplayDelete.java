@@ -16,8 +16,8 @@
  ******************************************************************************/
 package algvis.splaytree;
 
-import algvis.core.NodeColor;
 import algvis.core.Node;
+import algvis.core.NodeColor;
 
 public class SplayDelete extends SplayAlg {
 	public SplayDelete(SplayTree T, int x) {
@@ -42,7 +42,7 @@ public class SplayDelete extends SplayAlg {
 
 		w.setColor(NodeColor.NORMAL);
 
-		if (w.key != s.key) {
+		if (w.getKey() != s.getKey()) {
 			addStep("notfound");
 			s.setColor(NodeColor.NOTFOUND);
 			s.goDown();
