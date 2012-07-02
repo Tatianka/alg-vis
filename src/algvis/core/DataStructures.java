@@ -62,7 +62,8 @@ public class DataStructures {
 			HeapPanel.class, DaryHeapPanel.class, LeftHeapPanel.class,
 			SkewHeapPanel.class, PairHeapPanel.class, BinHeapPanel.class,
 			LazyBinHeapPanel.class, FibHeapPanel.class, UnionFindPanel.class,
-			IntervalPanel.class, TriePanel.class, SuffixTreePanel.class, LinkCutPanel.class };
+			IntervalPanel.class, TriePanel.class, SuffixTreePanel.class,
+			LinkCutPanel.class };
 
 	public static final int N = PANEL.length;
 
@@ -82,6 +83,8 @@ public class DataStructures {
 			return (Class<? extends DataStructure>) (PANEL[i]
 					.getDeclaredField("DS").get(null));
 		} catch (Exception e) {
+			System.out.println("DataStructures is unable to get DS from panel "
+					+ i);
 			return null;
 		}
 	}
@@ -128,9 +131,8 @@ public class DataStructures {
 			}
 			return (String) (c.getDeclaredField("adtName").get(null));
 		} catch (Exception e) {
-			System.out
-					.println("DataStructures is unable to get field adtName - abstract data type of data structure: "
-							+ i);
+			System.out.println("DataStructures is unable to get field adtName"
+					+ " - abstract data type of data structure: " + i);
 			return "";
 		}
 	}
@@ -188,6 +190,8 @@ public class DataStructures {
 			return new TriePanel(S);
 		case 23:
 			return new SuffixTreePanel(S);
+		case 24:
+			return new LinkCutPanel(S);
 		}
 		if (!check_range(i))
 			return null;

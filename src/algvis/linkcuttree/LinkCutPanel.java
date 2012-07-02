@@ -16,6 +16,6 @@ public class LinkCutPanel extends VisPanel {
 	public void initDS() {
 		D = new LinkCutDS(this);
 		B = new LinkCutButtons(this);
-		D.random(20);
+		// D.random(20);
 	}
 }
