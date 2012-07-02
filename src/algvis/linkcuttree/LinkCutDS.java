@@ -11,8 +11,7 @@ import algvis.gui.view.View;
 public class LinkCutDS extends DataStructure implements ClickListener {
 	public static String adtName = "lct";
 	public static String dsName = "lct";
-//	private ArrayList<ETtree> trees;
-	private ArrayList<LinkCutDSNode> tree;
+	public ArrayList<LinkCutDSNode> tree;
 	int max;
 	
 	public LinkCutDSNode firstSelected = null;
@@ -21,19 +20,13 @@ public class LinkCutDS extends DataStructure implements ClickListener {
 	public LinkCutDS(VisPanel M) {
 		super(M);
 		max = 1;
-//		trees = new ArrayList<ETtree>();
 		tree = new ArrayList<LinkCutDSNode>();
 		addElements(10);
 	}
 		
 	public void addElements(int x) {
-//		ETtree tmp;
 		LinkCutDSNode node;
 		for(int i=0; i<x; i++) {
-/*			tmp = new ETtree(M);
-			tmp.setRoot(new ETNode(tmp,max+i));
-			trees.add(tmp);*/
-			
 			node = new LinkCutDSNode(this, max+i);
 			tree.add(node);
 		}
@@ -43,13 +36,14 @@ public class LinkCutDS extends DataStructure implements ClickListener {
 	
 	public void link(int x, int y) {
 		int index = 0;
-		LinkCutDSNode N = null, M;
+		LinkCutDSNode N1 = null, N2 = null, M;
 		for(int i=0; i<tree.size(); i++) {
-			if (tree.get(i).getKey() == x) {index = i;}
+			M = tree.get(i).getNode(x);
+			if (M != null) {N1 = M; index = i;}
 			M = tree.get(i).getNode(y);
-			if (M != null) {N = M;}
+			if (M != null) {N2 = M;}
 		}
-		start(new Link(this, tree.get(index),N));
+		start(new Link(this, N1, N2, index));
 		tree.remove(index);
 		reposition();
 	}
@@ -69,7 +63,6 @@ public class LinkCutDS extends DataStructure implements ClickListener {
 	public void clear() {
 		max = 1;
 		tree = new ArrayList<LinkCutDSNode>();
-//		trees = new ArrayList<ETtree>();
 		addElements(10);
 		setStats();
 	}
@@ -78,8 +71,6 @@ public class LinkCutDS extends DataStructure implements ClickListener {
 	public void draw(View V) {
 		if (tree != null) {
 			for (int i = 0; i < tree.size(); i++) {
-			//	trees.get(i).draw(V);
-				
 				tree.get(i).moveTree();
 				tree.get(i).drawTree(V);
 			}
@@ -138,36 +129,6 @@ public class LinkCutDS extends DataStructure implements ClickListener {
 			x2 = shift;
 			M.screen.V.setBounds(x1, y1, x2, y2);
 		}
-
-/*		if (trees != null) {
-			int ey2 = -9999999;
-			int ey1 = 9999999;
-			for (int i = 0; i < trees.size(); i++) {
-				y1 = y2 = 0;
-				trees.get(i).reposition();
-				if (y1 < ey1) {
-					ey1 = y1;
-				}
-				if (y2 > ey2) {
-					ey2 = y2;
-				}
-			}
-			y1 = ey1;
-			y2 = ey2;
-
-			x1 = x2 = 0;
-			int shift = -trees.get(0).getRoot().leftw;
-			x1 = shift;
-			for (int i = 0; i < trees.size(); i++) {
-				shift += trees.get(i).getRoot().leftw;
-				trees.get(i).getRoot().goTo(shift, 0);
-				//trees.get(i).reposition();
-				shift += trees.get(i).getRoot().rightw;
-			}
-			x2 = shift;
-			M.screen.V.setBounds(x1, y1, x2, y2);
-		}
-*/
 	}
 	
 	public boolean isSelected(LinkCutDSNode u) {

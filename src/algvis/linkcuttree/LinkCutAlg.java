@@ -36,8 +36,14 @@ public class LinkCutAlg extends Algorithm {
 	
 	public void splice(LinkCutDSNode p) {	//p je vrch path(p)
 		LinkCutDSNode v = p.getParent();
-		if (v == null) {return;}
-		if (v.preffered == p) {addStep("lct-splice",p.getKey()); return;}
+		if (v == null) {
+			addStep("lct-root");
+			return;
+		}
+		if (v.preffered == p) {
+			addStep("lct-splice",p.getKey());  
+			return;
+		}
 		addStep("lct-splice", p.getKey());
 		NodePair<LinkCutDSNode> np = split(v);
 		if (np.left != null) {
@@ -59,8 +65,30 @@ public class LinkCutAlg extends Algorithm {
 			v.setColor(NodeColor.NORMAL);
 			v = v.getParent();
 		}
-		addStep("lct-root");
+	}
+	
+	
+	public void evert(LinkCutDSNode v, int index) {
+		expose(v);
 		mysuspend();
+		LinkCutDSNode w = v.getParent(), x;
+		v.setParent(null);
+		D.tree.set(index, v);
+		addStep("lct-echange");
+		while (w != null) {
+			v.setColor(NodeColor.CACHED);
+			x = w.getParent();
+			w.setParent(v);
+			w.deleteChild(v);
+			v.addChild(w);
+			v.preffered = w;
+			w.preffered = null;
+//			D.reposition();
+//			mysuspend();
+			v.setColor(NodeColor.NORMAL);
+			v = w;
+			w = x;			
+		}
 	}
 	
 	public void link(LinkCutDSNode v, LinkCutDSNode w) {
@@ -76,15 +104,7 @@ public class LinkCutAlg extends Algorithm {
 		if (v.isRoot()) {return;}
 		expose(v);
 		NodePair<LinkCutDSNode> np = split(v);
-		if (np.left.getChild() == v) {
-			np.left.setChild(v.getRight());
-		} else {
-			LinkCutDSNode w = (LinkCutDSNode) np.left.getChild();
-			while (w.getRight() != v) {
-				w = (LinkCutDSNode) w.getRight();
-			}
-			w.setRight(v.getRight());
-		}
+		np.left.deleteChild(v);
 		v.setParent(null);
 		addStep("lct-cut", v.getKey());
 	}
