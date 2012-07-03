@@ -1,10 +1,11 @@
 package algvis.linkcuttree;
 
+import algvis.bst.BSTNode;
 import algvis.gui.view.View;
 import algvis.splaytree.SplayNode;
 
 public class SplayNodeM extends SplayNode {
-	SplayNodeM parent = null;
+//	SplayNodeM parent = null;
 //	Vector<SplayTreeM> pathtree;
 	SplayTreeM D;
 	boolean leftMost = false;
@@ -49,13 +50,20 @@ public class SplayNodeM extends SplayNode {
 	}
 	
 	public SplayNodeM getParent() {
-		return parent;
+		return (SplayNodeM) super.getParent();
 	}
 	
 	public void setParent(SplayNodeM v) {
-		parent = v;
-	}
-	
+		//	parent = v;
+			super.setParent(v);
+		}
+		
+	public BSTNode setParent(BSTNode v) {
+		//	parent = v;
+			super.setParent(v);
+			return v;
+		}
+		
 	public SplayNodeM next() {
 		if (getRight() != null) {
 			return getRight();
@@ -101,7 +109,23 @@ public class SplayNodeM extends SplayNode {
 		}
 	}
 
+	public BSTNode setLeft(BSTNode v) {
+		super.setLeft(v);
+		if (this == getDatastructure().leftMost) {
+			getDatastructure().leftMost = (SplayNodeM) v;
+		}
+		return v;
+	}
+
 	public SplayNodeM getRight() {
 		return (SplayNodeM) super.getRight();
+	}
+	
+	public SplayNode setRight() {
+		return (SplayNodeM) super.getRight();
+	}
+	
+	public BSTNode setRight(BSTNode v) {
+		return super.setRight(v);
 	}
 }

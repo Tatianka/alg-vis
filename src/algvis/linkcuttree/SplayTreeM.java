@@ -3,6 +3,7 @@ package algvis.linkcuttree;
 import java.awt.Color;
 import java.util.Vector;
 
+import algvis.bst.BSTNode;
 import algvis.core.DataStructure;
 import algvis.core.Node;
 import algvis.gui.VisPanel;
@@ -60,16 +61,6 @@ public class SplayTreeM extends SplayTree {
 			if (n!= null) {return n;}
 		}
 		return null;
-	/*	SplayNodeM w = leftMost;
-		while (w != null && n==null) {
-			if (w.pathtree != null) {
-				for(int i=0; i<w.pathtree.size(); i++) {
-					n = w.pathtree.get(i).search(x);
-				}
-			}
-			w = w.next();
-		}
-		return n;*/
 	}
 	
 	public boolean tisRoot() {
@@ -77,12 +68,19 @@ public class SplayTreeM extends SplayTree {
 	}
 	
 	public SplayNodeM getRoot() {
-		return this.root; //(SplayNodeM) super.getRoot();
+		return this.root; 
+	//	return (SplayNodeM) super.getRoot();
 	}
 	
-	public void setRoot(SplayNodeM v) {
+	public SplayNodeM setRoot(SplayNodeM v) {
 		//super.setRoot(v);
-		this.root = v;
+		return this.root = v;
+	}
+
+	public BSTNode setRoot(BSTNode v) {
+	//	super.setRoot(v);
+		this.root = (SplayNodeM) v;
+		return this.root;
 	}
 	
 	public void draw(View V) {
@@ -92,8 +90,8 @@ public class SplayTreeM extends SplayTree {
 			V.drawArrow(getRoot().x, getRoot().y - Node.radius,
 					pathparent.x, pathparent.y + Node.radius);
 		}
-		for(int i=0; i<c.size(); i++) {
-			c.get(i).draw(V);
+		for(int i=0; i<this.c.size(); i++) {
+			this.c.get(i).draw(V);
 		}
 	}
 	
@@ -101,7 +99,7 @@ public class SplayTreeM extends SplayTree {
 	public void rebox() {
 		int numChildren = c.size();
 		if (numChildren == 0) {
-			getRoot().leftw = getRoot().rightw = getRoot().leftw + getRoot().rightw + 19; 
+			getRoot().leftw = getRoot().rightw = getRoot().leftw + getRoot().rightw /*+ 19*/; 
 			// D.radius +
 			// D.xspan;
 		} else {
@@ -140,7 +138,7 @@ public class SplayTreeM extends SplayTree {
 			D.y2 = getRoot().toy;
 		}
 		int x = getRoot().tox, x2 = getRoot().tox, y = getRoot().toy + 2 * Node.radius
-				+ 19; //+ ((BTree) D).yspan;
+				;//+ 19; //+ ((BTree) D).yspan;
 		if (numChildren == 0) {
 			return;
 		}
@@ -179,7 +177,7 @@ public class SplayTreeM extends SplayTree {
 			c.get(i).reposition();
 		}
 		
-		reboxTree();
+	//	reboxTree();
 		repos();
 	}
 	

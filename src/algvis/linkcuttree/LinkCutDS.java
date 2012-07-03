@@ -58,7 +58,7 @@ public class LinkCutDS extends DataStructure implements ClickListener {
 		S2 = lctree.get(indexy).find(y);
 		S1.setColor(NodeColor.NORMAL);
 		S2.setColor(NodeColor.NORMAL);
-		start(new Link(this, N1, N2, indexx, S1, S2));
+		start(new Link(this, N1, N2, indexx, indexy, S1, S2));
 		tree.remove(indexx);
 		lctree.remove(indexx);
 		calcHeight();
