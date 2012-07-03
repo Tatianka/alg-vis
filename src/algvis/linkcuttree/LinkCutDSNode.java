@@ -49,7 +49,7 @@ public class LinkCutDSNode extends TreeNode {
 					if (w == preffered) {
 						v.drawWideLine(x, y, w.x, w.y, 5.0f, Color.RED);
 					} else {
-						v.drawDashedLine(x, y, w.x, w.y);
+						v.drawLine(x, y, w.x, w.y);
 					}
 					w.drawEdges(v);
 					w = w.getRight();

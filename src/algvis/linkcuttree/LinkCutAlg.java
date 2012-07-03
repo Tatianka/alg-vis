@@ -3,6 +3,7 @@ package algvis.linkcuttree;
 import algvis.core.Algorithm;
 import algvis.core.NodeColor;
 import algvis.core.NodePair;
+import algvis.splaytree.SplayAlg;
 
 public class LinkCutAlg extends Algorithm {
 	LinkCutDS D;
@@ -107,5 +108,45 @@ public class LinkCutAlg extends Algorithm {
 		np.left.deleteChild(v);
 		v.setParent(null);
 		addStep("lct-cut", v.getKey());
+	}
+	
+	//////// second tree /////////////////////////
+	
+	public void Access(SplayNodeM v, LinkCutTree C) {
+		SplayAlg alg = new SplayAlg(v.getDatastructure(), v.getKey());
+		alg.splay(v);
+		SplayTreeM T;
+		if (v.getRight() != null) {
+			T = new SplayTreeM(v.D.M, v.getDatastructure().D);
+			T.setRoot(v.getRight());
+			T.pathparent = v;
+//			v.pathtree.add(T);
+			v.getDatastructure().add(v, T);
+			v.getRight().setParent(null);
+			v.setRight(null);
+		}
+		SplayNodeM vt = v, w, r = v.getDatastructure().D.getRoot().getRoot();
+		if (v.getDatastructure().pathparent == null) {
+			System.out.println("Som null.");
+		}
+		System.out.println(r.getKey());
+		while (/*vt != r*/!vt.getDatastructure().tisRoot()/* vt != C.getRoot().getRoot()*/) {
+			w = vt.getDatastructure().pathparent;
+			alg = new SplayAlg(w.getDatastructure(), w.getKey());
+			alg.splay(w);
+			T = new SplayTreeM(w.D.M, w.getDatastructure().D);
+			T.setRoot(w.getRight());
+			T.pathparent = w;
+//			w.pathtree.add(T);
+			w.getDatastructure().add(w, T);
+			T.getRoot().setParent(null);
+			w.setRight(vt);
+//			vt.getDatastructure().pathparent.pathtree = null;
+			vt.getDatastructure().pathparent.getDatastructure().remove(vt.getDatastructure().pathparent);
+			vt.getDatastructure().pathparent = null;
+			vt = w;
+		}
+		alg = new SplayAlg(v.getDatastructure(), v.getKey());
+		alg.splay(v);		
 	}
 }
