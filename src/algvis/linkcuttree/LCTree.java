@@ -31,7 +31,7 @@ public class LCTree extends TreeNode {
 			if (thread) {
 				v.setColor(Color.red); // TODO
 				if (getChild() != null) {
-					if (prefLeft == getChild()) {
+					if (prefLeft == getChild() || prefRight == getChild()) {
 						v.drawLine(x, y, getChild().x, getChild().y);
 					} else {
 						v.drawDashedLine(x, y, getChild().x, getChild().y);							
@@ -150,7 +150,7 @@ public class LCTree extends TreeNode {
 			}
 			psetRight(newRight);
 			addChild(newRight); //TODO switch left & right
-			exchange();
+			//exchange();
 		}
 	}
 

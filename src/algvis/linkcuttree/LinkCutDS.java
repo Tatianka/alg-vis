@@ -278,7 +278,9 @@ public class LinkCutDS extends DataStructure implements ClickListener {
 			u.linkRight(v.pgetLeft());
 		}
 		if (u.pisRoot()) {
-			lctree.set(index,v);
+			if (u.isRoot()) {
+				lctree.set(index,v);
+			}
 		} else {
 			if (u.isLeft()) {
 				u.pgetParent().linkLeft(v);
@@ -297,7 +299,9 @@ public class LinkCutDS extends DataStructure implements ClickListener {
 			u.linkLeft(v.pgetRight());
 		}
 		if (u.pisRoot()) {
-			lctree.set(index,v);
+			if (u.isRoot()) {
+				lctree.set(index,v);
+			}
 		} else {
 			if (u.isLeft()) {
 				u.pgetParent().linkLeft(v);
