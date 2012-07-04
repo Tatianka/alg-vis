@@ -280,6 +280,9 @@ public class LinkCutDS extends DataStructure implements ClickListener {
 		if (u.pisRoot()) {
 			if (u.isRoot()) {
 				lctree.set(index,v);
+			} else {
+				v.setParent(u.getParent());
+				u.setParent(null);
 			}
 		} else {
 			if (u.isLeft()) {
@@ -301,6 +304,9 @@ public class LinkCutDS extends DataStructure implements ClickListener {
 		if (u.pisRoot()) {
 			if (u.isRoot()) {
 				lctree.set(index,v);
+			} else {
+				v.setParent(u.getParent());
+				u.setParent(null);
 			}
 		} else {
 			if (u.isLeft()) {

@@ -26,6 +26,16 @@ public class LCTree extends TreeNode {
 	}
 	
 	@Override
+	public void drawTree(View v) {
+		if (prefLeft != null && prefLeft != getChild()) {
+			deleteChild(prefLeft);
+			prefLeft.setRight(getChild());
+			setChild(prefLeft);
+		}
+		super.drawTree(v);
+	}
+	
+	@Override
 	public void drawEdges(View v) {
 		if (state != INVISIBLE) {
 			if (thread) {
@@ -82,12 +92,12 @@ public class LCTree extends TreeNode {
 	
 	public void psetParent(LCTree v) { //TODO
 		if (v == null) {
-			if (pgetParent() == null) {return;}
-			if (pgetParent().pgetLeft() == this) {
-				pgetParent().psetLeft(null);
-			} else {
-				pgetParent().psetRight(null);
+			if (getParent() == null) {return;}
+			if (getParent().getParent() != null) {
+				setParent(getParent().getParent());
+				return;
 			}
+			setParent(null);
 		} else {
 			setParent(v);
 		}
@@ -118,6 +128,7 @@ public class LCTree extends TreeNode {
 			}
 			psetLeft(newLeft);
 			addChild(newLeft);
+			exchange();
 		}
 	}
 
@@ -149,8 +160,7 @@ public class LCTree extends TreeNode {
 				newRight.psetParent(this);
 			}
 			psetRight(newRight);
-			addChild(newRight); //TODO switch left & right
-			//exchange();
+			addChild(newRight); 
 		}
 	}
 
@@ -175,7 +185,7 @@ public class LCTree extends TreeNode {
 		if (prefLeft == null || prefRight == null) {
 			return;
 		}
-		LCTree w = (LCTree) getChild();
+		LCTree w = prefRight;
 		while (w.getRight() != prefLeft) {
 			w = (LCTree) w.getRight();
 		}
