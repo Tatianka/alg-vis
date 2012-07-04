@@ -3,10 +3,13 @@ package algvis.linkcuttree;
 public class Link extends LinkCutAlg {
 	LinkCutDS D;
 	LinkCutDSNode v, w;
-	SplayNodeM vv,ww;
+	//SplayNodeM vv,ww;
+	LCTree vv,ww;
 	int indexx, indexy;
 	
-	public Link(LinkCutDS D, LinkCutDSNode v, LinkCutDSNode w, int indexx, int indexy, SplayNodeM vv, SplayNodeM ww) {
+	public Link(LinkCutDS D, LinkCutDSNode v, LinkCutDSNode w, int indexx, int indexy,
+			//SplayNodeM vv, SplayNodeM ww) {
+			LCTree vv, LCTree ww) {
 		super(D);
 		this.D = D;
 		this.v = v;
@@ -39,19 +42,28 @@ public class Link extends LinkCutAlg {
 		w.unmark();
 		D.reposition();
 		mysuspend();
-		Access(vv, vv.getDatastructure().D, indexx);
+		
+		Access(vv, indexx);
+		Access(ww, indexy);
+		ww.addChild(vv);
+		ww.psetLeft(vv);
+		vv.setParent(ww);
+	/*	Access(vv, vv.getDatastructure().D, indexx);
+		D.lctree.set(indexx, vv.getDatastructure().D);
 		Access(ww, ww.getDatastructure().D, indexy);
+		D.lctree.set(indexy, ww.getDatastructure().D);
 		if (ww.getLeft() != null) {
 			SplayTreeM T = new SplayTreeM(w.D.M, ww.getDatastructure().D);
 			T.setRoot(ww.getLeft());
 			T.pathparent = ww;
 			ww.getDatastructure().add(ww, T);
 			ww.getLeft().setParent(null);
-			D.lctree.set(indexy, ww.getDatastructure().D);
-			D.reposition();
+			ww.getDatastructure().moveC(ww.getLeft());
 		}
 		ww.setLeft(vv);
 		vv.setParent(ww);
-		mysuspend();		
+		ww.getDatastructure().c.addAll(vv.getDatastructure().c);
+		D.reposition();
+		mysuspend();		*/
 	}
 }

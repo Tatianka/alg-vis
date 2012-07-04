@@ -13,14 +13,23 @@ import algvis.splaytree.SplayTree;
 public class SplayTreeM extends SplayTree {
 	LinkCutTree D;
 	SplayNodeM pathparent = null, root = null, leftMost = null;
-	private Vector<SplayTreeM> c;
-	private Vector<SplayNodeM> d;
+	public Vector<SplayTreeM> c;
+	public Vector<SplayNodeM> d;
 
 	public SplayTreeM(VisPanel M, LinkCutTree D) {
 		super(M);
 		this.D = D;
 		c = new Vector<SplayTreeM>();
 		d = new Vector<SplayNodeM>();
+	}
+	
+	public void moveC(SplayNodeM v) {
+		for(int i=0; i<d.size(); i++) {
+			if (v == d.get(i)) {
+				v.getDatastructure().add(v, c.get(i));
+			}
+		}
+		remove(v);
 	}
 	
 	public void add(SplayNodeM v, SplayTreeM t) {
@@ -38,12 +47,15 @@ public class SplayTreeM extends SplayTree {
 	}
 	
 	public void remove(SplayNodeM N) {
-		for(int i=0; i<c.size(); i++) {
+		for(int i=0; i<d.size(); i++) {
 			if (d.get(i) == N) {
 				remove(i);
-				return;
+				i--;
 			}
 		}
+	//	Vector<SplayNodeM> v = new Vector<SplayNodeM>();
+		//v.add(N);
+		//c.removeAll(v);
 	}
 	
 	public void remove(int index) {
@@ -132,9 +144,9 @@ public class SplayTreeM extends SplayTree {
 			D.x2 = rightw;
 			D.y2 = this.toy;
 		}*/
-		int numChildren = c.size();
+	//	int numChildren = c.size();
 		
-		if (getRoot().toy > D.y2) {
+	/*	if (getRoot().toy > D.y2) {
 			D.y2 = getRoot().toy;
 		}
 		int x = getRoot().tox, x2 = getRoot().tox, y = getRoot().toy + 2 * Node.radius
@@ -166,19 +178,52 @@ public class SplayTreeM extends SplayTree {
 				c.get(k + i).getRoot().shift(x2 += c.get(k + i).getRoot().leftw + c.get(k + i - 1).getRoot().rightw, y);
 				c.get(k + i).repos();
 			}
+		}*/
+		if (c != null && c.size()>0) {
+		//	int ey2 = -9999999;
+			//int ey1 = 9999999;
+			for (int i = 0; i < c.size(); i++) {
+			//	y1 = y2 = 0;
+				c.get(i).reposition();
+		/*		if (y1 < ey1) {
+					ey1 = y1;
+				}
+				if (y2 > ey2) {
+					ey2 = y2;
+				}*/
+			}
+	//		y1 = ey1;
+//			y2 = ey2;
+
+			//x1 = x2 = 0;
+			int shift = -c.get(0).getRoot().leftw;
+			//x1 = shift;
+			for (int i = 0; i < c.size(); i++) {
+				shift += c.get(i).getRoot().leftw;
+				c.get(i).getRoot().shift(shift, 0);
+				shift += c.get(i).getRoot().rightw;
+			}
+		//	x2 = shift;
 		}
+	//	M.screen.V.setBounds(x1, y1, x2, y2);
 	}
 
 ////////////////////////////////////////
 	public void reposition() {
 		super.reposition();
 		getRoot().shift(0, DataStructure.rooty+D.D.treeHeight-getRoot().toy);
-		for(int i=0; i<c.size(); i++) {
-			c.get(i).reposition();
-		}
 		
 	//	reboxTree();
 		repos();
+		int max = 0;
+		for(int i=0; i<c.size(); i++) {
+			if (max < c.get(i).getRoot().height) {
+				max = c.get(i).getRoot().height;
+			}
+		}
+		for(int i=0; i<c.size(); i++) {
+			c.get(i).getRoot().shift(0, getRoot().toy-max);
+		}
 	}
 	
 	

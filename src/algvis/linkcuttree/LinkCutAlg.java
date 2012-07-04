@@ -3,7 +3,6 @@ package algvis.linkcuttree;
 import algvis.core.Algorithm;
 import algvis.core.NodeColor;
 import algvis.core.NodePair;
-import algvis.splaytree.SplayAlg;
 
 public class LinkCutAlg extends Algorithm {
 	LinkCutDS D;
@@ -112,14 +111,17 @@ public class LinkCutAlg extends Algorithm {
 	
 	//////// second tree /////////////////////////
 	
-	public void Access(SplayNodeM v, LinkCutTree C, int index) {
+/*	public void Access(SplayNodeM v, LinkCutTree C, int index) {
 		SplayAlg alg = new SplayAlg(v.getDatastructure(), v.getKey());
+		Vector<SplayTreeM> ve = v.getDatastructure().c;
 		alg.splay(v);
+		v.getDatastructure().c = ve;
 		System.out.println(v.getDatastructure().getRoot().getKey());
-		if (D.lctree.get(0) == C) {
+		if (v.getDatastructure().c == C.getRoot().c) {
 			System.out.println("Tu nemame problem.");
 		}
-		D.lctree.set(index, C);
+		//C.getRoot().c = v.getDatastructure().c;
+		//D.lctree.set(index, C);
 		D.reposition();
 		mysuspend();
 		SplayTreeM T;
@@ -139,15 +141,17 @@ public class LinkCutAlg extends Algorithm {
 				v.getDatastructure().D.setRoot(v.getDatastructure());
 			}*/
 	//	}
-		SplayNodeM vt = v, w, r = C.getRoot().getRoot();
+	/*	SplayNodeM vt = v, w, r = C.getRoot().getRoot();
 		if (v.getDatastructure().pathparent == null) {
 			System.out.println("Som null.");
 		}
+		System.out.println(v.getKey());
 		System.out.println(r.getKey());
 		System.out.println(v.getDatastructure().getRoot().getKey());
 		System.out.println(v.getDatastructure().D.getRoot().getRoot().getKey());
-		while (vt.getDatastructure() != C.getRoot()/*vt != r*//*!vt.getDatastructure().tisRoot()/* vt != C.getRoot().getRoot()*/) {
-			System.out.println("Som tuuu.");
+		while (vt.getDatastructure() != C.getRoot()/*vt != r*/
+				/*!vt.getDatastructure().tisRoot()/* vt != C.getRoot().getRoot()*//*) {
+/*			System.out.println("Som tuuu.");
 			w = vt.getDatastructure().pathparent;
 			alg = new SplayAlg(w.getDatastructure(), w.getKey());
 			alg.splay(w);
@@ -165,14 +169,87 @@ public class LinkCutAlg extends Algorithm {
 			vt.getDatastructure().pathparent.getDatastructure().remove(vt.getDatastructure().pathparent);
 			vt.getDatastructure().pathparent = null;
 			vt = w;
-			D.lctree.set(index, C);
+			//D.lctree.set(index, C);
+			w.getDatastructure().moveC(vt);
 			D.reposition();
 			mysuspend();
 		}
 		alg = new SplayAlg(v.getDatastructure(), v.getKey());
 		alg.splay(v);
-		D.lctree.set(index, C);
+	//	D.lctree.set(index, C);
 		D.reposition();
 		mysuspend();
+	}*/
+			
+	public void Access(LCTree v, int index) {
+		splay(v,index);
+		LCTree vt = v;
+		while (vt != D.lctree.get(index)) {
+			LCTree w = vt.getParent();
+			splay(w,index);
+			w.psetLeft(vt);
+			vt = w;
+		}
+		splay(v, index);
 	}
+	
+	
+	public void splay(LCTree w, int index) {
+		while (!w.pisRoot()) {
+			D.setW1(w);
+			D.setW2(w.pgetParent());
+			if (w.pgetParent().pisRoot()) {
+				addNote("splay-root");
+				w.setArc(w.pgetParent());
+				mysuspend();
+				w.noArc();
+				D.rotate(w, index);
+			} else {
+				if (w.isLeft() == w.pgetParent().isLeft()) {
+					if (w.isLeft()) {
+						addNote("splay-zig-zig-left", w.getKey(), w.pgetParent().getKey());
+					} else {
+						addNote("splay-zig-zig-right", w.getKey(), w.pgetParent().getKey());
+					}
+					addStep("rotate", w.pgetParent().getKey());
+					w.pgetParent().setArc(w.pgetParent().pgetParent());
+					mysuspend();
+					w.pgetParent().noArc();
+					D.setW2(w.pgetParent().pgetParent());
+					D.rotate(w.pgetParent(), index);
+					w.setArc(w.pgetParent());
+					addStep("rotate", w.getKey());
+					mysuspend();
+					w.noArc();
+					D.setW1(w.pgetParent());
+					D.rotate(w, index);
+					mysuspend();
+				} else {
+					if (!w.isLeft()) {
+						addNote("splay-zig-zag-left", w.getKey(), w.pgetParent().getKey());
+					} else {
+						addNote("splay-zig-zag-right", w.getKey(), w.pgetParent().getKey());
+					}
+					w.setArc(w.pgetParent());
+					addStep("rotate", w.getKey());
+					mysuspend();
+					w.noArc();
+					D.rotate(w, index);
+					w.setArc(w.pgetParent());
+					addStep("rotate", w.getKey());
+					mysuspend();
+					w.noArc();
+					D.setW1(w.pgetParent());
+					D.rotate(w, index);
+					mysuspend();
+				}
+			}
+		}
+		D.setW1(null);
+		D.setW2(null);
+		//T.setRoot(w);
+	//	D.lctree.set(index, w);
+		
+	}
+
 }

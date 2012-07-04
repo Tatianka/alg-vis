@@ -3,17 +3,16 @@ package algvis.linkcuttree;
 import java.util.ArrayList;
 
 import algvis.core.DataStructure;
-import algvis.core.NodeColor;
 import algvis.gui.VisPanel;
 import algvis.gui.view.ClickListener;
 import algvis.gui.view.View;
-
 
 public class LinkCutDS extends DataStructure implements ClickListener {
 	public static String adtName = "lct";
 	public static String dsName = "lct";
 	public ArrayList<LinkCutDSNode> tree;
-	public ArrayList<LinkCutTree> lctree;
+	//public ArrayList<LinkCutTree> lctree;
+	public ArrayList<LCTree> lctree;
 	int max, treeHeight;
 	
 	public LinkCutDSNode firstSelected = null;
@@ -21,23 +20,27 @@ public class LinkCutDS extends DataStructure implements ClickListener {
 
 	public LinkCutDS(VisPanel M) {
 		super(M);
+		addNodes(3);
 		max = 1;
 		treeHeight = DataStructure.minsepy;
 		tree = new ArrayList<LinkCutDSNode>();
-		lctree = new ArrayList<LinkCutTree>();
+//		lctree = new ArrayList<LinkCutTree>();
+		lctree = new ArrayList<LCTree>();
 		addElements(10);
 	}
 		
 	public void addElements(int x) {
 		LinkCutDSNode node;
-		LinkCutTree l;
+	//	LinkCutTree l;
+		LCTree l;
 		for(int i=0; i<x; i++) {
 			node = new LinkCutDSNode(this, max+i);
 			tree.add(node);
-			
+/*			
 			l = new LinkCutTree(M,this);
 			l.setRoot(new SplayTreeM(M, l));
-			l.getRoot().setRoot(new SplayNodeM(l.getRoot(), max+i));
+			l.getRoot().setRoot(new LCTreeM(l.getRoot(), max+i));*/
+			l = new LCTree(this, max+i);
 			lctree.add(l);
 		}
 		max += x;
@@ -53,11 +56,13 @@ public class LinkCutDS extends DataStructure implements ClickListener {
 			M = tree.get(i).getNode(y);
 			if (M != null) {N2 = M; indexy = i;}
 		}
-		SplayNodeM S1, S2;
+/*		LCTreeM S1, S2;
 		S1 = lctree.get(indexx).find(x);
 		S2 = lctree.get(indexy).find(y);
 		S1.setColor(NodeColor.NORMAL);
-		S2.setColor(NodeColor.NORMAL);
+		S2.setColor(NodeColor.NORMAL);*/
+		LCTree S1 = lctree.get(indexx).getNode(x);
+		LCTree S2 = lctree.get(indexy).getNode(y);
 		start(new Link(this, N1, N2, indexx, indexy, S1, S2));
 		tree.remove(indexx);
 		lctree.remove(indexx);
@@ -82,7 +87,8 @@ public class LinkCutDS extends DataStructure implements ClickListener {
 		max = 1;
 		treeHeight = DataStructure.minsepy;
 		tree = new ArrayList<LinkCutDSNode>();
-		lctree = new ArrayList<LinkCutTree>();
+//		lctree = new ArrayList<LinkCutTree>();
+		lctree = new ArrayList<LCTree>();
 		addElements(10);
 		setStats();
 	}
@@ -97,6 +103,8 @@ public class LinkCutDS extends DataStructure implements ClickListener {
 		}
 		if (lctree != null) {
 			for (int i = 0; i < lctree.size(); i++) {
+				lctree.get(i).moveTree();
+				lctree.get(i).drawTree(V);
 				lctree.get(i).draw(V);
 			}
 		}
@@ -110,6 +118,19 @@ public class LinkCutDS extends DataStructure implements ClickListener {
 			v.move();
 			v.draw(V);
 		}*/
+		if (getW1() != null && getW1().getParent() != null) {
+			V.drawWideLine(getW1().x, getW1().y, getW1().getParent().x, getW1()
+					.getParent().y);
+		}
+		if (getW2() != null && getW2().getParent() != null) {
+			V.drawWideLine(getW2().x, getW2().y, getW2().getParent().x, getW2()
+					.getParent().y);
+		}
+		if (getVV() != null) {
+			getVV().move();
+			getVV().draw(V);
+		}
+
 	}
 
 	@Override
@@ -172,12 +193,13 @@ public class LinkCutDS extends DataStructure implements ClickListener {
 			y2 = ey2;
 
 			x1 = x2 = 0;
-			int shift = -lctree.get(0).getRoot().getRoot().leftw;
+			int shift = -lctree.get(0).leftw;
 			x1 = shift;
 			for (int i = 0; i < lctree.size(); i++) {
-				shift += lctree.get(i).getRoot().getRoot().leftw;
-				lctree.get(i).getRoot().getRoot().shift(shift, 0);
-				shift += lctree.get(i).getRoot().getRoot().rightw;
+				shift += lctree.get(i).leftw;
+				lctree.get(i).shift(shift,
+						DataStructure.rooty+treeHeight-lctree.get(i).toy);
+				shift += lctree.get(i).rightw;
 			}
 			x2 = shift;
 		}
@@ -247,6 +269,90 @@ public class LinkCutDS extends DataStructure implements ClickListener {
 			}
 		}
 	}
+
+	protected void leftrot(LCTree v, int index) {
+		LCTree u = v.pgetParent();
+		if (v.pgetLeft() == null) {
+			u.unlinkRight();
+		} else {
+			u.linkRight(v.pgetLeft());
+		}
+		if (u.pisRoot()) {
+			lctree.set(index,v);
+		} else {
+			if (u.isLeft()) {
+				u.pgetParent().linkLeft(v);
+			} else {
+				u.pgetParent().linkRight(v);
+			}
+		}
+		v.linkLeft(u);
+	}
+
+	protected void rightrot(LCTree v, int index) {
+		LCTree u = v.pgetParent();
+		if (v.pgetRight() == null) {
+			u.unlinkLeft();
+		} else {
+			u.linkLeft(v.pgetRight());
+		}
+		if (u.pisRoot()) {
+			lctree.set(index,v);
+		} else {
+			if (u.isLeft()) {
+				u.pgetParent().linkLeft(v);
+			} else {
+				u.pgetParent().linkRight(v);
+			}
+		}
+		v.linkRight(u);
+	}
+
+	/**
+	 * Rotation is specified by a single vertex v; if v is a left child of its
+	 * parent, rotate right, if it is a right child, rotate lef This method also
+	 * recalculates positions of all nodes and their statistics.
+	 */
+	public void rotate(LCTree v, int index) {
+		if (v.isLeft()) {
+			rightrot(v,index);
+		} else {
+			leftrot(v,index);
+		}
+		reposition();
+		if (v.pgetLeft() != null) {
+			v.pgetLeft().calc();
+		}
+		if (v.pgetRight() != null) {
+			v.pgetRight().calc();
+		}
+		v.calc();
+	}
+	
+	public LCTree getVV() {
+		return (LCTree) getNode(0);
+	}
+
+	public void setVV(LCTree vv) {
+		setNode(0, vv, true);
+	}
+
+	public LCTree getW1() {
+		return (LCTree) getNode(1);
+	}
+
+	public void setW1(LCTree w1) {
+		setNode(1, w1, true);
+	}
+
+	public LCTree getW2() {
+		return (LCTree) getNode(2);
+	}
+
+	public void setW2(LCTree w2) {
+		setNode(2, w2, false);
+	}
+
 
 
 }
