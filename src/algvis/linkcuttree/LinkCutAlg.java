@@ -185,7 +185,7 @@ public class LinkCutAlg extends Algorithm {
 		splay(v,index);
 		D.reposition();
 		mysuspend();
-	//	if (v != D.lctree.get(index)) {
+		//if (v != D.lctree.get(index)) {
 			v.psetRight(null);
 			mysuspend();
 		//}

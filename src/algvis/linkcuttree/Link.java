@@ -44,16 +44,17 @@ public class Link extends LinkCutAlg {
 		mysuspend();
 		
 		Access(vv, indexx);
-		if (vv.pgetRight() != null) {
+	/*	if (vv.pgetRight() != null) {
+			vv.psetLeft(vv.pgetRight());
 			vv.psetRight(null);
 			mysuspend();
 		}
-		mysuspend();
+	*/	mysuspend();
 		Access(ww, indexy);
 		mysuspend();
-		ww.addChild(vv);
-		ww.psetRight(vv);
-		vv.setParent(ww);
+		vv.addChild(ww);
+		vv.psetLeft(ww);
+		ww.setParent(vv);
 		mysuspend();
 	/*	Access(vv, vv.getDatastructure().D, indexx);
 		D.lctree.set(indexx, vv.getDatastructure().D);
