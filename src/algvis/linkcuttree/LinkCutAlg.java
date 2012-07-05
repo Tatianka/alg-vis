@@ -195,6 +195,26 @@ public class LinkCutAlg extends Algorithm {
 			splay(w,index);
 			w.psetRight(vt);
 			vt = w;
+			addStep("lct-up");
+			mysuspend();
+		}
+		splay(v, index);
+	}
+	
+	public void Access2(LCTree v, int index) {
+		splay(v,index);
+		D.reposition();
+		mysuspend();
+		//if (v != D.lctree.get(index)) {
+	//		v.psetRight(null);
+		//	mysuspend();
+		//}
+		LCTree vt = v;
+		while (vt != D.lctree.get(index)) {
+			LCTree w = vt.getParent();
+			splay(w,index);
+			w.psetRight(vt);
+			vt = w;
 			mysuspend();
 		}
 		splay(v, index);

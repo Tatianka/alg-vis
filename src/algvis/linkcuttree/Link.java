@@ -43,7 +43,7 @@ public class Link extends LinkCutAlg {
 		D.reposition();
 		mysuspend();
 		
-		Access(vv, indexx);
+		Access2(vv, indexx);
 	/*	if (vv.pgetRight() != null) {
 			vv.psetLeft(vv.pgetRight());
 			vv.psetRight(null);

@@ -119,13 +119,13 @@ public class LinkCutDS extends DataStructure implements ClickListener {
 			v.move();
 			v.draw(V);
 		}*/
-		if (getW1() != null && getW1().getParent() != null) {
-			V.drawWideLine(getW1().x, getW1().y, getW1().getParent().x, getW1()
-					.getParent().y);
+		if (getW1() != null && getW1().pgetParent() != null) {
+			V.drawWideLine(getW1().x, getW1().y, getW1().pgetParent().x, getW1()
+					.pgetParent().y);
 		}
-		if (getW2() != null && getW2().getParent() != null) {
-			V.drawWideLine(getW2().x, getW2().y, getW2().getParent().x, getW2()
-					.getParent().y);
+		if (getW2() != null && getW2().pgetParent() != null) {
+			V.drawWideLine(getW2().x, getW2().y, getW2().pgetParent().x, getW2()
+					.pgetParent().y);
 		}
 		if (getVV() != null) {
 			getVV().move();
@@ -282,6 +282,8 @@ public class LinkCutDS extends DataStructure implements ClickListener {
 			if (u.isRoot()) {
 				lctree.set(index,v);
 			} else {
+				u.getParent().deleteChild(u);
+				u.getParent().addChild(v);
 				v.setParent(u.getParent());
 				u.setParent(null);
 			}
@@ -306,6 +308,8 @@ public class LinkCutDS extends DataStructure implements ClickListener {
 			if (u.isRoot()) {
 				lctree.set(index,v);
 			} else {
+				u.getParent().deleteChild(u);
+				u.getParent().addChild(v);
 				v.setParent(u.getParent());
 				u.setParent(null);
 			}
@@ -330,7 +334,9 @@ public class LinkCutDS extends DataStructure implements ClickListener {
 		} else {
 			leftrot(v,index);
 		}
-		reposition();
+		if (lctree.get(index)!=null) {
+			reposition();
+		}
 		if (v.pgetLeft() != null) {
 			v.pgetLeft().calc();
 		}
