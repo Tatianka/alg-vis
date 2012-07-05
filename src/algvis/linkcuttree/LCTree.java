@@ -8,18 +8,29 @@ import algvis.gui.view.View;
 public class LCTree extends TreeNode {
 	LinkCutDS D;
 	LCTree prefLeft = null, prefRight = null;
-	int revflag = 0;
+	int revflag;
 
 	public LCTree(LinkCutDS D, int key) {
 		super(D, key);
 		this.D = D;
+		revflag = 0;
+	}
+	
+	public boolean pisHead() {
+		if (pisRoot()) {
+			return (pgetLeft()==null)?true:false;
+		} else {
+			return (pgetParent()==null)?true:false;
+		}
 	}
 	
 	public void changeFlag() {
 		if (revflag == 0) {
 			revflag = 1;
+			mark();
 		} else {
 			revflag = 0;
+			unmark();
 		}
 	}
 	
@@ -75,19 +86,27 @@ public class LCTree extends TreeNode {
 	}
 	
 	public LCTree pgetLeft() {
-		return prefLeft;
+		return (revflag==0)?prefLeft:prefRight;
 	}	
 	
 	public LCTree pgetRight() {
-		return prefRight;
+		return (revflag==0)?prefRight:prefLeft;
 	}	
 	
 	public void psetLeft(LCTree v) {
-		prefLeft = v;
+		if (revflag==0) {
+			prefLeft = v;
+		} else {
+			prefRight = v;
+		}
 	}
 	
 	public void psetRight(LCTree v) {
-		prefRight = v;
+		if (revflag==0) {
+			prefRight = v;
+		} else {
+			prefLeft = v;
+		}
 	}
 	
 	public LCTree pgetParent() {

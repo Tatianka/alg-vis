@@ -202,6 +202,9 @@ public class LinkCutAlg extends Algorithm {
 	}
 	
 	public void Access2(LCTree v, int index) {
+		if (!v.pisHead()) {
+			v.changeFlag();
+		}
 		splay(v,index);
 		D.reposition();
 		mysuspend();
