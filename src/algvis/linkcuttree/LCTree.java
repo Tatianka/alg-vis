@@ -8,10 +8,19 @@ import algvis.gui.view.View;
 public class LCTree extends TreeNode {
 	LinkCutDS D;
 	LCTree prefLeft = null, prefRight = null;
+	int revflag = 0;
 
 	public LCTree(LinkCutDS D, int key) {
 		super(D, key);
 		this.D = D;
+	}
+	
+	public void changeFlag() {
+		if (revflag == 0) {
+			revflag = 1;
+		} else {
+			revflag = 0;
+		}
 	}
 	
 	public LCTree getNode(int x) {
@@ -128,7 +137,7 @@ public class LCTree extends TreeNode {
 			}
 			psetLeft(newLeft);
 			addChild(newLeft);
-			exchange();
+		//	exchange();
 		}
 	}
 

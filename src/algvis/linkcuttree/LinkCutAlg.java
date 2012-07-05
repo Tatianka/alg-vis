@@ -255,9 +255,9 @@ public class LinkCutAlg extends Algorithm {
 		D.setW1(null);
 		D.setW2(null);
 		//T.setRoot(w);
-	/*	if (w.isRoot()) {
+		if (w.isRoot()) {
 			D.lctree.set(index, w);
-		}*/
+		}
 		
 	}
 
