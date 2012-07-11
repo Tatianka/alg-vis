@@ -80,7 +80,6 @@ public class LinkCutDS extends DataStructure implements ClickListener {
 		}
 		LCTree L = lctree.get(index).getNode(x);
 		start(new Cut(this, N, L, index));
-		tree.add(N);
 		calcHeight();
 		reposition();
 	}

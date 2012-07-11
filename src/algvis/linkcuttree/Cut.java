@@ -23,6 +23,7 @@ public class Cut extends LinkCutAlg {
 		mysuspend();
 		cut(v);
 		v.unmark();
+		D.tree.add(v);
 		
 		mysuspend();
 		Access(vv, index);
