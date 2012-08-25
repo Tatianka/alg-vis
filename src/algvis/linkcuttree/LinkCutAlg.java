@@ -110,87 +110,15 @@ public class LinkCutAlg extends Algorithm {
 	}
 	
 	//////// second tree /////////////////////////
-	
-/*	public void Access(SplayNodeM v, LinkCutTree C, int index) {
-		SplayAlg alg = new SplayAlg(v.getDatastructure(), v.getKey());
-		Vector<SplayTreeM> ve = v.getDatastructure().c;
-		alg.splay(v);
-		v.getDatastructure().c = ve;
-		System.out.println(v.getDatastructure().getRoot().getKey());
-		if (v.getDatastructure().c == C.getRoot().c) {
-			System.out.println("Tu nemame problem.");
-		}
-		//C.getRoot().c = v.getDatastructure().c;
-		//D.lctree.set(index, C);
-		D.reposition();
-		mysuspend();
-		SplayTreeM T;
-	/*	if (v.getRight() != null) {
-			T = new SplayTreeM(C.M, C);
-			T.setRoot(v.getRight());
-			T.pathparent = v;
-//			v.pathtree.add(T);
-			v.getDatastructure().add(v, T);
-			v.getRight().setParent(null);
-			v.setRight(null);
-			
-			D.lctree.set(index, C);
-			D.reposition();
-			mysuspend();
-		/*	if (v.getDatastructure().tisRoot()) {
-				v.getDatastructure().D.setRoot(v.getDatastructure());
-			}*/
-	//	}
-	/*	SplayNodeM vt = v, w, r = C.getRoot().getRoot();
-		if (v.getDatastructure().pathparent == null) {
-			System.out.println("Som null.");
-		}
-		System.out.println(v.getKey());
-		System.out.println(r.getKey());
-		System.out.println(v.getDatastructure().getRoot().getKey());
-		System.out.println(v.getDatastructure().D.getRoot().getRoot().getKey());
-		while (vt.getDatastructure() != C.getRoot()/*vt != r*/
-				/*!vt.getDatastructure().tisRoot()/* vt != C.getRoot().getRoot()*//*) {
-/*			System.out.println("Som tuuu.");
-			w = vt.getDatastructure().pathparent;
-			alg = new SplayAlg(w.getDatastructure(), w.getKey());
-			alg.splay(w);
-			T = new SplayTreeM(w.D.M, w.getDatastructure().D);
-			if (w.getRight() != null) {
-			T.setRoot(w.getRight());
-				T.pathparent = w;
-	//			w.pathtree.add(T);
-				w.getDatastructure().add(w, T);
-				T.getRoot().setParent(null);
-			}
-			w.setRight(vt);
-			vt.setParent(w);
-//			vt.getDatastructure().pathparent.pathtree = null;
-			vt.getDatastructure().pathparent.getDatastructure().remove(vt.getDatastructure().pathparent);
-			vt.getDatastructure().pathparent = null;
-			vt = w;
-			//D.lctree.set(index, C);
-			w.getDatastructure().moveC(vt);
-			D.reposition();
-			mysuspend();
-		}
-		alg = new SplayAlg(v.getDatastructure(), v.getKey());
-		alg.splay(v);
-	//	D.lctree.set(index, C);
-		D.reposition();
-		mysuspend();
-	}*/
 			
 	public void Access(LCTree v, int index) {
 		splay(v,index);
 		D.reposition();
 		addStep("lct-up", v.getKey());
 		mysuspend();
-		//if (v != D.lctree.get(index)) {
-			v.unpref(v.pgetRight());
-			v.psetRight(null);
-			mysuspend();
-		//}
+		v.unpref(v.pgetRight());
+		v.psetRight(null);
+		mysuspend();
 		LCTree vt = v;
 		while (vt != D.lctree.get(index)) {
 			LCTree w = vt.getParent();
@@ -210,17 +138,13 @@ public class LinkCutAlg extends Algorithm {
 	}
 	
 	public void Access2(LCTree v, int index) {
-/*		if (!v.pisHead()) {
-			v.changeFlag();
-		}*/
 		addStep("lct-up", v.getKey());
 		splay(v,index);
 		D.reposition();
 		mysuspend();
-		//if (v != D.lctree.get(index)) {
-	//		v.psetRight(null);
-		//	mysuspend();
-		//}
+		if (!v.pisHead()) {
+			v.changeFlag();
+		}
 		LCTree vt = v;
 		while (vt != D.lctree.get(index)) {
 			LCTree w = vt.getParent();

@@ -249,6 +249,24 @@ public class LinkCutDS extends DataStructure implements ClickListener {
 			}
 		}
 	}
+	
+	protected void exchange(LCTree u, LCTree v) {
+		LCTree w = u.getParent().getUnprefChild();
+		if (w == u) {
+			u.getParent().setChild(v);
+			v.setParent(u.getParent());
+			u.setParent(null);
+			return;
+		}
+		while (w.getRight() != u) {
+			w = w.getRight();
+		}
+		w.setRight(v);
+		v.setRight(u.getRight());
+		u.setRight(null);
+		v.setParent(u.getParent());
+		u.setParent(null);		
+	}
 
 	protected void leftrot(LCTree v, int index) {
 		LCTree u = v.pgetParent();
@@ -261,10 +279,7 @@ public class LinkCutDS extends DataStructure implements ClickListener {
 			if (u.isRoot()) {
 				lctree.set(index,v);
 			} else {
-				u.getParent().deleteChild(u);
-				u.getParent().addChild(v);
-				v.setParent(u.getParent());
-				u.setParent(null);
+				exchange(u,v);
 			}
 		} else {
 			if (u.isLeft()) {
@@ -287,10 +302,7 @@ public class LinkCutDS extends DataStructure implements ClickListener {
 			if (u.isRoot()) {
 				lctree.set(index,v);
 			} else {
-				u.getParent().deleteChild(u);
-				u.getParent().addChild(v);
-				v.setParent(u.getParent());
-				u.setParent(null);
+				exchange(u,v);
 			}
 		} else {
 			if (u.isLeft()) {

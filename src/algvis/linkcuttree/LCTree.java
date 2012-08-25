@@ -162,7 +162,7 @@ public class LCTree extends TreeNode {
 				}
 				v.setColor(Color.black);
 				if (getUnprefChild() != null) {
-					v.drawDashedLine(x, y, getUnprefChild().x, getUnprefChild().y);
+					v.drawLine(x, y, getUnprefChild().x, getUnprefChild().y);
 				}
 				//
 			} else {
@@ -203,9 +203,33 @@ public class LCTree extends TreeNode {
 	
 	public void unpref(LCTree v) {
 		if (v == null) {return;}
-		if (v != pgetLeft() && v != pgetRight()) {return;}
-		v.setRight(getUnprefChild());
-		setChild(v);
+		if (v == pgetLeft()) {
+			v.setRight(getUnprefChild());
+			setChild(v);
+			psetLeft(null);
+			return;
+		}
+		if (v == pgetRight()) {
+			v.setRight(getUnprefChild());
+			setChild(v);
+			psetRight(null);
+		}
+	}
+	
+	public void deleteChild(LCTree w) {
+		if (w == getUnprefChild()) {
+			setChild(getUnprefChild().getRight());
+			w.setRight(null);
+		} else {
+			TreeNode v = getUnprefChild();
+			while ((v != null) && (v.getRight() != w)) {
+				v = v.getRight();
+			}
+			if (v != null) {
+				v.setRight(w.getRight());
+			}
+			w.setRight(null);
+		}
 	}
 	
 	public void psetLeft(LCTree v) {
