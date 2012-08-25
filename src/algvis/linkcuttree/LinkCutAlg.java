@@ -184,27 +184,36 @@ public class LinkCutAlg extends Algorithm {
 	public void Access(LCTree v, int index) {
 		splay(v,index);
 		D.reposition();
+		addStep("lct-up", v.getKey());
 		mysuspend();
 		//if (v != D.lctree.get(index)) {
+			v.unpref(v.pgetRight());
 			v.psetRight(null);
 			mysuspend();
 		//}
 		LCTree vt = v;
 		while (vt != D.lctree.get(index)) {
 			LCTree w = vt.getParent();
+			addStep("lct-next");
 			splay(w,index);
+			mysuspend();
+			w.unpref(w.pgetRight());
 			w.psetRight(vt);
 			vt = w;
-			addStep("lct-up");
+			addStep("lct-prefhim", vt.getKey());
 			mysuspend();
 		}
+		addStep("lct-up", v.getKey());
 		splay(v, index);
+		D.reposition();
+		mysuspend();
 	}
 	
 	public void Access2(LCTree v, int index) {
-		if (!v.pisHead()) {
+/*		if (!v.pisHead()) {
 			v.changeFlag();
-		}
+		}*/
+		addStep("lct-up", v.getKey());
 		splay(v,index);
 		D.reposition();
 		mysuspend();
@@ -215,12 +224,18 @@ public class LinkCutAlg extends Algorithm {
 		LCTree vt = v;
 		while (vt != D.lctree.get(index)) {
 			LCTree w = vt.getParent();
+			addStep("lct-next");
 			splay(w,index);
+			mysuspend();
 			w.psetRight(vt);
 			vt = w;
+			addStep("lct-prefhim", vt.getKey());
 			mysuspend();
 		}
+		addStep("lct-up", v.getKey());
 		splay(v, index);
+		D.reposition();
+		mysuspend();
 	}
 	
 	

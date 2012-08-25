@@ -35,9 +35,9 @@ public class LinkCutDSNode extends TreeNode {
 				v.setColor(Color.red); // TODO
 				if (getChild() != null) {
 					if (preffered == getChild()) {
-						v.drawLine(x, y, getChild().x, getChild().y);
+						v.drawWideLine(x, y, getChild().x, getChild().y, 5.0f, Color.RED);
 					} else {
-						v.drawDashedLine(x, y, getChild().x, getChild().y);							
+						v.drawLine(x, y, getChild().x, getChild().y);							
 					}
 				}
 				v.setColor(Color.black);

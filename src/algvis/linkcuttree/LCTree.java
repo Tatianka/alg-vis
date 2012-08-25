@@ -9,11 +9,90 @@ public class LCTree extends TreeNode {
 	LinkCutDS D;
 	LCTree prefLeft = null, prefRight = null;
 	int revflag;
+	private int shiftIndex;
 
 	public LCTree(LinkCutDS D, int key) {
 		super(D, key);
 		this.D = D;
 		revflag = 0;
+		shiftIndex = 0;
+	}
+	
+	public void movePrefTree() {
+		goTo(tox + shiftIndex, toy);
+		shiftIndex = 0;
+		LCTree w = getChild();
+		while (w != null) {
+			w.movePrefTree();
+			w = w.getRight();
+		}
+	}
+	
+	public void makePrefTree() {
+		int add = 0;
+		if (pgetLeft() != null) {
+			pgetLeft().shiftIndex = shiftIndex;
+			if (pgetLeft() != null && pgetRight() == null && getUnprefChild()==null) {
+				pgetLeft().shiftIndex -= 19;
+				add -= 19;
+			}
+			pgetLeft().makePrefTree();
+		}
+		if (pgetRight() != null) {
+			pgetRight().shiftIndex = shiftIndex;
+			if (pgetRight() != null && pgetLeft() == null) {
+				if (getUnprefChild() != null) {
+					pgetRight().shiftIndex += 38;
+					add += 38;
+				} else {
+					pgetRight().shiftIndex += 19;
+					add += 19;					
+				}
+			}			
+			pgetRight().makePrefTree();
+		}
+		LCTree w = getUnprefChild();
+		while (w != null) {
+			w.shiftIndex = shiftIndex + add;
+			w.makePrefTree();
+			w = w.getRight();
+		}		
+	}
+		
+	public void reposition() {
+		super.reposition();
+		makePrefTree();
+		movePrefTree();
+	}
+	
+	public LCTree getRight() {
+		LCTree w = getParent();
+		if (w==null) {return null;}
+		if (this == w.pgetLeft()) {
+			if (w.pgetRight() != null) {
+				return w.pgetRight();
+			} else {
+				return w.getUnprefChild();
+			}
+		}
+		if (this == w.pgetRight()) {
+			return w.getUnprefChild();
+		}
+		return (LCTree) super.getRight();
+	}
+	
+	public LCTree getChild() {
+		if (pgetLeft() != null) {
+			return pgetLeft();
+		}
+		if (pgetRight() != null) {
+			return pgetRight();
+		}
+		return (LCTree) super.getChild();
+	}
+	
+	public LCTree getUnprefChild() {
+		return (LCTree) super.getChild();
 	}
 	
 	public boolean pisHead() {
@@ -47,11 +126,12 @@ public class LCTree extends TreeNode {
 	
 	@Override
 	public void drawTree(View v) {
-		if (prefLeft != null && prefLeft != getChild()) {
-			deleteChild(prefLeft);
-			prefLeft.setRight(getChild());
-			setChild(prefLeft);
-		}
+		/// NEW - delete ////
+	/*	if (pgetLeft() != null && pgetLeft() != getChild()) {
+			deleteChild(pgetLeft());
+			pgetLeft().setRight(getChild());
+			setChild(pgetLeft());
+		}*/
 		super.drawTree(v);
 	}
 	
@@ -59,27 +139,55 @@ public class LCTree extends TreeNode {
 	public void drawEdges(View v) {
 		if (state != INVISIBLE) {
 			if (thread) {
-				v.setColor(Color.red); // TODO
+				// NEW-delete //
+			/*	v.setColor(Color.red); 
 				if (getChild() != null) {
 					if (prefLeft == getChild() || prefRight == getChild()) {
-						v.drawLine(x, y, getChild().x, getChild().y);
+/**/	//				if (getChild() == prefLeft) {
+/**/		//				v.setColor(Color.green);
+/**/			/*		}
+						v.drawWideLine(x, y, getChild().x, getChild().y);
 					} else {
 						v.drawDashedLine(x, y, getChild().x, getChild().y);							
 					}
 				}
+				v.setColor(Color.black);*/
+				//// NEW /////i
+				v.setColor(Color.red);
+				if (pgetLeft() != null) {
+					v.drawWideLine(x, y, pgetLeft().x, pgetLeft().y);
+				}
+				if (pgetRight() != null) {
+					v.drawWideLine(x, y, pgetRight().x, pgetRight().y);
+				}
 				v.setColor(Color.black);
+				if (getUnprefChild() != null) {
+					v.drawDashedLine(x, y, getUnprefChild().x, getUnprefChild().y);
+				}
+				//
 			} else {
+		//// NEW /////
+		/*		v.setColor(Color.red);
+				if (pgetLeft() != null) {
+					v.drawWideLine(x, y, pgetLeft().x, pgetLeft().y);
+				}
+				if (pgetRight() != null) {
+					v.drawWideLine(x, y, pgetRight().x, pgetRight().y);
+				}
+				v.setColor(Color.black);*/
+				//
 				TreeNode w = getChild();
 				while (w != null) {
 					v.setColor(Color.black); // TODO maybe these lines would
 												// make problems
-					if (w == prefLeft || w == prefRight) {
+					// NEW - delete //
+					if (w == pgetLeft() || w == pgetRight()) {
 						v.drawWideLine(x, y, w.x, w.y, 5.0f, Color.RED);
 					} else {
 						v.drawLine(x, y, w.x, w.y);
 					}
 					w.drawEdges(v);
-					w = w.getRight();
+					w = w.getRight();//getUnprefChild!!!
 				}
 			}
 		}
@@ -93,7 +201,23 @@ public class LCTree extends TreeNode {
 		return (revflag==0)?prefRight:prefLeft;
 	}	
 	
+	public void unpref(LCTree v) {
+		if (v == null) {return;}
+		if (v != pgetLeft() && v != pgetRight()) {return;}
+		v.setRight(getUnprefChild());
+		setChild(v);
+	}
+	
 	public void psetLeft(LCTree v) {
+		if (v == null) {
+			if (revflag==0) {
+				prefLeft = v;
+			} else {
+				prefRight = v;
+			}
+			return;
+		}
+		deleteChild(v);
 		if (revflag==0) {
 			prefLeft = v;
 		} else {
@@ -102,6 +226,15 @@ public class LCTree extends TreeNode {
 	}
 	
 	public void psetRight(LCTree v) {
+		if (v == null) {
+			if (revflag==0) {
+				prefRight = v;
+			} else {
+				prefLeft = v;
+			}	
+			return;
+		}
+		deleteChild(v);
 		if (revflag==0) {
 			prefRight = v;
 		} else {
@@ -152,11 +285,10 @@ public class LCTree extends TreeNode {
 					newLeft.unlinkParent();
 				}
 				// create new edge between this and newLeft
-				newLeft.psetParent(this); //TODO
+				newLeft.psetParent(this); 
 			}
 			psetLeft(newLeft);
-			addChild(newLeft);
-		//	exchange();
+//NEW			addChild(newLeft);
 		}
 	}
 
@@ -164,7 +296,7 @@ public class LCTree extends TreeNode {
 	 * removes edge between this and left
 	 */
 	public void unlinkLeft() {
-		deleteChild(pgetLeft());
+//NEW		deleteChild(pgetLeft());
 		pgetLeft().psetParent(null);
 		psetLeft(null);
 	}
@@ -188,7 +320,7 @@ public class LCTree extends TreeNode {
 				newRight.psetParent(this);
 			}
 			psetRight(newRight);
-			addChild(newRight); 
+//NEW			addChild(newRight); 
 		}
 	}
 
@@ -196,7 +328,7 @@ public class LCTree extends TreeNode {
 	 * removes edge between this and right
 	 */
 	public void unlinkRight() {
-		deleteChild(pgetRight());
+//NEW		deleteChild(pgetRight());
 		pgetRight().psetParent(null);
 		psetRight(null);
 	}
@@ -207,21 +339,6 @@ public class LCTree extends TreeNode {
 		} else {
 			pgetParent().unlinkRight();
 		}
-	}
-	
-	public void exchange() {
-		if (prefLeft == null || prefRight == null) {
-			return;
-		}
-		LCTree w = prefRight;
-		while (w.getRight() != prefLeft) {
-			w = (LCTree) w.getRight();
-		}
-		w.setRight(prefRight);
-		w = (LCTree) prefRight.getRight();
-		prefRight.setRight(prefLeft.getRight());
-		prefLeft.setRight(w);
-		this.setChild(prefLeft);
 	}
 	
 	public boolean pisRoot() {

@@ -49,29 +49,18 @@ public class Link extends LinkCutAlg {
 			vv.psetRight(null);
 			mysuspend();
 		}
-	*/	mysuspend();
+*/ //		mysuspend();
 		Access(ww, indexy);
-		mysuspend();
-		vv.addChild(ww);
+//		mysuspend();
+//NEW	vv.addChild(ww);
+		vv.unpref(vv.pgetLeft());
 		vv.psetLeft(ww);
 		ww.setParent(vv);
-		mysuspend();
-	/*	Access(vv, vv.getDatastructure().D, indexx);
-		D.lctree.set(indexx, vv.getDatastructure().D);
-		Access(ww, ww.getDatastructure().D, indexy);
-		D.lctree.set(indexy, ww.getDatastructure().D);
-		if (ww.getLeft() != null) {
-			SplayTreeM T = new SplayTreeM(w.D.M, ww.getDatastructure().D);
-			T.setRoot(ww.getLeft());
-			T.pathparent = ww;
-			ww.getDatastructure().add(ww, T);
-			ww.getLeft().setParent(null);
-			ww.getDatastructure().moveC(ww.getLeft());
-		}
-		ww.setLeft(vv);
-		vv.setParent(ww);
-		ww.getDatastructure().c.addAll(vv.getDatastructure().c);
 		D.reposition();
-		mysuspend();		*/
+		mysuspend();
+		
+		D.tree.remove(indexx);
+		D.lctree.set(indexy, D.lctree.get(indexx)); 
+		D.lctree.remove(indexx);
 	}
 }

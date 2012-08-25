@@ -11,7 +11,6 @@ public class LinkCutDS extends DataStructure implements ClickListener {
 	public static String adtName = "lct";
 	public static String dsName = "lct";
 	public ArrayList<LinkCutDSNode> tree;
-	//public ArrayList<LinkCutTree> lctree;
 	public ArrayList<LCTree> lctree;
 	int max, treeHeight;
 	
@@ -24,22 +23,17 @@ public class LinkCutDS extends DataStructure implements ClickListener {
 		max = 1;
 		treeHeight = DataStructure.minsepy;
 		tree = new ArrayList<LinkCutDSNode>();
-//		lctree = new ArrayList<LinkCutTree>();
 		lctree = new ArrayList<LCTree>();
 		addElements(10);
 	}
 		
 	public void addElements(int x) {
 		LinkCutDSNode node;
-	//	LinkCutTree l;
 		LCTree l;
 		for(int i=0; i<x; i++) {
 			node = new LinkCutDSNode(this, max+i);
 			tree.add(node);
-/*			
-			l = new LinkCutTree(M,this);
-			l.setRoot(new SplayTreeM(M, l));
-			l.getRoot().setRoot(new LCTreeM(l.getRoot(), max+i));*/
+
 			l = new LCTree(this, max+i);
 			lctree.add(l);
 		}
@@ -56,17 +50,9 @@ public class LinkCutDS extends DataStructure implements ClickListener {
 			M = tree.get(i).getNode(y);
 			if (M != null) {N2 = M; indexy = i;}
 		}
-/*		LCTreeM S1, S2;
-		S1 = lctree.get(indexx).find(x);
-		S2 = lctree.get(indexy).find(y);
-		S1.setColor(NodeColor.NORMAL);
-		S2.setColor(NodeColor.NORMAL);*/
 		LCTree S1 = lctree.get(indexx).getNode(x);
 		LCTree S2 = lctree.get(indexy).getNode(y);
 		start(new Link(this, N1, N2, indexx, indexy, S1, S2));
-		tree.remove(indexx);
-		lctree.set(indexy, lctree.get(indexx)); 
-		lctree.remove(indexx);
 		calcHeight();
 		reposition();
 	}
@@ -89,7 +75,6 @@ public class LinkCutDS extends DataStructure implements ClickListener {
 		max = 1;
 		treeHeight = DataStructure.minsepy;
 		tree = new ArrayList<LinkCutDSNode>();
-//		lctree = new ArrayList<LinkCutTree>();
 		lctree = new ArrayList<LCTree>();
 		addElements(10);
 		setStats();
@@ -206,13 +191,6 @@ public class LinkCutDS extends DataStructure implements ClickListener {
 			x2 = shift;
 		}
 		M.screen.V.setBounds(x1, y1, x2, y2);
-
-		/*		if (lctree != null) {
-		for (int i = 0; i < lctree.size(); i++) {
-			tree.get(i).reposition();
-		}
-	}*/
-
 	}
 		
 	public void calcHeight() {
