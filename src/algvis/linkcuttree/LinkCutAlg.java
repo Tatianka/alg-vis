@@ -161,6 +161,7 @@ public class LinkCutAlg extends Algorithm {
 		if (!v.pisHead()) {
 			v.changeFlag();
 			v.pgetRight().changeFlagPath();
+			D.reposition();
 			mysuspend();
 		}
 	}
@@ -219,7 +220,6 @@ public class LinkCutAlg extends Algorithm {
 		}
 		D.setW1(null);
 		D.setW2(null);
-		//T.setRoot(w);
 		if (w.isRoot()) {
 			D.lctree.set(index, w);
 		}

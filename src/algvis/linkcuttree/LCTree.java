@@ -2,6 +2,7 @@ package algvis.linkcuttree;
 
 import java.awt.Color;
 
+import algvis.core.DataStructure;
 import algvis.core.TreeNode;
 import algvis.gui.view.View;
 
@@ -10,6 +11,40 @@ public class LCTree extends TreeNode {
 	LCTree prefLeft = null, prefRight = null;
 	int revflag;
 	private int shiftIndex;
+	
+	public void reboxTree() {
+		makePrefTree();
+		movePrefTree();
+		reboxTree2();
+	}
+	
+	public void reboxTree2() {
+		int bw = DataStructure.minsepx / 2;
+		int le = 9999999; // keeps current extreme leftw value
+		int re = -9999999;
+		LCTree T = getChild();
+		while (T != null) {
+			T.reboxTree2();	
+			
+			int lxe = (T.tox - tox) - T.leftw;			
+			if (lxe < le) {
+				le = lxe;
+			}
+			int rxe = (T.tox - tox) + T.rightw;
+			if (rxe > re) {
+				re = rxe;
+			}
+			T = T.getRight();
+		}
+		if (le > -bw) {
+			le = -bw;
+		}
+		if (re < bw) {
+			re = bw;
+		}
+		leftw = -le;
+		rightw = re;
+	}
 
 	public LCTree(LinkCutDS D, int key) {
 		super(D, key);
@@ -32,23 +67,23 @@ public class LCTree extends TreeNode {
 		int add = 0;
 		if (pgetLeft() != null) {
 			pgetLeft().shiftIndex = shiftIndex;
-			if (pgetLeft() != null && pgetRight() == null && getUnprefChild()==null) {
-				pgetLeft().shiftIndex -= 19;
-				add -= 19;
+			if (pgetRight() == null && getUnprefChild()==null) {
+				pgetLeft().shiftIndex -= DataStructure.minsepx/2;
+				add -= DataStructure.minsepx/2;
 			}
 			pgetLeft().makePrefTree();
 		}
 		if (pgetRight() != null) {
 			pgetRight().shiftIndex = shiftIndex;
-			if (pgetRight() != null && pgetLeft() == null) {
+			if (pgetLeft() == null) {
 				if (getUnprefChild() != null) {
-					pgetRight().shiftIndex += 38;
-					add += 38;
+					pgetRight().shiftIndex += DataStructure.minsepx;
+					add += DataStructure.minsepx;
 				} else {
-					pgetRight().shiftIndex += 19;
-					add += 19;					
+					pgetRight().shiftIndex += DataStructure.minsepx/2;
+					add += DataStructure.minsepx/2;					
 				}
-			}			
+			}		
 			pgetRight().makePrefTree();
 		}
 		LCTree w = getUnprefChild();
@@ -57,12 +92,6 @@ public class LCTree extends TreeNode {
 			w.makePrefTree();
 			w = w.getRight();
 		}		
-	}
-		
-	public void reposition() {
-		super.reposition();
-		makePrefTree();
-		movePrefTree();
 	}
 	
 	public LCTree getRight() {
@@ -136,12 +165,6 @@ public class LCTree extends TreeNode {
 	
 	@Override
 	public void drawTree(View v) {
-		/// NEW - delete ////
-	/*	if (pgetLeft() != null && pgetLeft() != getChild()) {
-			deleteChild(pgetLeft());
-			pgetLeft().setRight(getChild());
-			setChild(pgetLeft());
-		}*/
 		super.drawTree(v);
 	}
 	
@@ -149,20 +172,6 @@ public class LCTree extends TreeNode {
 	public void drawEdges(View v) {
 		if (state != INVISIBLE) {
 			if (thread) {
-				// NEW-delete //
-			/*	v.setColor(Color.red); 
-				if (getChild() != null) {
-					if (prefLeft == getChild() || prefRight == getChild()) {
-/**/	//				if (getChild() == prefLeft) {
-/**/		//				v.setColor(Color.green);
-/**/			/*		}
-						v.drawWideLine(x, y, getChild().x, getChild().y);
-					} else {
-						v.drawDashedLine(x, y, getChild().x, getChild().y);							
-					}
-				}
-				v.setColor(Color.black);*/
-				//// NEW /////i
 				v.setColor(Color.red);
 				if (pgetLeft() != null) {
 					v.drawWideLine(x, y, pgetLeft().x, pgetLeft().y);
@@ -174,23 +183,11 @@ public class LCTree extends TreeNode {
 				if (getUnprefChild() != null) {
 					v.drawLine(x, y, getUnprefChild().x, getUnprefChild().y);
 				}
-				//
 			} else {
-		//// NEW /////
-		/*		v.setColor(Color.red);
-				if (pgetLeft() != null) {
-					v.drawWideLine(x, y, pgetLeft().x, pgetLeft().y);
-				}
-				if (pgetRight() != null) {
-					v.drawWideLine(x, y, pgetRight().x, pgetRight().y);
-				}
-				v.setColor(Color.black);*/
-				//
 				TreeNode w = getChild();
 				while (w != null) {
 					v.setColor(Color.black); // TODO maybe these lines would
 												// make problems
-					// NEW - delete //
 					if (w == pgetLeft() || w == pgetRight()) {
 						v.drawWideLine(x, y, w.x, w.y, 5.0f, Color.RED);
 					} else {
@@ -322,7 +319,6 @@ public class LCTree extends TreeNode {
 				newLeft.psetParent(this); 
 			}
 			psetLeft(newLeft);
-//NEW			addChild(newLeft);
 		}
 	}
 
@@ -330,7 +326,6 @@ public class LCTree extends TreeNode {
 	 * removes edge between this and left
 	 */
 	public void unlinkLeft() {
-//NEW		deleteChild(pgetLeft());
 		pgetLeft().psetParent(null);
 		psetLeft(null);
 	}
@@ -354,7 +349,6 @@ public class LCTree extends TreeNode {
 				newRight.psetParent(this);
 			}
 			psetRight(newRight);
-//NEW			addChild(newRight); 
 		}
 	}
 
@@ -362,7 +356,6 @@ public class LCTree extends TreeNode {
 	 * removes edge between this and right
 	 */
 	public void unlinkRight() {
-//NEW		deleteChild(pgetRight());
 		pgetRight().psetParent(null);
 		psetRight(null);
 	}
