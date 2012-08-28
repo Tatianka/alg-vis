@@ -103,6 +103,16 @@ public class LCTree extends TreeNode {
 		}
 	}
 	
+	public void changeFlagPath() {
+		changeFlag();
+		if (pgetRight() != null) {
+			pgetRight().changeFlagPath();
+		}
+		if (pgetLeft() != null) {
+			pgetLeft().changeFlagPath();
+		}
+	}
+	
 	public void changeFlag() {
 		if (revflag == 0) {
 			revflag = 1;

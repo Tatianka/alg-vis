@@ -142,15 +142,13 @@ public class LinkCutAlg extends Algorithm {
 		splay(v,index);
 		D.reposition();
 		mysuspend();
-		if (!v.pisHead()) {
-			v.changeFlag();
-		}
 		LCTree vt = v;
 		while (vt != D.lctree.get(index)) {
 			LCTree w = vt.getParent();
 			addStep("lct-next");
 			splay(w,index);
 			mysuspend();
+			w.unpref(w.pgetRight());
 			w.psetRight(vt);
 			vt = w;
 			addStep("lct-prefhim", vt.getKey());
@@ -160,6 +158,11 @@ public class LinkCutAlg extends Algorithm {
 		splay(v, index);
 		D.reposition();
 		mysuspend();
+		if (!v.pisHead()) {
+			v.changeFlag();
+			v.pgetRight().changeFlagPath();
+			mysuspend();
+		}
 	}
 	
 	

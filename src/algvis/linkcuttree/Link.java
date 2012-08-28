@@ -40,6 +40,7 @@ public class Link extends LinkCutAlg {
 		link(v,w);
 		v.unmark();
 		w.unmark();
+		D.calcHeight();
 		D.reposition();
 		mysuspend();
 		
