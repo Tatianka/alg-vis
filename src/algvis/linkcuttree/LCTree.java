@@ -12,10 +12,102 @@ public class LCTree extends TreeNode {
 	int revflag;
 	private int shiftIndex;
 	
+	public void rebox() {
+		leftw = (pgetLeft() == null) ? DataStructure.minsepx / 2
+				: pgetLeft().leftw + pgetLeft().rightw;
+		if (isLeft() && getRight()==null && rightw < DataStructure.minsepx) {
+			leftw = DataStructure.minsepx;
+		}
+		rightw = (pgetRight() == null) ? DataStructure.minsepx / 2
+				: pgetRight().leftw + pgetRight().rightw;
+		if (isRight() && getChild()==this && leftw < DataStructure.minsepx) {
+			leftw = DataStructure.minsepx;
+		}
+		LCTree w = getUnprefChild();
+		while (w != null) {
+			rightw += w.leftw + w.rightw;
+			w = w.getRight();
+		}
+	}
+
 	public void reboxTree() {
-		makePrefTree();
+		if (pgetLeft() != null) {
+			pgetLeft().reboxTree();
+		/*	if (pgetLeft().tox == this.tox) {
+				pgetLeft().shift(-DataStructure.minsepx/2, 0);
+			}*/
+		}
+		if (pgetRight() != null) {
+			pgetRight().reboxTree();
+		/*	if (pgetRight().tox == this.tox) {
+				pgetRight().shift(DataStructure.minsepx/2, 0);
+			}*/
+		}
+		LCTree w = getUnprefChild();
+		while (w != null) {
+			w.reboxTree();
+			w = w.getRight();
+		}
+		rebox();
+	//	repos();
+	}
+
+	
+	private void repos() {
+		int gap = this.tox;
+		if (pgetLeft() != null) {
+			pgetLeft().goTo(this.tox - pgetLeft().rightw,
+					this.toy + DataStructure.minsepy);
+			pgetLeft().repos();
+			gap = pgetLeft().tox + pgetLeft().rightw;
+		}
+		if (pgetRight() != null) {
+			pgetRight().goTo(this.tox + pgetRight().leftw,
+					this.toy + DataStructure.minsepy);
+			pgetRight().repos();
+			gap = pgetRight().tox + pgetRight().rightw;
+		}
+		LCTree w = getUnprefChild();
+		while (w != null) {
+			w.goTo(gap + w.leftw, this.toy + DataStructure.minsepy);
+			w.repos();
+			gap = w.tox + w.rightw;
+			w = w.getRight();
+		}
+	}
+
+	public void repos(int x, int y) {
+		goTo(x, y);
+		int gap = this.tox;
+		if (pgetLeft() != null) {
+			pgetLeft().repos(this.tox - pgetLeft().rightw,
+					this.toy + DataStructure.minsepy);
+			gap = pgetLeft().tox + pgetLeft().rightw;
+		}
+		if (pgetRight() != null) {
+			pgetRight().repos(this.tox + pgetRight().leftw,
+					this.toy + DataStructure.minsepy);
+			gap = pgetRight().tox + pgetRight().rightw;
+		}
+		LCTree w = getUnprefChild();
+		while (w != null) {
+			w.repos(gap + w.leftw, this.toy + DataStructure.minsepy);
+			gap = w.tox + w.rightw;
+			w = w.getRight();
+		}
+	}
+	
+/*	public void reboxTree() {
+	/*	makePrefTree();
 		movePrefTree();
 		reboxTree2();
+		super.reboxTree();
+		repos();
+	}*/
+
+	public void reposition() {
+		super.reposition();
+		repos();
 	}
 	
 	public void reboxTree2() {
@@ -158,7 +250,7 @@ public class LCTree extends TreeNode {
 		LCTree res = null;
 		while ((w != null) && (res == null)) {
 			res = w.getNode(x);
-			w = (LCTree) w.getRight();
+			w = w.getRight();
 		}
 		return res;
 	}
@@ -297,6 +389,10 @@ public class LCTree extends TreeNode {
 	
 	public boolean isLeft() {
 		return pgetParent() != null && pgetParent().pgetLeft() == this;
+	}
+	
+	public boolean isRight() {
+		return pgetParent() != null && pgetParent().pgetRight() == this;
 	}
 	
 

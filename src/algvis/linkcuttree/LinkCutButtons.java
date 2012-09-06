@@ -3,7 +3,9 @@ package algvis.linkcuttree;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.Vector;
+
 import javax.swing.JPanel;
+
 import algvis.gui.Buttons;
 import algvis.gui.VisPanel;
 import algvis.internationalization.IButton;
