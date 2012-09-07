@@ -13,6 +13,7 @@ public class LinkCutDS extends DataStructure implements ClickListener {
 	public ArrayList<LinkCutDSNode> tree;
 	public ArrayList<LCTree> lctree;
 	int max, treeHeight;
+	public boolean cut;
 	
 	public LinkCutDSNode firstSelected = null;
 	public LinkCutDSNode secondSelected = null;
@@ -20,7 +21,7 @@ public class LinkCutDS extends DataStructure implements ClickListener {
 	public LinkCutDS(VisPanel M) {
 		super(M);
 		addNodes(3);
-		max = 1;
+		max = 1; cut = false;
 		treeHeight = DataStructure.minsepy;
 		tree = new ArrayList<LinkCutDSNode>();
 		lctree = new ArrayList<LCTree>();
@@ -58,6 +59,7 @@ public class LinkCutDS extends DataStructure implements ClickListener {
 	}
 	
 	public void cut(int x) {
+		cut = false;
 		LinkCutDSNode N = null, M;
 		int index = 0;
 		for(int i=0; i<tree.size(); i++) {
@@ -66,13 +68,14 @@ public class LinkCutDS extends DataStructure implements ClickListener {
 		}
 		LCTree L = lctree.get(index).getNode(x);
 		start(new Cut(this, N, L, index));
+		cut = false;
 		calcHeight();
 		reposition();
 	}
 
 	@Override
 	public void clear() {
-		max = 1;
+		max = 1; cut = false;
 		treeHeight = DataStructure.minsepy;
 		tree = new ArrayList<LinkCutDSNode>();
 		lctree = new ArrayList<LCTree>();
@@ -143,9 +146,22 @@ public class LinkCutDS extends DataStructure implements ClickListener {
 		if (tree != null) {
 			int ey2 = -9999999;
 			int ey1 = 9999999;
-			for (int i = 0; i < tree.size(); i++) {
+			int k = tree.size();
+			if (cut) {
+				k--;
+			}
+			for (int i = 0; i < k; i++) {
 				tree.get(i).reposition();
 				lctree.get(i).reposition();
+				if (y1 < ey1) {
+					ey1 = y1;
+				}
+				if (y2 > ey2) {
+					ey2 = y2;
+				}
+			}
+			if (cut) {
+				tree.get(k).reposition();
 				if (y1 < ey1) {
 					ey1 = y1;
 				}
@@ -159,11 +175,16 @@ public class LinkCutDS extends DataStructure implements ClickListener {
 			x1 = x2 = 0;
 			int shift = MAX(-tree.get(0).leftw, -lctree.get(0).leftw);
 			x1 = shift;
-			for (int i = 0; i < tree.size(); i++) {
+			for (int i = 0; i < k; i++) {
 				shift += MAX(tree.get(i).leftw, lctree.get(i).leftw);
 				tree.get(i).shift(shift, 0);
 				lctree.get(i).shift(shift, DataStructure.rooty+treeHeight/*-lctree.get(i).toy*/);
 				shift += MAX(tree.get(i).rightw, lctree.get(i).rightw);
+			}
+			if (cut) {
+				shift += tree.get(k).leftw;
+				tree.get(k).shift(shift, 0);
+				shift += tree.get(k).rightw;				
 			}
 			x2 = shift;
 			M.screen.V.setBounds(x1, y1, x2, y2);
