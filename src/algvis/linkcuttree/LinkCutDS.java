@@ -98,16 +98,6 @@ public class LinkCutDS extends DataStructure implements ClickListener {
 				lctree.get(i).draw(V);
 			}
 		}
-/*		if (v != null) {
-			if (isSelected(v) && (v.marked == false)) {
-				// v.mark(); // TODO
-			}
-			if (!isSelected(v) && (v.marked != false)) {
-				// v.unmark(); // TODO are these lines needed?
-			}
-			v.move();
-			v.draw(V);
-		}*/
 		if (getW1() != null && getW1().pgetParent() != null) {
 			V.drawWideLine(getW1().x, getW1().y, getW1().pgetParent().x, getW1()
 					.pgetParent().y);
@@ -195,8 +185,8 @@ public class LinkCutDS extends DataStructure implements ClickListener {
 	public void calcHeight() {
 		int m = 0;
 		for(int i=0; i<tree.size(); i++) {
+			tree.get(i).calcTree();
 			if (tree.get(i).height > m) {
-				tree.get(i).calcTree();
 				m = tree.get(i).height;
 			}
 		}

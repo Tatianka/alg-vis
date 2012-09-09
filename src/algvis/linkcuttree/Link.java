@@ -26,7 +26,7 @@ public class Link extends LinkCutAlg {
 		if (v==null || w==null || vv==null || ww==null) {return;}
 		v.mark();
 		w.mark();
-		if (!v.isRoot()) {
+/*		if (!v.isRoot()) {
 			addStep("lct-evert");
 			mysuspend();
 			evert(v, indexx);
@@ -45,21 +45,17 @@ public class Link extends LinkCutAlg {
 		mysuspend();
 		
 		Access2(vv, indexx);
-	/*	if (vv.pgetRight() != null) {
-			vv.psetLeft(vv.pgetRight());
-			vv.psetRight(null);
-			mysuspend();
-		}
-*/ //		mysuspend();
 		Access(ww, indexy);
-//		mysuspend();
-//NEW	vv.addChild(ww);
 		vv.unpref(vv.pgetLeft());
 		vv.psetLeft(ww);
 		ww.setParent(vv);
 		D.reposition();
 		mysuspend();
-		
+		*/
+		link(v, w, vv, ww, indexx, indexy);
+		v.unmark();
+		w.unmark();
+
 		D.tree.remove(indexx);
 		D.lctree.set(indexy, D.lctree.get(indexx)); 
 		D.lctree.remove(indexx);
