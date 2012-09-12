@@ -21,7 +21,7 @@ public class Cut extends LinkCutAlg {
 		v.mark();
 		addStep("lct-prefpath", v.getKey());
 		mysuspend();
-		cut(v);
+	/*	cut(v);
 		v.unmark();
 		D.tree.add(v);
 		D.cut = true;
@@ -34,7 +34,10 @@ public class Cut extends LinkCutAlg {
 			vv.pgetLeft().setParent(null);
 			vv.deleteChild(vv.pgetLeft());
 			vv.psetLeft(null);
-		}
+		}*/
+		cut(v, vv, index);
+		
+		v.unmark();
 	}
 
 }

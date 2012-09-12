@@ -265,7 +265,7 @@ public class LinkCutAlg extends Algorithm {
 	//////////////// together //////////////////////////////////////////////
 	
 	public void link(LinkCutDSNode v, LinkCutDSNode w, LCTree vv, LCTree ww, int indexx, int indexy) {
-		//...if...evert
+		//...if...then ... else evert
 		if (v.isRoot()) {
 			//...access2
 			addStep("lct-up", vv.getKey());
@@ -307,7 +307,6 @@ public class LinkCutAlg extends Algorithm {
 				_v = w1;
 				w1 = x;			
 			}
-	// 		D.tree.set(indexx, v);
 			addStep("lct-eroot", v.getKey());
 
 			vv.changeFlag();
@@ -316,10 +315,7 @@ public class LinkCutAlg extends Algorithm {
 			mysuspend();
 
 		}
-		
 		//...access
-		
-		
 		expose(w, ww, indexy);
 		w.addChild(v);
 		w.preffered = v;
@@ -332,6 +328,28 @@ public class LinkCutAlg extends Algorithm {
 		D.calcHeight();
 		D.reposition();
 		addStep("lct-link", v.getKey(), w.getKey());
+		mysuspend();
+	}
+	
+	public void cut(LinkCutDSNode v, LCTree vv, int index) {
+		if (v.isRoot()) {return;}
+		expose(v, vv, index);
+		NodePair<LinkCutDSNode> np = split(v);
+		np.left.deleteChild(v);
+		v.setParent(null);
+		addStep("lct-cut", v.getKey());
+		
+		if (vv.pgetLeft() != null) {
+			D.lctree.set(index, vv.pgetLeft());
+			D.lctree.add(vv);
+			vv.pgetLeft().setParent(null);
+			vv.deleteChild(vv.pgetLeft());
+			vv.psetLeft(null);
+		}
+		D.tree.add(v);
+		
+		D.calcHeight();
+		D.reposition();
 		mysuspend();
 
 	}
