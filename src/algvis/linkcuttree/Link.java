@@ -24,6 +24,7 @@ public class Link extends LinkCutAlg {
 	@Override
 	public void run() {
 		if (v==null || w==null || vv==null || ww==null) {return;}
+		if (indexx == indexy) {return;}
 		v.mark();
 		w.mark();
 /*		if (!v.isRoot()) {

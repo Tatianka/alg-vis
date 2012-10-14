@@ -29,7 +29,6 @@ public class LinkCutAlg extends Algorithm {
 			v.preffered = null;			
 		}
 		D.reposition();
-		addStep("lct-split", v.getKey());
 		mysuspend();
 		return p;
 	}
@@ -41,14 +40,11 @@ public class LinkCutAlg extends Algorithm {
 			return;
 		}
 		if (v.preffered == p) {
-			addStep("lct-splice",p.getKey());  
+			addStep("lct-splice2",p.getKey());  
 			return;
 		}
 		addStep("lct-splice", p.getKey());
-		NodePair<LinkCutDSNode> np = split(v);
-		if (np.left != null) {
-			np.left.preffered = p;
-		}
+		split(v);
 		v.preffered = p;
 		D.reposition();
 	}
@@ -70,18 +66,19 @@ public class LinkCutAlg extends Algorithm {
 	public void expose(LinkCutDSNode v, LCTree vv, int index) {
 		splay(vv, index);
 		D.reposition();
-		addStep("lct-up", v.getKey());
 		mysuspend();
+		addStep("lct-split", v.getKey());
 		vv.unpref(vv.pgetRight());
 		vv.psetRight(null);
-		NodePair<LinkCutDSNode> np = split(v);
-		if (np.left != null) {
+	/*	NodePair<LinkCutDSNode> np =*/ split(v);
+/*		if (np.left != null) {
 			np.left.preffered = v;
-		}
+			addStep("lct-prefhim", v.getKey());
+			mysuspend();
+		}*/
 		LCTree vt = vv;
 		while (v != null) {
 			v.setColor(NodeColor.CACHED);
-			splice(v);
 			
 			if (vt.getKey() == v.getKey() && vt.getParent() != null) {
 				LCTree w = vt.getParent();
@@ -91,8 +88,11 @@ public class LinkCutAlg extends Algorithm {
 				w.unpref(w.pgetRight());
 				w.psetRight(vt);
 				vt = w;
+				addStep("lct-prefhim2", vt.getKey());
+				splice(v);
+			} else {
+				splice(v);
 			}
-			addStep("lct-prefhim", vt.getKey());
 			mysuspend();
 
 			v.setColor(NodeColor.NORMAL);
@@ -289,6 +289,8 @@ public class LinkCutAlg extends Algorithm {
 			D.reposition();
 			mysuspend();
 		} else {			
+			addStep("lct-evert");
+			mysuspend();
 			expose(v, vv, indexx);
 			mysuspend();
 			LinkCutDSNode w1 = v.getParent(), x, _v = v;

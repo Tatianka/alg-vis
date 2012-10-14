@@ -10,7 +10,6 @@ public class LCTree extends TreeNode {
 	LinkCutDS D;
 	LCTree prefLeft = null, prefRight = null;
 	int revflag;
-	private int shiftIndex;
 	
 	public void rebox() {
 		leftw = (pgetLeft() == null) ? DataStructure.minsepx / 2
@@ -33,15 +32,9 @@ public class LCTree extends TreeNode {
 	public void reboxTree() {
 		if (pgetLeft() != null) {
 			pgetLeft().reboxTree();
-		/*	if (pgetLeft().tox == this.tox) {
-				pgetLeft().shift(-DataStructure.minsepx/2, 0);
-			}*/
 		}
 		if (pgetRight() != null) {
 			pgetRight().reboxTree();
-		/*	if (pgetRight().tox == this.tox) {
-				pgetRight().shift(DataStructure.minsepx/2, 0);
-			}*/
 		}
 		LCTree w = getUnprefChild();
 		while (w != null) {
@@ -49,7 +42,6 @@ public class LCTree extends TreeNode {
 			w = w.getRight();
 		}
 		rebox();
-	//	repos();
 	}
 
 	
@@ -97,93 +89,15 @@ public class LCTree extends TreeNode {
 		}
 	}
 	
-/*	public void reboxTree() {
-	/*	makePrefTree();
-		movePrefTree();
-		reboxTree2();
-		super.reboxTree();
-		repos();
-	}*/
-
 	public void reposition() {
 		super.reposition();
 		repos();
 	}
 	
-	public void reboxTree2() {
-		int bw = DataStructure.minsepx / 2;
-		int le = 9999999; // keeps current extreme leftw value
-		int re = -9999999;
-		LCTree T = getChild();
-		while (T != null) {
-			T.reboxTree2();	
-			
-			int lxe = (T.tox - tox) - T.leftw;			
-			if (lxe < le) {
-				le = lxe;
-			}
-			int rxe = (T.tox - tox) + T.rightw;
-			if (rxe > re) {
-				re = rxe;
-			}
-			T = T.getRight();
-		}
-		if (le > -bw) {
-			le = -bw;
-		}
-		if (re < bw) {
-			re = bw;
-		}
-		leftw = -le;
-		rightw = re;
-	}
-
 	public LCTree(LinkCutDS D, int key) {
 		super(D, key);
 		this.D = D;
 		revflag = 0;
-		shiftIndex = 0;
-	}
-	
-	public void movePrefTree() {
-		goTo(tox + shiftIndex, toy);
-		shiftIndex = 0;
-		LCTree w = getChild();
-		while (w != null) {
-			w.movePrefTree();
-			w = w.getRight();
-		}
-	}
-	
-	public void makePrefTree() {
-		int add = 0;
-		if (pgetLeft() != null) {
-			pgetLeft().shiftIndex = shiftIndex;
-			if (pgetRight() == null && getUnprefChild()==null) {
-				pgetLeft().shiftIndex -= DataStructure.minsepx/2;
-				add -= DataStructure.minsepx/2;
-			}
-			pgetLeft().makePrefTree();
-		}
-		if (pgetRight() != null) {
-			pgetRight().shiftIndex = shiftIndex;
-			if (pgetLeft() == null) {
-				if (getUnprefChild() != null) {
-					pgetRight().shiftIndex += DataStructure.minsepx;
-					add += DataStructure.minsepx;
-				} else {
-					pgetRight().shiftIndex += DataStructure.minsepx/2;
-					add += DataStructure.minsepx/2;					
-				}
-			}		
-			pgetRight().makePrefTree();
-		}
-		LCTree w = getUnprefChild();
-		while (w != null) {
-			w.shiftIndex = shiftIndex + add;
-			w.makePrefTree();
-			w = w.getRight();
-		}		
 	}
 	
 	public LCTree getRight() {

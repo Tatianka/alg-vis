@@ -1,7 +1,7 @@
 package algvis.linkcuttree;
 
 import java.util.ArrayList;
-
+import java.util.Random;
 import algvis.core.DataStructure;
 import algvis.gui.VisPanel;
 import algvis.gui.view.ClickListener;
@@ -71,6 +71,28 @@ public class LinkCutDS extends DataStructure implements ClickListener {
 		cut = false;
 		calcHeight();
 		reposition();
+	}
+	
+	public void random(final int n) {
+		Random g = new Random(System.currentTimeMillis());
+		boolean p = M.pause;
+		M.pause = false;
+		{
+			int i = 0;
+			scenario.enableAdding(false);
+			M.C.enableUpdating(false);
+			for (; i < n; ++i) {
+				link(g.nextInt(max-1)+1, g.nextInt(max-1)+1);
+			}
+			scenario.enableAdding(true);
+			for (; i < n; ++i) {
+				link(g.nextInt(max-1)+1, g.nextInt(max-1)+1);
+			}
+			M.C.enableUpdating(true);
+			M.C.update();
+			M.B.update();
+		}
+		M.pause = p;				
 	}
 
 	@Override
